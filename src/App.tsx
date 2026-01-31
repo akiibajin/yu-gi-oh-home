@@ -1,5 +1,5 @@
 import { LocationProvider, Route, Router } from "preact-iso";
-import Home from "./pages/home";
+import Home from "@/pages/home";
 import "./App.css";
 
 function App() {

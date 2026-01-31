@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
-import { fileURLToPath, URL } from "url";
+import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite'
 
 // process is a Node.js global in the Vite config context
@@ -8,13 +8,7 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [preact(), tailwindcss()],
-
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
-  },
+  plugins: [preact(), tailwindcss(), tsconfigPaths()],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
