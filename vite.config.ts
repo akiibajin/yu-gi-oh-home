@@ -1,13 +1,14 @@
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 import { fileURLToPath, URL } from "url";
+import tailwindcss from '@tailwindcss/vite'
 
 // process is a Node.js global in the Vite config context
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [preact()],
+  plugins: [preact(), tailwindcss()],
 
   resolve: {
     alias: {
