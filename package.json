@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@preact/signals": "^2.6.2",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/vite": "^4.1.18",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
@@ -25,6 +28,7 @@
     "vite-tsconfig-paths": "^6.0.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.13",
     "@preact/preset-vite": "^2.9.3",
     "@tauri-apps/cli": "^2",
     "@types/node": "^25.1.0",

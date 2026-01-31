@@ -1,16 +1,13 @@
-import { LocationProvider, Route, Router } from "preact-iso";
-import Home from "@/pages/home";
 import "./App.css";
+import Layout from "@/components/layout";
+import Routes from "./components/routes";
 
 function App() {
-
-  return (
-    <LocationProvider>
-      <Router>
-        <Route path="/" component={Home} />
-      </Router>
-    </LocationProvider>
-  );
+	return (
+		<Layout>
+			<Routes />
+		</Layout>
+	);
 }
 
 export default App;
