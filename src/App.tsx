@@ -1,12 +1,15 @@
 import "./App.css";
 import Layout from "@/components/layout";
 import Routes from "./components/routes";
+import { LocationProvider } from "preact-iso";
 
 function App() {
 	return (
-		<Layout>
-			<Routes />
-		</Layout>
+		<LocationProvider>
+			<Layout>
+				<Routes />
+			</Layout>
+		</LocationProvider>
 	);
 }
 

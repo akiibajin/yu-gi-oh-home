@@ -1,13 +1,11 @@
-import { LocationProvider, Route, Router } from "preact-iso";
+import { Route, Router } from "preact-iso";
 import Home from "@/pages/home";
 
 function Routes() {
 	return (
-		<LocationProvider>
-			<Router>
-				<Route path="/" component={Home} />
-			</Router>
-		</LocationProvider>
+		<Router>
+			{[<Route key="home" path="/" component={Home} />]}
+		</Router>
 	);
 }
 
