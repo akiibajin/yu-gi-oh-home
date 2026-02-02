@@ -17,7 +17,11 @@ export function AppSidebar() {
 				<SidebarGroup />
 				<SidebarMenu>
 					{NAV_ITEMS.map((item) => (
-						<SidebarMenuItem key={item.href}>{item.title}</SidebarMenuItem>
+						<SidebarMenuItem key={item.href}>
+							<a href={item.href} className="flex-1">
+								{item.title}
+							</a>
+						</SidebarMenuItem>
 					))}
 				</SidebarMenu>
 			</SidebarContent>
