@@ -28,6 +28,8 @@ import type {
 } from "@/lib/types";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
 import { Switch } from "@/components/ui/switch";
+import { storeYugiohCardDraft } from "@/lib/tauri/store-card";
+import { useState } from "preact/hooks";
 
 function clampInt(value: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, Math.trunc(value)));
@@ -37,6 +39,8 @@ export function CardMakerForm() {
 	const draft = cardDraftSignal.value;
 	const isMonster = draft.cardType === "Monster";
 	const isFieldSpell = draft.cardType === "Field";
+	const [saveStatus, setSaveStatus] = useState<string>("");
+	const [saving, setSaving] = useState(false);
 	const setDraftField = <K extends keyof YugiohCardDraft>(
 		key: K,
 		value: YugiohCardDraft[K],
@@ -49,6 +53,29 @@ export function CardMakerForm() {
 
 	const handleImageUpload = (file: File | null) => {
 		setDraftField("img", file);
+	};
+
+	const saveToDb = async () => {
+		if (!draft.name.trim()) {
+			setSaveStatus("Add a name before saving.");
+			return;
+		}
+
+		setSaving(true);
+		setSaveStatus("Saving...");
+		try {
+			// user is optional; omit for now
+			const res = await storeYugiohCardDraft(draft);
+			if (!res) {
+				setSaveStatus("Save only works in Tauri (not web mode).");
+				return;
+			}
+			setSaveStatus(`Saved (id: ${res.id}).`);
+		} catch (err) {
+			setSaveStatus(err instanceof Error ? err.message : "Failed to save.");
+		} finally {
+			setSaving(false);
+		}
 	};
 	return (
 		<Card className="w-full">
@@ -82,7 +109,8 @@ export function CardMakerForm() {
 					</div>
 					{draft.img ? (
 						<div className="text-xs text-muted-foreground">
-							Selected: {"name" in draft.img ? (draft.img as File).name : "image"}
+							Selected:{" "}
+							{"name" in draft.img ? (draft.img as File).name : "image"}
 						</div>
 					) : null}
 				</div>
@@ -335,10 +363,17 @@ export function CardMakerForm() {
 					<Button type="button" variant="outline" onClick={resetCardDraft}>
 						Reset
 					</Button>
+					<Button type="button" onClick={saveToDb} disabled={saving}>
+						{saving ? "Saving..." : "Save to DB"}
+					</Button>
 					<Button type="button" disabled>
 						Export (soon)
 					</Button>
 				</div>
+
+				{saveStatus ? (
+					<div className="text-sm text-muted-foreground">{saveStatus}</div>
+				) : null}
 			</CardContent>
 		</Card>
 	);
