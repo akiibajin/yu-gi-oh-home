@@ -68,9 +68,9 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 	}, [path, navIndex]);
 
 	return (
-		<SidebarProvider className="grid grid-cols-[auto_1fr] grid-rows-[min-content_1fr] min-h-screen">
+		<SidebarProvider className="grid h-svh min-h-svh min-w-0 grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
 			<AppSidebar />
-			<header className="col-start-2 row-start-1 w-full h-min flex items-center gap-2 border-b px-4 py-2 bg-white">
+			<header className="col-start-2 row-start-1 flex w-full min-w-0 items-center gap-2 border-b bg-white px-4 py-2">
 				<SidebarTrigger />
 				<Breadcrumb>
 					<BreadcrumbList>
@@ -101,7 +101,9 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 					</BreadcrumbList>
 				</Breadcrumb>
 			</header>
-			<main className="col-start-2 row-start-2 p-4">{children}</main>
+			<main className="col-start-2 px-4 py-3 row-start-2 min-h-0 min-w-0 overflow-auto">
+				{children}
+			</main>
 		</SidebarProvider>
 	);
 }
