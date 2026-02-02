@@ -46,12 +46,47 @@ export function CardMakerForm() {
 			[key]: value,
 		};
 	};
+
+	const handleImageUpload = (file: File | null) => {
+		setDraftField("img", file);
+	};
 	return (
 		<Card className="w-full">
 			<CardHeader>
 				<CardTitle>Card Options</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
+				<div className="space-y-2">
+					<label className="text-sm font-medium" htmlFor="cm-image">
+						Image
+					</label>
+					<div className="flex items-center gap-2">
+						<Input
+							id="cm-image"
+							type="file"
+							accept="image/*"
+							onChange={(e) => {
+								const file = e.currentTarget.files?.[0] ?? null;
+								handleImageUpload(file);
+							}}
+						/>
+
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => handleImageUpload(null)}
+							disabled={!draft.img}
+						>
+							Clear
+						</Button>
+					</div>
+					{draft.img ? (
+						<div className="text-xs text-muted-foreground">
+							Selected: {"name" in draft.img ? (draft.img as File).name : "image"}
+						</div>
+					) : null}
+				</div>
+
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-end">
 					<div className="min-w-0 flex-1 space-y-2">
 						<label className="text-sm font-medium" htmlFor="cm-name">
