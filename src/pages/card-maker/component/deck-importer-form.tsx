@@ -1,14 +1,19 @@
-import { useMemo, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { loadDeckCardsFromYdkFile } from "@/lib/tauri/decks";
+import type { YugiohCardDraft } from "@/lib/types";
+import normalizeCard from "@/lib/normalize-card";
 
 export function DeckImporterForm() {
 	const [file, setFile] = useState<File | null>(null);
 	const [running, setRunning] = useState(false);
 	const [status, setStatus] = useState<string>("");
+	const [cards, setCards] = useState<
+		(Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[]
+	>([]);
 	const [lastResult, setLastResult] = useState<
 		| {
 				totalIds: number;
@@ -18,11 +23,6 @@ export function DeckImporterForm() {
 		  }
 		| undefined
 	>(undefined);
-
-	const sampleText = useMemo(() => {
-		if (!lastResult?.sample?.length) return "";
-		return lastResult.sample.join(", ");
-	}, [lastResult]);
 
 	const run = async () => {
 		if (!file) {
@@ -49,13 +49,14 @@ export function DeckImporterForm() {
 				sample,
 			});
 			setStatus("Done.");
+			const normalized = res.cards.map(normalizeCard);
+			setCards(normalized);
 		} catch (err) {
 			setStatus(err instanceof Error ? err.message : "Failed to load deck.");
 		} finally {
 			setRunning(false);
 		}
 	};
-
 	return (
 		<Card className="w-full">
 			<CardHeader>
@@ -114,11 +115,16 @@ export function DeckImporterForm() {
 							Cards loaded: {lastResult.totalCards} (deck entries:
 							{lastResult.totalIds}, unique IDs: {lastResult.uniqueIds})
 						</div>
-						{sampleText ? (
-							<div className="text-xs text-muted-foreground">
-								Sample: {sampleText}
+					</div>
+				) : null}
+				{cards.length ? (
+					<div className="text-xs flex-1 max-h-[30dvh] overflow-auto flex flex-col gap-4">
+						{cards.map((c) => (
+							<div key={c.id} className="flex items-center gap-1">
+								<img className="size-8" src={c.imgUrl} alt={c.name} />
+								<span>{c.name}</span>
 							</div>
-						) : null}
+						))}
 					</div>
 				) : null}
 			</CardContent>

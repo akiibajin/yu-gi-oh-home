@@ -66,7 +66,15 @@ export type YugiohRarity =
 	| "Super Rare"
 	| "Ultra Rare"
 	| "Secret Rare";
-
+export type LinkMarker =
+	| "Top"
+	| "Bottom-left"
+	| "Bottom"
+	| "Bottom-right"
+	| "Left"
+	| "Right"
+	| "Top-left"
+	| "Top-right";
 export interface YugiohMonsterStats {
 	level: number; // stars
 	atk: number;
@@ -82,19 +90,31 @@ export interface YugiohCardDraft {
 	subType?: MonsterType;
 	isTuner?: boolean;
 	linkRating?: number;
-	linkMarkers?:
-		| "Top"
-		| "Bottom-left"
-		| "Bottom"
-		| "Bottom-right"
-		| "Left"
-		| "Right"
-		| "Top-left"
-		| "Top-right";
+	linkMarkers?: LinkMarker[];
 	stats: YugiohMonsterStats;
 	spellType?: YugiohSpellType;
 	trapType?: YugiohTrapType;
 	img: Blob | null;
+}
+
+export interface YugiohCardDB {
+	id: string | number;
+	name: string;
+	card_type: YugiohCardType;
+	description: string;
+	attribute: YugiohCardAttribute | null;
+	monster_type: `${YugiohMonsterType} Monster`;
+	sub_type: MonsterType | null;
+	is_tuner: boolean | null;
+	link_rating: number | null;
+	link_markers: LinkMarker[] | null;
+	created_at: string;
+	img_url: string;
+	spell_type: YugiohSpellType | null;
+	trap_type: YugiohTrapType | null;
+	atk: number | null;
+	def: number | null;
+	level: number | null;
 }
 
 export {}; // ensure this is treated as a module

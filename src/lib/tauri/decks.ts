@@ -1,28 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
-
-export type YugiohCard = {
-	id: string;
-	name: string;
-	card_type: string;
-	description: string;
-	attribute?: string | null;
-	monster_type?: string | null;
-	sub_type?: string | null;
-	is_tuner?: boolean | null;
-	level: number;
-	atk: number;
-	def: number;
-	link_rating?: number | null;
-	link_markers?: string[] | null;
-	spell_type?: string | null;
-	trap_type?: string | null;
-	img_url?: string | null;
-	user_id?: string | null;
-};
+import type { YugiohCardDB } from "../types";
 
 export type LoadDeckCardsResponse = {
 	ids: string[];
-	cards: YugiohCard[];
+	cards: YugiohCardDB[];
 };
 
 function canInvokeTauri() {
