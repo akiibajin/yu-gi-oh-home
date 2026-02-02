@@ -72,7 +72,10 @@ function CalcSetup() {
 					<CardContent>
 						<div className="text-sm">Invalid player count.</div>
 						<div className="mt-4">
-							<Button type="button" variant="outline" onClick={() => route("/")}
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => route("/")}
 							>
 								Back
 							</Button>
@@ -105,17 +108,16 @@ function CalcSetup() {
 								!!currentTrimmed && takenTrimmed.has(currentTrimmed);
 
 							return (
-								<div
-									key={String(index)}
-									className="flex items-center gap-3"
-								>
+								<div key={String(index)} className="flex items-center gap-3">
 									<div className="w-20 text-sm text-muted-foreground">
 										P{index + 1}
 									</div>
 									<div className="flex flex-1 items-center gap-2">
 										{isCustom ? (
 											<Input
-												className={isDuplicate ? "border-destructive" : undefined}
+												className={
+													isDuplicate ? "border-destructive" : undefined
+												}
 												placeholder="Custom name"
 												value={current}
 												onInput={(event) => {
@@ -147,7 +149,8 @@ function CalcSetup() {
 															key={name}
 															value={name}
 															disabled={
-																takenTrimmed.has(name) && name !== currentTrimmed
+																takenTrimmed.has(name) &&
+																name !== currentTrimmed
 															}
 														>
 															{name}
@@ -158,7 +161,9 @@ function CalcSetup() {
 										)}
 
 										<div className="flex items-center gap-2">
-											<span className="text-muted-foreground text-xs">Custom</span>
+											<span className="text-muted-foreground text-xs">
+												Custom
+											</span>
 											<Switch
 												checked={isCustom}
 												aria-label={`Use custom name for player ${index + 1}`}
@@ -169,7 +174,7 @@ function CalcSetup() {
 														return next;
 													});
 
-												if (!checked) {
+													if (!checked) {
 														setNames((prev) => {
 															const next = [...prev];
 															const taken = new Set(
@@ -184,9 +189,9 @@ function CalcSetup() {
 															);
 															return next;
 														});
-												}
-											}}
-										/>
+													}
+												}}
+											/>
 										</div>
 									</div>
 								</div>
@@ -201,8 +206,7 @@ function CalcSetup() {
 					) : null}
 
 					<div className="flex items-center justify-between gap-2">
-						<Button type="button" variant="outline" onClick={() => route("/")}
-						>
+						<Button type="button" variant="outline" onClick={() => route("/")}>
 							Back
 						</Button>
 						<Button

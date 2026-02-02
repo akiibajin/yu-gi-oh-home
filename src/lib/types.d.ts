@@ -15,6 +15,12 @@ export type YugiohMonsterType =
 	| "Synchro"
 	| "Xyz"
 	| "Link"
+	| "Pendulum Normal"
+	| "Pendulum Effect"
+	| "Pendulum Fusion"
+	| "Pendulum Synchro"
+	| "Pendulum Xyz"
+	| "Pendulum Ritual"
 	| "Trap";
 export type MonsterType =
 	| "Aqua"
@@ -75,6 +81,16 @@ export interface YugiohCardDraft {
 	monsterType?: YugiohMonsterType;
 	subType?: MonsterType;
 	isTuner?: boolean;
+	linkRating?: number;
+	linkMarkers?:
+		| "Top"
+		| "Bottom-left"
+		| "Bottom"
+		| "Bottom-right"
+		| "Left"
+		| "Right"
+		| "Top-left"
+		| "Top-right";
 	stats: YugiohMonsterStats;
 	spellType?: YugiohSpellType;
 	trapType?: YugiohTrapType;

@@ -45,3 +45,43 @@ pub async fn fetch_cardinfo(
 	serde_json::from_str::<serde_json::Value>(&body)
 		.context("failed to parse ygoprodeck response as JSON")
 }
+
+pub async fn fetch_cardinfo_by_ids(ids: &[u64]) -> anyhow::Result<serde_json::Value> {
+	if ids.is_empty() {
+		return Err(anyhow::anyhow!("ids cannot be empty"));
+	}
+
+	let mut url = reqwest::Url::parse(YGOPRODECK_CARDINFO_URL)
+		.context("failed to parse ygoprodeck url")?;
+	{
+		// YGOPRODeck supports a comma-separated list in the `id` query param:
+		// https://db.ygoprodeck.com/api/v7/cardinfo.php?id=1,2,3
+		let mut qp = url.query_pairs_mut();
+		let ids_csv = ids
+			.iter()
+			.map(|id| id.to_string())
+			.collect::<Vec<_>>()
+			.join(",");
+		qp.append_pair("id", &ids_csv);
+	}
+
+	let client = reqwest::Client::new();
+	let resp = client
+		.get(url)
+		.send()
+		.await
+		.context("ygoprodeck request failed")?;
+
+	let status = resp.status();
+	let body = resp
+		.text()
+		.await
+		.context("failed to read ygoprodeck response body")?;
+
+	if !status.is_success() {
+		return Err(anyhow::anyhow!("ygoprodeck returned {status}: {body}"));
+	}
+
+	serde_json::from_str::<serde_json::Value>(&body)
+		.context("failed to parse ygoprodeck response as JSON")
+}

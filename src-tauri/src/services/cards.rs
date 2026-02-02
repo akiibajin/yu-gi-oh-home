@@ -17,6 +17,9 @@ pub struct StoreYugiohCardRequest {
 	pub atk: i32,
 	pub def: i32,
 
+	pub link_rating: Option<i32>,
+	pub link_markers: Option<Vec<String>>,
+
 	pub spell_type: Option<String>,
 	pub trap_type: Option<String>,
 
@@ -47,12 +50,14 @@ pub async fn store_yugioh_card(
 			level,
 			atk,
 			def,
+			link_rating,
+			link_markers,
 			spell_type,
 			trap_type,
 			img_url,
 			user_id
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
 		ON CONFLICT (id) DO UPDATE SET
 			name = EXCLUDED.name,
 			card_type = EXCLUDED.card_type,
@@ -64,6 +69,8 @@ pub async fn store_yugioh_card(
 			level = EXCLUDED.level,
 			atk = EXCLUDED.atk,
 			def = EXCLUDED.def,
+			link_rating = EXCLUDED.link_rating,
+			link_markers = EXCLUDED.link_markers,
 			spell_type = EXCLUDED.spell_type,
 			trap_type = EXCLUDED.trap_type,
 			img_url = EXCLUDED.img_url,
@@ -81,13 +88,37 @@ pub async fn store_yugioh_card(
 	.bind(req.level)
 	.bind(req.atk)
 	.bind(req.def)
+	.bind(req.link_rating)
+	.bind(&req.link_markers)
 	.bind(&req.spell_type)
 	.bind(&req.trap_type)
 	.bind(&req.img_url)
 	.bind(&req.user_id)
+	.persistent(false)
 	.execute(pool)
 	.await
 	.context("failed to store yugioh card")?;
 
 	Ok(StoreYugiohCardResponse { id: req.id })
+}
+
+pub async fn update_yugioh_card_img_url(
+	pool: &PgPool,
+	card_id: &str,
+	img_url: &str,
+) -> anyhow::Result<()> {
+	sqlx::query(
+		r#"
+		UPDATE yugioh_cards
+		SET img_url = $2
+		WHERE id = $1
+		"#,
+	)
+	.bind(card_id)
+	.bind(img_url)
+	.persistent(false)
+	.execute(pool)
+	.await
+	.context("failed to update yugioh card img_url")?;
+	Ok(())
 }

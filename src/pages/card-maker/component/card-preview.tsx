@@ -40,28 +40,36 @@ export function CardPreview() {
 				)}
 
 				<div className="space-y-1">
-					<div className="text-lg font-semibold leading-tight">{displayName}</div>
+					<div className="text-lg font-semibold leading-tight">
+						{displayName}
+					</div>
 					<div className="text-sm text-muted-foreground">{draft.cardType}</div>
 				</div>
 
 				{isMonster ? (
 					<div className="grid grid-cols-2 gap-2 text-sm">
 						<div>
-							<span className="text-muted-foreground">Attribute:</span> {draft.attribute}
+							<span className="text-muted-foreground">Attribute:</span>{" "}
+							{draft.attribute}
 						</div>
 						<div>
-							<span className="text-muted-foreground">Type:</span> {draft.monsterType}
+							<span className="text-muted-foreground">Type:</span>{" "}
+							{draft.monsterType}
 						</div>
 						<div>
-							<span className="text-muted-foreground">Level:</span> {draft.stats.level}
+							<span className="text-muted-foreground">Level:</span>{" "}
+							{draft.stats.level}
 						</div>
 						<div>
-							<span className="text-muted-foreground">ATK/DEF:</span> {draft.stats.atk}/{draft.stats.def}
+							<span className="text-muted-foreground">ATK/DEF:</span>{" "}
+							{draft.stats.atk}/{draft.stats.def}
 						</div>
 					</div>
 				) : null}
 
-				<div className="whitespace-pre-wrap text-sm leading-relaxed">{description}</div>
+				<div className="whitespace-pre-wrap text-sm leading-relaxed">
+					{description}
+				</div>
 			</CardContent>
 		</Card>
 	);
