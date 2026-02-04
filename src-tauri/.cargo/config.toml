@@ -1,0 +1,22 @@
+# Android cross-compilation helpers for crates that build C/ASM (e.g., ring via rustls).
+# This keeps `cargo build --target <android>` working on Windows.
+
+[env]
+ANDROID_NDK_HOME = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865", force = true }
+NDK_HOME = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865", force = true }
+
+CC_x86_64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/x86_64-linux-android21-clang.cmd", force = true }
+CXX_x86_64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/x86_64-linux-android21-clang++.cmd", force = true }
+AR_x86_64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe", force = true }
+
+CC_aarch64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android21-clang.cmd", force = true }
+CXX_aarch64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android21-clang++.cmd", force = true }
+AR_aarch64_linux_android = { value = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe", force = true }
+
+[target.x86_64-linux-android]
+linker = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/x86_64-linux-android21-clang.cmd"
+ar = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe"
+
+[target.aarch64-linux-android]
+linker = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android21-clang.cmd"
+ar = "C:/Users/julia/AppData/Local/Android/Sdk/ndk/29.0.14206865/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe"

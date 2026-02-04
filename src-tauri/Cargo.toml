@@ -31,15 +31,14 @@ image = { version = "0.25", default-features = false, features = [
 ] }
 webp = "0.3"
 sqlx = { version = "0.7", default-features = false, features = [
-    "runtime-tokio",
+    "runtime-tokio-rustls",
     "postgres",
-    "tls-native-tls",
     "migrate",
     "macros",
 ] }
 reqwest = { version = "0.12", default-features = false, features = [
     "json",
-    "native-tls",
+    "rustls-tls-webpki-roots",
 ] }
 
 tokio = { version = "1", features = ["time"] }
