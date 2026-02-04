@@ -18,6 +18,8 @@ import {
 	SPELL_TYPES,
 	TRAP_TYPES,
 	MONSTER_TYPES,
+	SPELL_ICONS,
+	TRAP_ICONS,
 } from "@/lib/constants";
 import type {
 	MonsterType,
@@ -25,11 +27,14 @@ import type {
 	YugiohCardDraft,
 	YugiohCardType,
 	YugiohMonsterType,
+	YugiohSpellType,
+	YugiohTrapType,
 } from "@/lib/types";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
 import { Switch } from "@/components/ui/switch";
 import { storeYugiohCardDraft } from "@/lib/tauri/store-card";
 import { useState } from "preact/hooks";
+import { exportPreview } from "@/lib/export-card";
 
 function clampInt(value: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, Math.trunc(value)));
@@ -41,6 +46,7 @@ export function CardMakerForm() {
 	const isFieldSpell = draft.cardType === "Field";
 	const [saveStatus, setSaveStatus] = useState<string>("");
 	const [saving, setSaving] = useState(false);
+	const [exporting, setExporting] = useState(false);
 	const setDraftField = <K extends keyof YugiohCardDraft>(
 		key: K,
 		value: YugiohCardDraft[K],
@@ -75,6 +81,20 @@ export function CardMakerForm() {
 			setSaveStatus(err instanceof Error ? err.message : "Failed to save.");
 		} finally {
 			setSaving(false);
+		}
+	};
+
+	const onExport = async () => {
+		setExporting(true);
+		setSaveStatus("Exporting...");
+		try {
+			const res = await exportPreview(draft);
+			setSaveStatus(`exported to: ${res.path}`);
+		} catch (err) {
+			console.error(err);
+			setSaveStatus(err instanceof Error ? err.message : "Failed to export.");
+		} finally {
+			setExporting(false);
 		}
 	};
 	return (
@@ -152,7 +172,17 @@ export function CardMakerForm() {
 					</div>
 				</div>
 				{!isFieldSpell && !isMonster ? (
-					<Select>
+					<Select
+						value={
+							draft.cardType === "Spell" ? draft.spellType : draft.trapType
+						}
+						onValueChange={(value: string) =>
+							setDraftField(
+								draft.cardType === "Spell" ? "spellType" : "trapType",
+								value as YugiohSpellType | YugiohTrapType,
+							)
+						}
+					>
 						<SelectTrigger className="w-full">
 							<SelectValue placeholder="Select Spell/Trap Type" />
 						</SelectTrigger>
@@ -160,11 +190,13 @@ export function CardMakerForm() {
 							{draft.cardType === "Spell"
 								? SPELL_TYPES.map((t) => (
 										<SelectItem key={t} value={t}>
+											<img src={SPELL_ICONS[t]} alt={t} className="size-4" />
 											{t}
 										</SelectItem>
 									))
 								: TRAP_TYPES.map((t) => (
 										<SelectItem key={t} value={t}>
+											<img src={TRAP_ICONS[t]} alt={t} className="size-4" />
 											{t}
 										</SelectItem>
 									))}
@@ -366,8 +398,8 @@ export function CardMakerForm() {
 					<Button type="button" onClick={saveToDb} disabled={saving}>
 						{saving ? "Saving..." : "Save to DB"}
 					</Button>
-					<Button type="button" disabled>
-						Export (soon)
+					<Button type="button" onClick={onExport} disabled={exporting}>
+						{exporting ? "Exporting..." : "Export"}
 					</Button>
 				</div>
 

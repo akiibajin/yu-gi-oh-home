@@ -1,10 +1,10 @@
 import dark from "../assets/images/DARK.svg";
-import light from "../assets/images/LIGHT.webp";
-import earth from "../assets/images/EARTH.webp";
-import water from "../assets/images/WATER.webp";
-import fire from "../assets/images/FIRE.webp";
-import wind from "../assets/images/WIND.webp";
-import divine from "../assets/images/DIVINE.webp";
+import light from "../assets/images/LIGHT.svg";
+import earth from "../assets/images/EARTH.svg";
+import water from "../assets/images/WATER.svg";
+import fire from "../assets/images/FIRE.svg";
+import wind from "../assets/images/WIND.svg";
+import divine from "../assets/images/DIVINE.svg";
 import aqua from "../assets/images/Aqua.webp";
 import beast from "../assets/images/Beast.webp";
 import beastWarrior from "../assets/images/Beast-Warrior.webp";
@@ -31,6 +31,18 @@ import warrior from "../assets/images/Warrior.webp";
 import wingedBeast from "../assets/images/Winged_Beast.webp";
 import wyrm from "../assets/images/Wyrm_Type.webp";
 import zombie from "../assets/images/Zombie.webp";
+import hector from "../assets/images/avatars/Hector.webp";
+import wallys from "../assets/images/avatars/Wallys.webp";
+import hassan from "../assets/images/avatars/Hassan.webp";
+import jess from "../assets/images/avatars/Jess.webp";
+import chauta from "../assets/images/avatars/Chauta.webp";
+import defaultImg from "../assets/images/avatars/Default.webp";
+import normalSpellIcon from "../assets/images/card-templates/Normal Spell.png";
+import continuousSpellIcon from "../assets/images/card-templates/Continue.png";
+import equipSpellIcon from "../assets/images/card-templates/equip.png";
+import quickPlaySpellIcon from "../assets/images/card-templates/Quik play.png";
+import ritualSpellIcon from "../assets/images/card-templates/Ritual.png";
+import counter from "../assets/images/card-templates/Counter.png";
 
 export type NavItem = {
 	title: string;
@@ -47,6 +59,14 @@ export const NAV_ITEMS: NavItem[] = [
 export const ROYAL_LP = 8000;
 export const TAG_LP = 12000;
 export const PLAYERS_NAMES = ["Hector", "Wallys", "Hassan", "Jess", "Chauta"];
+export const PLAYERS_IMAGES = {
+	Hector: hector,
+	Wallys: wallys,
+	Hassan: hassan,
+	Jess: jess,
+	Chauta: chauta,
+	defaultAvatar: defaultImg,
+};
 
 export const YUGIOH_MAX_STARS = 12;
 export const YUGIOH_MAX_STAT = 99999;
@@ -60,7 +80,18 @@ export const YUGIOH_ATTRIBUTES = [
 	{ title: "WIND", img: wind },
 	{ title: "DIVINE", img: divine },
 ] as const;
-
+export const SPELL_ICONS = {
+	Normal: normalSpellIcon,
+	Continuous: continuousSpellIcon,
+	Equip: equipSpellIcon,
+	"Quick-Play": quickPlaySpellIcon,
+	Ritual: ritualSpellIcon,
+};
+export const TRAP_ICONS = {
+	Counter: counter,
+	Normal: normalSpellIcon,
+	Continuous: continuousSpellIcon,
+};
 export const MONSTER_TYPES = [
 	{ title: "Aqua", img: aqua },
 	{ title: "Beast", img: beast },

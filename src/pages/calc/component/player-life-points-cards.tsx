@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/input-group";
 import { MinusIcon, PlusIcon, RotateCcwIcon } from "lucide-react";
 import { useState } from "preact/hooks";
+import { PLAYERS_IMAGES } from "@/lib/constants";
 
 export type PlayerLifePoints = {
 	id: string;
@@ -35,6 +36,7 @@ function PlayerLifePointsCard({
 	const inCreaseLifePoints = () => {
 		onLifePointsChange(clamped + valueToIterate);
 	};
+	const playerImage = PLAYERS_IMAGES?.[player.name as keyof typeof PLAYERS_IMAGES] || PLAYERS_IMAGES["defaultAvatar"];
 	const decreaseLifePoints = () => {
 		onLifePointsChange(
 			clamped - valueToIterate < 0 ? 0 : clamped - valueToIterate,
@@ -49,7 +51,7 @@ function PlayerLifePointsCard({
 			<CardHeader className="space-y-1">
 				<div className="flex items-center justify-between gap-3">
 					<CardTitle className="min-w-0 flex-1 truncate">
-						{player.name}
+						<img src={playerImage} alt={player.name} />
 					</CardTitle>
 					<LifePointsCounter
 						strokeWidth={25}
