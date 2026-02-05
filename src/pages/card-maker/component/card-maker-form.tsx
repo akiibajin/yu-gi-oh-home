@@ -89,7 +89,8 @@ export function CardMakerForm() {
 		setSaveStatus("Exporting...");
 		try {
 			const res = await exportPreview(draft);
-			setSaveStatus(`exported to: ${res.path}`);
+			const shownPath = res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
+			setSaveStatus(`exported to: ${shownPath}`);
 		} catch (err) {
 			console.error(err);
 			setSaveStatus(err instanceof Error ? err.message : "Failed to export.");

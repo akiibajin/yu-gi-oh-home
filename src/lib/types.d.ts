@@ -117,4 +117,14 @@ export interface YugiohCardDB {
 	level: number | null;
 }
 
+export type YugiohCardWithImgUrl = Omit<YugiohCardDraft, "img"> & {
+	id: string;
+	imgUrl: string;
+};
+
+export interface YugiohBackground {
+	name: string;
+	img_url: string;
+}
+
 export {}; // ensure this is treated as a module

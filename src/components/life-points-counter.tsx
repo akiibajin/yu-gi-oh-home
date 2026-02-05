@@ -81,7 +81,7 @@ export function LifePointsCounter({
 	return (
 		<div
 			className={cn(
-				"relative bg-white inline-grid place-items-center",
+				"relative bg-transparent inline-grid place-items-center",
 				className,
 			)}
 			style={{ width: size, height: size }}
@@ -90,7 +90,7 @@ export function LifePointsCounter({
 		>
 			<div className="pointer-events-none rounded-full bg-black absolute inset-0 flex flex-col items-center justify-center gap-1 ">
 				<div className="text-center text-white leading-none">
-					<div className="text-6xl font-bold tabular-nums">
+					<div className="text-3xl md:text-6xl font-bold tabular-nums">
 						{clamped.toLocaleString()}
 					</div>
 					<div className="text-white text-base tabular-nums">

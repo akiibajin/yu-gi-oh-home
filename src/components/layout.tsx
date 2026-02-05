@@ -1,8 +1,6 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Fragment, type ComponentChildren } from "preact";
 import { useMemo } from "preact/hooks";
 import { useLocation } from "preact-iso";
-import { AppSidebar } from "./app-sidebar";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -12,6 +10,7 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NAV_ITEMS, type NavItem } from "@/lib/constants";
+import { ToastContainer } from "react-toastify";
 
 function flattenNavItems(items: NavItem[]): NavItem[] {
 	const out: NavItem[] = [];
@@ -68,10 +67,8 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 	}, [path, navIndex]);
 
 	return (
-		<SidebarProvider className="grid h-svh min-h-svh min-w-0 grid-cols-[auto_1fr] grid-rows-[auto_1fr]">
-			<AppSidebar />
-			<header className="col-start-2 row-start-1 flex w-full min-w-0 items-center gap-2 border-b bg-white px-4 py-2">
-				<SidebarTrigger />
+		<div className="grid grid-rows-[auto_1fr] h-svh min-h-svh min-w-0">
+			<header className="row-start-1 flex w-full min-w-0 items-center gap-2 border-b bg-white px-4 py-2">
 				<Breadcrumb>
 					<BreadcrumbList>
 						{breadcrumbItems.map((item, index) => {
@@ -101,9 +98,10 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 					</BreadcrumbList>
 				</Breadcrumb>
 			</header>
-			<main className="col-start-2 px-4 py-3 row-start-2 min-h-0 min-w-0 overflow-auto">
+			<main className="row-start-2 min-h-0 min-w-0 overflow-y-auto px-4 py-3">
 				{children}
 			</main>
-		</SidebarProvider>
+			<ToastContainer aria-label="Notifications" />
+		</div>
 	);
 }

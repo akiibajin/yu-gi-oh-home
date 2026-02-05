@@ -4,6 +4,7 @@ import CalcHome from "@/pages/calc/home";
 import Calc from "@/pages/calc";
 import CalcSetup from "@/pages/calc/setup";
 import CardMaker from "@/pages/card-maker";
+import FieldsBg from "@/pages/fields-bg";
 
 function Routes() {
 	return (
@@ -18,6 +19,7 @@ function Routes() {
 				/>,
 				<Route key="calc" path="/calc/:num" component={Calc} />,
 				<Route key="card-maker" path="/card-maker" component={CardMaker} />,
+				<Route key="fields-bg" path="/fields-bg" component={FieldsBg} />,
 			]}
 		</Router>
 	);

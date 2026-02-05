@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PLAYERS_NAMES, ROYAL_LP, TAG_LP } from "@/lib/constants";
 import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
+import { getCurrentBackground } from "@/lib/tauri/background";
+import type { YugiohBackground } from "@/lib/types";
 import {
 	PlayerLifePointsCards,
 	type PlayerLifePoints,
@@ -43,7 +45,8 @@ function Calc() {
 		() => (isSetupComplete ? buildPlayers(num, selectedNames) : []),
 		[isSetupComplete, num, selectedNames],
 	);
-
+	const [currentBackground, setCurrentBackgroundState] =
+		useState<YugiohBackground | null>(null);
 	const [players, setPlayers] = useState<PlayerLifePoints[]>(initialPlayers);
 
 	useEffect(() => {
@@ -65,9 +68,27 @@ function Calc() {
 	useEffect(() => {
 		initDuelSfx();
 	}, []);
+	useEffect(() => {
+		const init = async () => {
+			const res = await getCurrentBackground();
+			if (res && res.name !== currentBackground?.name) {
+				setCurrentBackgroundState(res);
+			}
+		};
+		init();
+		const interval = setInterval(init, 10_000);
+		return () => clearInterval(interval);
+	}, [currentBackground?.name]);
 	return (
-		<div>
-			<Card className="mb-4">
+		<div className="relative size-full flex flex-col flex-1">
+			{currentBackground ? (
+				<img
+					src={currentBackground.img_url}
+					alt={currentBackground.name}
+					className="fixed inset-0 w-full h-full object-cover  pointer-events-none select-none opacity-80"
+				/>
+			) : null}
+			<Card className="hidden md:flex mb-4 relative bg-transparent z-10">
 				<CardHeader>
 					<CardTitle>Calculator</CardTitle>
 				</CardHeader>
@@ -80,7 +101,6 @@ function Calc() {
 					</div>
 				</CardContent>
 			</Card>
-
 			{isValidNum ? (
 				<PlayerLifePointsCards
 					players={players}

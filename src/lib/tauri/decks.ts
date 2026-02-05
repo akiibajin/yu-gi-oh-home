@@ -1,18 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { YugiohCardDB } from "../types";
+import { canInvokeTauri } from "./can-invoke-tauri";
 
 export type LoadDeckCardsResponse = {
 	ids: string[];
 	cards: YugiohCardDB[];
 };
-
-function canInvokeTauri() {
-	if (typeof window === "undefined") return false;
-	return Boolean(
-		(window as unknown as { __TAURI_INTERNALS__?: unknown })
-			.__TAURI_INTERNALS__,
-	);
-}
 
 export async function loadDeckCardsFromYdkFile(
 	file: File,

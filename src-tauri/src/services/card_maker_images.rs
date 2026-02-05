@@ -2,6 +2,9 @@ use anyhow::Context;
 use std::path::PathBuf;
 use tauri::Manager;
 
+#[cfg(target_os = "android")]
+use crate::services::android_public_documents;
+
 fn sanitize_filename_stem(input: &str) -> String {
 	let mut out = String::with_capacity(input.len());
 	for ch in input.chars() {
@@ -26,8 +29,15 @@ pub fn card_maker_images_dir(app: &tauri::AppHandle) -> anyhow::Result<PathBuf> 
 	let base_dir = if cfg!(target_os = "windows") {
 		app.path().document_dir().context("failed to resolve documents dir")?
 	} else if cfg!(target_os = "android") {
-		// Best default on Android: internal app data (no permissions, always writable).
-		app.path().app_data_dir().context("failed to resolve app data dir")?
+		// Android: put exports under a user-visible Documents subfolder.
+		// This typically maps to the app-specific external Documents directory, so it
+		// remains writable without broad storage permissions.
+		let docs = app
+			.path()
+			.document_dir()
+			.or_else(|_| app.path().app_data_dir())
+			.context("failed to resolve documents/app data dir")?;
+		docs.join("yu-gi-oh-home")
 	} else {
 		// Desktop fallback: prefer app data (private), but fall back to documents.
 		app.path()
@@ -60,12 +70,27 @@ pub fn store_card_maker_image(
 		return Err(anyhow::anyhow!("id is empty"));
 	}
 
-	let dir = card_maker_images_dir(app)?;
-
 	// The card-maker export will always be WebP. We sanitize to ensure a safe filename
 	// (card names often include spaces and punctuation).
 	let stem = sanitize_filename_stem(id);
 	let filename = format!("{stem}.webp");
+
+	#[cfg(target_os = "android")]
+	{
+		match android_public_documents::store_webp_in_public_documents(&filename, bytes) {
+			Ok(uri) => {
+				let dir = PathBuf::from("Documents/yu-gi-oh-home");
+				let path = PathBuf::from(uri);
+				return Ok(StoredCardMakerImage { dir, filename, path });
+			}
+			Err(_e) => {
+				// Fallback: keep exporting working even if public Documents writing fails.
+				// (e.g. OEM restrictions).
+			}
+		}
+	}
+
+	let dir = card_maker_images_dir(app)?;
 	let path = dir.join(&filename);
 
 	std::fs::write(&path, bytes).with_context(|| format!("failed to write image: {path:?}"))?;

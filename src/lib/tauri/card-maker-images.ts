@@ -1,18 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
+import { canInvokeTauri } from "./can-invoke-tauri";
 
 export type StoreCardMakerImageResponse = {
 	dir: string;
 	filename: string;
 	path: string;
 };
-
-function canInvokeTauri() {
-	if (typeof window === "undefined") return false;
-	return Boolean(
-		(window as unknown as { __TAURI_INTERNALS__?: unknown })
-			.__TAURI_INTERNALS__,
-	);
-}
 
 export async function storeCardMakerWebpById(
 	id: string,

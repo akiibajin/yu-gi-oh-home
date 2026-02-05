@@ -71,6 +71,13 @@ function Home() {
 					>
 						Go to Card Maker
 					</Button>
+					<Button
+						type="button"
+						variant="ghost"
+						onClick={() => route("/fields-bg")}
+					>
+						Set or add your Fields
+					</Button>
 				</div>
 			</div>
 		</div>

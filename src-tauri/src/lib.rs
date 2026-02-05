@@ -45,10 +45,14 @@ pub fn run() {
 			,commands::supabase::set_supabase_config
 			,commands::ygoprodeck::fetch_ygoprodeck_card
 			,commands::cards::store_yugioh_card
+			,commands::cards::assign_yugioh_card_to_user
+			,commands::cards::get_cards_by_user_id
+			,commands::background::set_current_background
+			,commands::background::get_current_background
 			,commands::decks::load_deck_cards_from_ydk
 			,commands::decks::load_deck_cards_from_ydk_bytes
 			,commands::images::convert_image_to_webp
-			,commands::card_maker_images::store_card_maker_image
+			,commands::card_maker_images::store_card_maker_image			
 		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

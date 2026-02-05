@@ -6090,7 +6090,10 @@ name = "yu-gi-oh-home"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64 0.22.1",
  "image",
+ "jni",
+ "ndk-context",
  "reqwest",
  "serde",
  "serde_json",

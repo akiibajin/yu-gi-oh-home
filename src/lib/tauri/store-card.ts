@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { YugiohCardDraft } from "@/lib/types";
 import getAdminClient from "@/config/supabase";
+import { canInvokeTauri } from "./can-invoke-tauri";
 
 const SUPABASE_BUCKET = "images";
 
@@ -24,15 +25,8 @@ export type StoreYugiohCardRequest = {
 
 export type StoreYugiohCardResponse = {
 	id: string;
+	imgUrl?: string | null;
 };
-
-function canInvokeTauri() {
-	if (typeof window === "undefined") return false;
-	return Boolean(
-		(window as unknown as { __TAURI_INTERNALS__?: unknown })
-			.__TAURI_INTERNALS__,
-	);
-}
 
 function createId() {
 	if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -133,7 +127,19 @@ export async function storeYugiohCardDraft(
 		user_id: opts?.userId ?? null,
 	};
 
-	return invoke<StoreYugiohCardResponse>("store_yugioh_card", {
+	const res = await invoke<StoreYugiohCardResponse>("store_yugioh_card", {
 		card: payload,
+	});
+	return { ...res, imgUrl: imgUrl };
+}
+
+export async function assignYugiohCardToUser(opts: {
+	cardId: string;
+	userName: string;
+}): Promise<void | undefined> {
+	if (!canInvokeTauri()) return undefined;
+	await invoke<void>("assign_yugioh_card_to_user", {
+		cardId: opts.cardId,
+		userName: opts.userName,
 	});
 }

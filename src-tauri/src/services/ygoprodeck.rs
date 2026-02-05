@@ -4,13 +4,20 @@ const YGOPRODECK_CARDINFO_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo
 
 pub async fn fetch_cardinfo(
 	name: Option<String>,
+	fname: Option<String>,
 	id: Option<u64>,
 ) -> anyhow::Result<serde_json::Value> {
 	if name.as_ref().map(|s| s.trim().is_empty()).unwrap_or(false) {
 		return Err(anyhow::anyhow!("name cannot be empty"));
 	}
-	if name.is_none() && id.is_none() {
-		return Err(anyhow::anyhow!("provide name or id"));
+	if fname.as_ref().map(|s| s.trim().is_empty()).unwrap_or(false) {
+		return Err(anyhow::anyhow!("fname cannot be empty"));
+	}
+	if name.is_some() && fname.is_some() {
+		return Err(anyhow::anyhow!("provide either name (exact) or fname (inexact), not both"));
+	}
+	if name.is_none() && fname.is_none() && id.is_none() {
+		return Err(anyhow::anyhow!("provide name, fname, or id"));
 	}
 
 	let mut url = reqwest::Url::parse(YGOPRODECK_CARDINFO_URL)
@@ -19,6 +26,9 @@ pub async fn fetch_cardinfo(
 		let mut qp = url.query_pairs_mut();
 		if let Some(n) = name {
 			qp.append_pair("name", n.trim());
+		}
+		if let Some(n) = fname {
+			qp.append_pair("fname", n.trim());
 		}
 		if let Some(i) = id {
 			qp.append_pair("id", &i.to_string());

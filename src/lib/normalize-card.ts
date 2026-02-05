@@ -1,8 +1,10 @@
-import type { YugiohCardDB, YugiohCardDraft, YugiohMonsterType } from "./types";
+import type {
+	YugiohCardDB,
+	YugiohCardWithImgUrl,
+	YugiohMonsterType,
+} from "./types";
 
-const normalizeCard = (
-	card: YugiohCardDB,
-): Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string } => {
+const normalizeCard = (card: YugiohCardDB): YugiohCardWithImgUrl => {
 	return {
 		id: `${card.id}`,
 		name: card.name,
