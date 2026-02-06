@@ -1,6 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+	font-family: "Yu-Gi-Oh Matrix";
+	src: url("/assets/fonts/Yu-Gi-Oh!%20Matrix%20Regular%20Small%20Caps%201.ttf")
+		format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -123,4 +132,9 @@
 		padding: 0;
 		overflow-x: hidden;
 	}
+}
+
+.card-maker-form,
+.card-maker-preview {
+	font-family: "Yu-Gi-Oh Matrix", ui-sans-serif, system-ui, sans-serif;
 }

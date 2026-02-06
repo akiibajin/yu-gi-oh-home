@@ -3,13 +3,26 @@ import { SPELL_ICONS, TRAP_ICONS, YUGIOH_ATTRIBUTES } from "@/lib/constants";
 import getTypeCardBg from "@/lib/get-type-card-bg";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import star from "@/assets/images/card-templates/Duel2026estrella.png";
+import star from "@/assets/images/card-templates/star.webp";
+import rank from "@/assets/images/card-templates/rank.webp";
+import statsBar from "@/assets/images/card-templates/stats-bar.webp";
+import bottomCard from "@/assets/images/card-templates/bottom-card.webp";
+import { cn } from "@/lib/utils";
 
 export function CardPreview() {
 	const draft = cardDraftSignal.value;
 	const displayName = draft.name.trim() || "(Unnamed card)";
 	const isMonster = draft.cardType === "Monster";
-	const description = draft.description.trim() || "(No description yet)";
+	const isXyz = draft.monsterType?.includes("Xyz");
+	const isPendulum = draft.monsterType?.includes("Pendulum");
+	const pendulumDescription = (draft.pendulumDescription ?? "").trim();
+	const monsterDescription = draft.description.trim();
+	const description = useMemo(() => {
+		if (!isPendulum) return monsterDescription || "(No description yet)";
+		const monsterText = monsterDescription || "(No monster effect yet)";
+		if (!pendulumDescription) return monsterText;
+		return `[ Pendulum Effect ]\n${pendulumDescription}\n\n[ Monster Effect ]\n${monsterText}`;
+	}, [isPendulum, monsterDescription, pendulumDescription]);
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
 
 	const typeCardImg = getTypeCardBg(draft.monsterType ?? null, draft.cardType);
@@ -50,23 +63,31 @@ export function CardPreview() {
 		};
 	}, [draft.img]);
 	return (
-		<Card className="w-full">
+		<Card className="card-maker-preview w-full">
 			<CardHeader>
 				<CardTitle>Preview</CardTitle>
 			</CardHeader>
-			<CardContent className="min-h-65 space-y-3">
-				<div className="relative" id="card-preview">
+			<CardContent className="min-h-65 overflow-x-auto space-y-3">
+				<div className="relative w-92.5" id="card-preview">
 					<img src={typeCardImg.bg} alt={draft.name} className="relative z-1" />
-					<p className="absolute z-2 font-bold top-4.5 left-4.5 text-xl max-w-[75%] w-full truncate uppercase">
+					<p
+						className={cn(
+							"absolute z-2 font-bold top-4 left-5 text-3xl max-w-[75%] w-full truncate uppercase",
+							isXyz && "text-yellow-300",
+						)}
+					>
 						{displayName}
 					</p>
 					<img
 						src={iconImg ? iconImg : iconFallback}
-						className="absolute top-4.5 right-4.5 size-12.5 z-2 object-fill"
+						className={cn(
+							"absolute top-4.5 right-4.5 size-12 z-2",
+							!isMonster && "size-12.5 right-3.75",
+						)}
 						alt={`${draft.cardType} icon`}
 					/>
 					{imgUrl && (
-						<div className="absolute size-full max-w-82.5 max-h-84 top-13 left-1/2 -translate-x-1/2">
+						<div className="absolute size-full max-w-84 max-h-84 top-13.5 left-1/2 -translate-x-1/2">
 							<img
 								src={imgUrl}
 								alt={draft.name}
@@ -75,23 +96,46 @@ export function CardPreview() {
 						</div>
 					)}
 					{isMonster && (
-						<div className="absolute bottom-38.5 max-h-8 overflow-y-visible bg-black/60 w-full max-w-[88%] left-4.5 z-2 flex items-end">
+						<div
+							className={cn(
+								"absolute bottom-38 max-h-8 overflow-y-visible w-full max-w-[88%] left-4.5 z-2 flex items-end",
+								isPendulum ? "bottom-55" : "",
+							)}
+						>
+							<img
+								src={statsBar}
+								alt="stats bar"
+								className="size-full absolute opacity-80"
+							/>
 							<div className="relative min-w-12">
-								<img src={star} alt="Star" className="size-12 object-fill" />
-								<p className="absolute top-[40%] text-white text-shadow-[0px_0px_2px_black] left-1/2 -translate-x-1/2 -translate-y-[40%] font-extrabold text-3xl">
+								<img
+									src={isXyz ? rank : star}
+									alt="Star"
+									className="size-12 object-cover"
+								/>
+								<p
+									className={cn(
+										"absolute top-[40%] text-white text-shadow-[0px_0px_2px_black] left-1/2 -translate-x-1/2 -translate-y-[40%] font-extrabold text-3xl",
+									)}
+								>
 									{draft.stats.level}
 								</p>
 							</div>
-							<div className="w-full h-8 flex items-end justify-start">
-								<p className="text-white text-shadow-[0px_0px_2px_black] pl-4 font-bold text-xl">
+							<div className="w-full h-8 relative flex items-end justify-center">
+								<p className="text-white text-shadow-[0px_0px_2px_black] pl-4 font-bold text-3xl">
 									ATK {draft.stats.atk} / DEF {draft.stats.def}
 								</p>
 							</div>
 						</div>
 					)}
-					<div className="absolute z-2 bottom-0 left-0 w-full">
-						<img src={typeCardImg.bottom} alt={`${draft.name} bottom`} />
-						<p className="absolute -top-0.5 left-6 font-medium">
+					<div className="absolute top-0 z-2 w-full">
+						<img src={bottomCard} alt={`${draft.name} bottom`} />
+						<p
+							className={cn(
+								"absolute bottom-32.5 text-xl left-6 font-medium",
+								isXyz && "text-white",
+							)}
+						>
 							[{isMonster ? draft.subType : draft.cardType} |{" "}
 							{isMonster
 								? draft.isTuner
@@ -102,7 +146,7 @@ export function CardPreview() {
 									: draft.trapType}
 							]
 						</p>
-						<p className="absolute text-[10px] tracking-tight leading-3 top-6 left-7 max-w-[85%] max-h-[55%] size-full">
+						<p className="absolute text-sm tracking-tight leading-2.5 bottom-6 left-7 max-w-[85%] max-h-26.5 size-full whitespace-pre-line">
 							{description}
 						</p>
 					</div>

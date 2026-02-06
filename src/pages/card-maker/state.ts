@@ -5,6 +5,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 	return {
 		name: "",
 		cardType: "Monster",
+		pendulumDescription: "",
 		description: "",
 		attribute: "DARK",
 		monsterType: "Effect",

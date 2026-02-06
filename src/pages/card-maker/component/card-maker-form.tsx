@@ -30,9 +30,10 @@ import type {
 	YugiohSpellType,
 	YugiohTrapType,
 } from "@/lib/types";
+import { splitPendulumDescription } from "@/lib/split-pendulum-description";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
 import { Switch } from "@/components/ui/switch";
-import { storeYugiohCardDraft } from "@/lib/tauri/store-card";
+// import { storeYugiohCardDraft } from "@/lib/tauri/store-card";
 import { useState } from "preact/hooks";
 import { exportPreview } from "@/lib/export-card";
 
@@ -44,8 +45,9 @@ export function CardMakerForm() {
 	const draft = cardDraftSignal.value;
 	const isMonster = draft.cardType === "Monster";
 	const isFieldSpell = draft.cardType === "Field";
+	const isPendulum = isMonster && draft.monsterType?.includes("Pendulum");
 	const [saveStatus, setSaveStatus] = useState<string>("");
-	const [saving, setSaving] = useState(false);
+	// const [saving, setSaving] = useState(false);
 	const [exporting, setExporting] = useState(false);
 	const setDraftField = <K extends keyof YugiohCardDraft>(
 		key: K,
@@ -57,39 +59,54 @@ export function CardMakerForm() {
 		};
 	};
 
+	const maybeSplitPendulumText = (value: string) => {
+		if (!isPendulum) {
+			setDraftField("description", value);
+			return;
+		}
+		const split = splitPendulumDescription(value);
+		if (!split.didSplit) {
+			setDraftField("description", value);
+			return;
+		}
+		setDraftField("pendulumDescription", split.pendulumDescription);
+		setDraftField("description", split.monsterDescription);
+	};
+
 	const handleImageUpload = (file: File | null) => {
 		setDraftField("img", file);
 	};
 
-	const saveToDb = async () => {
-		if (!draft.name.trim()) {
-			setSaveStatus("Add a name before saving.");
-			return;
-		}
+	// const saveToDb = async () => {
+	// 	if (!draft.name.trim()) {
+	// 		setSaveStatus("Add a name before saving.");
+	// 		return;
+	// 	}
 
-		setSaving(true);
-		setSaveStatus("Saving...");
-		try {
-			// user is optional; omit for now
-			const res = await storeYugiohCardDraft(draft);
-			if (!res) {
-				setSaveStatus("Save only works in Tauri (not web mode).");
-				return;
-			}
-			setSaveStatus(`Saved (id: ${res.id}).`);
-		} catch (err) {
-			setSaveStatus(err instanceof Error ? err.message : "Failed to save.");
-		} finally {
-			setSaving(false);
-		}
-	};
+	// 	setSaving(true);
+	// 	setSaveStatus("Saving...");
+	// 	try {
+	// 		// user is optional; omit for now
+	// 		const res = await storeYugiohCardDraft(draft);
+	// 		if (!res) {
+	// 			setSaveStatus("Save only works in Tauri (not web mode).");
+	// 			return;
+	// 		}
+	// 		setSaveStatus(`Saved (id: ${res.id}).`);
+	// 	} catch (err) {
+	// 		setSaveStatus(err instanceof Error ? err.message : "Failed to save.");
+	// 	} finally {
+	// 		setSaving(false);
+	// 	}
+	// };
 
 	const onExport = async () => {
 		setExporting(true);
 		setSaveStatus("Exporting...");
 		try {
 			const res = await exportPreview(draft);
-			const shownPath = res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
+			const shownPath =
+				res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
 			setSaveStatus(`exported to: ${shownPath}`);
 		} catch (err) {
 			console.error(err);
@@ -379,15 +396,35 @@ export function CardMakerForm() {
 					</fieldset>
 				) : null}
 
+				{isPendulum ? (
+					<div className="space-y-2">
+						<label
+							className="text-sm font-medium"
+							htmlFor="cm-pendulum-description"
+						>
+							Pendulum Effect
+						</label>
+						<Textarea
+							id="cm-pendulum-description"
+							value={draft.pendulumDescription ?? ""}
+							onInput={(e) => maybeSplitPendulumText(e.currentTarget.value)}
+							placeholder="Pendulum effect text..."
+							rows={4}
+						/>
+					</div>
+				) : null}
+
 				<div className="space-y-2">
 					<label className="text-sm font-medium" htmlFor="cm-description">
-						Description
+						{isPendulum ? "Monster Effect" : "Description"}
 					</label>
 					<Textarea
 						id="cm-description"
 						value={draft.description}
-						onInput={(e) => setDraftField("description", e.currentTarget.value)}
-						placeholder="Card effect text..."
+						onInput={(e) => maybeSplitPendulumText(e.currentTarget.value)}
+						placeholder={
+							isPendulum ? "Monster effect text..." : "Card effect text..."
+						}
 						rows={5}
 					/>
 				</div>
@@ -395,9 +432,6 @@ export function CardMakerForm() {
 				<div className="flex items-center justify-end gap-2">
 					<Button type="button" variant="outline" onClick={resetCardDraft}>
 						Reset
-					</Button>
-					<Button type="button" onClick={saveToDb} disabled={saving}>
-						{saving ? "Saving..." : "Save to DB"}
 					</Button>
 					<Button type="button" onClick={onExport} disabled={exporting}>
 						{exporting ? "Exporting..." : "Export"}

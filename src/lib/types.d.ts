@@ -84,6 +84,11 @@ export interface YugiohMonsterStats {
 export interface YugiohCardDraft {
 	name: string;
 	cardType: YugiohCardType;
+	/**
+	 * For Pendulum monsters: the Pendulum effect text (separate from the Monster effect).
+	 * Non-Pendulum cards can leave this empty.
+	 */
+	pendulumDescription?: string;
 	description: string;
 	attribute: YugiohCardAttribute;
 	monsterType?: YugiohMonsterType;
