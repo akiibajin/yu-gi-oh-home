@@ -42,6 +42,7 @@ import continuousSpellIcon from "../assets/images/card-templates/Continue.webp";
 import equipSpellIcon from "../assets/images/card-templates/equip.webp";
 import quickPlaySpellIcon from "../assets/images/card-templates/Quik play.webp";
 import ritualSpellIcon from "../assets/images/card-templates/Ritual.webp";
+import fieldSpellIcon from "@/assets/images/card-templates/Field-Spell.webp"
 import counter from "../assets/images/card-templates/Counter.webp";
 
 export type NavItem = {
@@ -88,6 +89,7 @@ export const SPELL_ICONS = {
 	"Quick-Play": quickPlaySpellIcon,
 	Ritual: ritualSpellIcon,
 };
+export const FIELD_SPELL_ICON = fieldSpellIcon;
 export const TRAP_ICONS = {
 	Counter: counter,
 	Normal: normalSpellIcon,

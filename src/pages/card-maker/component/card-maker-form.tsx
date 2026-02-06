@@ -22,6 +22,7 @@ import {
 	TRAP_ICONS,
 } from "@/lib/constants";
 import type {
+	LinkMarker,
 	MonsterType,
 	YugiohCardAttribute,
 	YugiohCardDraft,
@@ -46,6 +47,7 @@ export function CardMakerForm() {
 	const isMonster = draft.cardType === "Monster";
 	const isFieldSpell = draft.cardType === "Field";
 	const isPendulum = isMonster && draft.monsterType?.includes("Pendulum");
+	const isLink = isMonster && draft.monsterType?.includes("Link");
 	const [saveStatus, setSaveStatus] = useState<string>("");
 	// const [saving, setSaving] = useState(false);
 	const [exporting, setExporting] = useState(false);
@@ -59,18 +61,41 @@ export function CardMakerForm() {
 		};
 	};
 
-	const maybeSplitPendulumText = (value: string) => {
-		if (!isPendulum) {
-			setDraftField("description", value);
-			return;
-		}
+	const applySplitIfPresent = (value: string) => {
+		if (!isPendulum) return false;
 		const split = splitPendulumDescription(value);
-		if (!split.didSplit) {
-			setDraftField("description", value);
-			return;
-		}
+		if (!split.didSplit) return false;
 		setDraftField("pendulumDescription", split.pendulumDescription);
 		setDraftField("description", split.monsterDescription);
+		return true;
+	};
+
+	const onPendulumEffectInput = (value: string) => {
+		if (applySplitIfPresent(value)) return;
+		setDraftField("pendulumDescription", value);
+	};
+
+	const onMonsterEffectInput = (value: string) => {
+		if (applySplitIfPresent(value)) return;
+		setDraftField("description", value);
+	};
+
+	const LINK_MARKERS: LinkMarker[] = [
+		"Top-left",
+		"Top",
+		"Top-right",
+		"Left",
+		"Right",
+		"Bottom-left",
+		"Bottom",
+		"Bottom-right",
+	];
+
+	const toggleLinkMarker = (marker: LinkMarker, checked: boolean) => {
+		const current = new Set<LinkMarker>(draft.linkMarkers ?? []);
+		if (checked) current.add(marker);
+		else current.delete(marker);
+		setDraftField("linkMarkers", Array.from(current));
 	};
 
 	const handleImageUpload = (file: File | null) => {
@@ -318,30 +343,32 @@ export function CardMakerForm() {
 						</div>
 
 						<div className="grid gap-4 md:grid-cols-3">
-							<div className="space-y-2">
-								<label className="text-sm font-medium" htmlFor="cm-level">
-									Stars (Level)
-								</label>
-								<Input
-									id="cm-level"
-									type="number"
-									min={1}
-									max={YUGIOH_MAX_STARS}
-									value={String(draft.stats.level)}
-									onInput={(e) => {
-										const parsed = Number.parseInt(e.currentTarget.value, 10);
-										cardDraftSignal.value = {
-											...cardDraftSignal.value,
-											stats: {
-												...cardDraftSignal.value.stats,
-												level: Number.isFinite(parsed)
-													? clampInt(parsed, 1, YUGIOH_MAX_STARS)
-													: 1,
-											},
-										};
-									}}
-								/>
-							</div>
+							{!isLink ? (
+								<div className="space-y-2">
+									<label className="text-sm font-medium" htmlFor="cm-level">
+										Stars (Level)
+									</label>
+									<Input
+										id="cm-level"
+										type="number"
+										min={1}
+										max={YUGIOH_MAX_STARS}
+										value={String(draft.stats.level)}
+										onInput={(e) => {
+											const parsed = Number.parseInt(e.currentTarget.value, 10);
+											cardDraftSignal.value = {
+												...cardDraftSignal.value,
+												stats: {
+													...cardDraftSignal.value.stats,
+													level: Number.isFinite(parsed)
+														? clampInt(parsed, 1, YUGIOH_MAX_STARS)
+														: 1,
+												},
+											};
+										}}
+									/>
+								</div>
+							) : null}
 
 							<div className="space-y-2">
 								<label className="text-sm font-medium" htmlFor="cm-atk">
@@ -368,30 +395,76 @@ export function CardMakerForm() {
 								/>
 							</div>
 
+							{!isLink ? (
+								<div className="space-y-2">
+									<label className="text-sm font-medium" htmlFor="cm-def">
+										DEF
+									</label>
+									<Input
+										id="cm-def"
+										type="number"
+										min={0}
+										max={YUGIOH_MAX_STAT}
+										value={String(draft.stats.def)}
+										onInput={(e) => {
+											const parsed = Number.parseInt(e.currentTarget.value, 10);
+											cardDraftSignal.value = {
+												...cardDraftSignal.value,
+												stats: {
+													...cardDraftSignal.value.stats,
+													def: Number.isFinite(parsed)
+														? clampInt(parsed, 0, YUGIOH_MAX_STAT)
+														: 0,
+												},
+											};
+										}}
+									/>
+								</div>
+							) : null}
+						</div>
+					</fieldset>
+				) : null}
+
+				{isMonster && isLink ? (
+					<fieldset className="space-y-4 rounded-md border p-4">
+						<legend className="px-1 text-sm font-medium">Link Markers</legend>
+						<div className="grid gap-4 md:grid-cols-2">
 							<div className="space-y-2">
-								<label className="text-sm font-medium" htmlFor="cm-def">
-									DEF
+								<label className="text-sm font-medium" htmlFor="cm-link-rating">
+									Link Rating
 								</label>
 								<Input
-									id="cm-def"
+									id="cm-link-rating"
 									type="number"
-									min={0}
-									max={YUGIOH_MAX_STAT}
-									value={String(draft.stats.def)}
+									min={1}
+									max={8}
+									value={String(draft.linkRating ?? 1)}
 									onInput={(e) => {
 										const parsed = Number.parseInt(e.currentTarget.value, 10);
-										cardDraftSignal.value = {
-											...cardDraftSignal.value,
-											stats: {
-												...cardDraftSignal.value.stats,
-												def: Number.isFinite(parsed)
-													? clampInt(parsed, 0, YUGIOH_MAX_STAT)
-													: 0,
-											},
-										};
+										const next = Number.isFinite(parsed)
+											? clampInt(parsed, 1, 8)
+											: 1;
+										setDraftField("linkRating", next);
 									}}
 								/>
 							</div>
+						</div>
+
+						<div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+							{LINK_MARKERS.map((marker) => {
+								const checked = (draft.linkMarkers ?? []).includes(marker);
+								return (
+									<div key={marker} className="flex items-center gap-2">
+										<Switch
+											checked={checked}
+											onCheckedChange={(v: boolean) =>
+												toggleLinkMarker(marker, v)
+											}
+										/>
+										<span className="text-sm">{marker}</span>
+									</div>
+								);
+							})}
 						</div>
 					</fieldset>
 				) : null}
@@ -407,7 +480,7 @@ export function CardMakerForm() {
 						<Textarea
 							id="cm-pendulum-description"
 							value={draft.pendulumDescription ?? ""}
-							onInput={(e) => maybeSplitPendulumText(e.currentTarget.value)}
+							onInput={(e) => onPendulumEffectInput(e.currentTarget.value)}
 							placeholder="Pendulum effect text..."
 							rows={4}
 						/>
@@ -421,7 +494,7 @@ export function CardMakerForm() {
 					<Textarea
 						id="cm-description"
 						value={draft.description}
-						onInput={(e) => maybeSplitPendulumText(e.currentTarget.value)}
+						onInput={(e) => onMonsterEffectInput(e.currentTarget.value)}
 						placeholder={
 							isPendulum ? "Monster effect text..." : "Card effect text..."
 						}

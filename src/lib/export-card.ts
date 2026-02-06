@@ -2,7 +2,10 @@ import { toCanvas } from "html-to-image";
 import type { YugiohCardDraft } from "./types";
 import { storeCardMakerWebpById } from "./tauri/card-maker-images";
 
-export const exportPreview = async (draft: YugiohCardDraft) => {
+export const exportPreview = async (
+	draft: YugiohCardDraft,
+	opts?: { id?: string },
+) => {
 	const node = document.getElementById("card-preview");
 	if (!node) {
 		throw new Error("Could not find #card-preview.");
@@ -25,7 +28,7 @@ export const exportPreview = async (draft: YugiohCardDraft) => {
 		);
 	});
 
-	const id = draft.name.trim() || `card-${Date.now()}`;
+	const id = opts?.id?.trim() || draft.name.trim() || `card-${Date.now()}`;
 	const res = await storeCardMakerWebpById(id, webpBlob);
 	if (!res) {
 		throw new Error("Export only works in Tauri (not web mode).");

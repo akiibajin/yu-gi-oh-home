@@ -13,6 +13,7 @@ import PendulumSynchroMonsterCard from "@/assets/images/card-templates/Pendulum 
 import PendulumXyzMonsterCard from "@/assets/images/card-templates/pendulum xyz.webp";
 import SpellCard from "@/assets/images/card-templates/Spell.webp";
 import TrapCard from "@/assets/images/card-templates/Trap.webp";
+import FieldCard from "@/assets/images/card-templates/Field.webp";
 import type { YugiohCardType, YugiohMonsterType } from "./types";
 
 const getTypeCardBg = (
@@ -20,9 +21,12 @@ const getTypeCardBg = (
 	card: YugiohCardType,
 ): { bg: string } => {
 	if (card === "Monster") {
+		console.log({ type, card });
 		const types: Record<YugiohMonsterType, { bg: string }> = {
 			Normal: { bg: NormalMonsterCard },
 			Effect: { bg: EffectMonsterCard },
+			Spirit: { bg: EffectMonsterCard },
+			Gemini: { bg: EffectMonsterCard },
 			Ritual: { bg: RitualMonster },
 			Fusion: { bg: FusionMonsterCard },
 			Synchro: { bg: SynchroMonsterCard },
@@ -55,6 +59,9 @@ const getTypeCardBg = (
 	}
 	if (card === "Trap") {
 		return { bg: TrapCard };
+	}
+	if (card === "Field") {
+		return { bg: FieldCard };
 	}
 	return { bg: EffectMonsterCard };
 };

@@ -1,5 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SPELL_ICONS, TRAP_ICONS, YUGIOH_ATTRIBUTES } from "@/lib/constants";
+import {
+	FIELD_SPELL_ICON,
+	SPELL_ICONS,
+	TRAP_ICONS,
+	YUGIOH_ATTRIBUTES,
+} from "@/lib/constants";
 import getTypeCardBg from "@/lib/get-type-card-bg";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useState } from "preact/hooks";
@@ -8,21 +13,17 @@ import rank from "@/assets/images/card-templates/rank.webp";
 import statsBar from "@/assets/images/card-templates/stats-bar.webp";
 import bottomCard from "@/assets/images/card-templates/bottom-card.webp";
 import { cn } from "@/lib/utils";
+import RankImage from "@/pages/card-maker/component/rank-image";
 
 export function CardPreview() {
 	const draft = cardDraftSignal.value;
 	const displayName = draft.name.trim() || "(Unnamed card)";
 	const isMonster = draft.cardType === "Monster";
 	const isXyz = draft.monsterType?.includes("Xyz");
+	const isLink = draft.monsterType?.includes("Link");
 	const isPendulum = draft.monsterType?.includes("Pendulum");
 	const pendulumDescription = (draft.pendulumDescription ?? "").trim();
 	const monsterDescription = draft.description.trim();
-	const description = useMemo(() => {
-		if (!isPendulum) return monsterDescription || "(No description yet)";
-		const monsterText = monsterDescription || "(No monster effect yet)";
-		if (!pendulumDescription) return monsterText;
-		return `[ Pendulum Effect ]\n${pendulumDescription}\n\n[ Monster Effect ]\n${monsterText}`;
-	}, [isPendulum, monsterDescription, pendulumDescription]);
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
 
 	const typeCardImg = getTypeCardBg(draft.monsterType ?? null, draft.cardType);
@@ -32,6 +33,9 @@ export function CardPreview() {
 		}
 		if (draft.cardType === "Trap") {
 			return TRAP_ICONS[draft.trapType as keyof typeof TRAP_ICONS];
+		}
+		if (draft.cardType === "Field") {
+			return FIELD_SPELL_ICON;
 		}
 		return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)
 			?.img;
@@ -108,46 +112,74 @@ export function CardPreview() {
 								className="size-full absolute opacity-80"
 							/>
 							<div className="relative min-w-12">
-								<img
-									src={isXyz ? rank : star}
-									alt="Star"
-									className="size-12 object-cover"
-								/>
-								<p
-									className={cn(
-										"absolute top-[40%] text-white text-shadow-[0px_0px_2px_black] left-1/2 -translate-x-1/2 -translate-y-[40%] font-extrabold text-3xl",
-									)}
-								>
-									{draft.stats.level}
-								</p>
+								{isLink ? (
+									<RankImage card={draft} option="A" />
+								) : (
+									<>
+										<img
+											src={isXyz ? rank : star}
+											alt="Star"
+											className="size-12 object-cover"
+										/>
+										<p
+											className={cn(
+												"absolute top-[40%] text-white text-shadow-[0px_0px_2px_black] left-1/2 -translate-x-1/2 -translate-y-[40%] font-extrabold text-3xl",
+											)}
+										>
+											{draft.stats.level}
+										</p>
+									</>
+								)}
 							</div>
 							<div className="w-full h-8 relative flex items-end justify-center">
 								<p className="text-white text-shadow-[0px_0px_2px_black] pl-4 font-bold text-3xl">
-									ATK {draft.stats.atk} / DEF {draft.stats.def}
+									{isLink
+										? `ATK ${draft.stats.atk}`
+										: `ATK ${draft.stats.atk} / DEF ${draft.stats.def}`}
 								</p>
 							</div>
 						</div>
 					)}
-					<div className="absolute top-0 z-2 w-full">
-						<img src={bottomCard} alt={`${draft.name} bottom`} />
+					<div className="absolute top-0 z-2 size-full">
+						{!isPendulum && (
+							<img src={bottomCard} alt={`${draft.name} bottom`} />
+						)}
+						{isPendulum && (
+							<p className="absolute bottom-37 left-6.5 text-sm tracking-tight leading-2.5 max-w-[85%] max-h-17 size-full whitespace-pre-line">
+								{pendulumDescription}
+							</p>
+						)}
 						<p
 							className={cn(
 								"absolute bottom-32.5 text-xl left-6 font-medium",
-								isXyz && "text-white",
+								isXyz && !isPendulum && "text-white",
+								isPendulum && "bottom-26.75 left-18 text-lg",
 							)}
 						>
-							[{isMonster ? draft.subType : draft.cardType} |{" "}
+							[
+							{isMonster ? (draft.subType ? `${draft.subType}|` : "") : draft.cardType}
 							{isMonster
 								? draft.isTuner
 									? `${draft.monsterType} | Tuner`
 									: draft.monsterType
 								: draft.cardType === "Spell"
 									? draft.spellType
-									: draft.trapType}
+										? ` | ${draft.spellType}`
+										: ""
+								: draft.cardType === "Trap"
+									? draft.trapType
+										? ` | ${draft.trapType}`
+										: ""
+								: ""}
 							]
 						</p>
-						<p className="absolute text-sm tracking-tight leading-2.5 bottom-6 left-7 max-w-[85%] max-h-26.5 size-full whitespace-pre-line">
-							{description}
+						<p
+							className={cn(
+								"absolute text-sm tracking-tight leading-2.5 bottom-6 left-7 max-w-[85%] max-h-26.5 size-full whitespace-pre-line",
+								isPendulum && "max-h-18 bottom-6",
+							)}
+						>
+							{monsterDescription}
 						</p>
 					</div>
 				</div>
