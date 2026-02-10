@@ -79,6 +79,29 @@ function Home() {
 						Set or add your Fields
 					</Button>
 				</div>
+
+				<Card>
+					<CardHeader>
+						<CardTitle>Multiplayer Lobby</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						<p className="text-sm text-muted-foreground">
+							Create or join a lobby to track life points together in real-time
+						</p>
+						<div className="flex flex-wrap gap-2">
+							<Button type="button" onClick={() => route("/lobby/create")}>
+								Create Lobby
+							</Button>
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => route("/lobby/join")}
+							>
+								Join Lobby
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);

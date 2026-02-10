@@ -52,7 +52,7 @@ pub fn run() {
 			,commands::decks::load_deck_cards_from_ydk
 			,commands::decks::load_deck_cards_from_ydk_bytes
 			,commands::images::convert_image_to_webp
-			,commands::card_maker_images::store_card_maker_image			
+		,commands::card_maker_images::store_card_maker_image		
 		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

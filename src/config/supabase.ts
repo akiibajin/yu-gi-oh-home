@@ -1,14 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdminUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+const supabasePublicKey = import.meta.env.VITE_SUPABASE_PUBLIC_KEY;
 
 const getAdminClient = async () => {
-	if (!supabaseAdminUrl || !supabaseServiceKey) {
+	if (!supabaseAdminUrl || !supabasePublicKey) {
 		throw new Error("Missing Supabase environment variables");
 	}
 	try {
-		const adminClient = createClient(supabaseAdminUrl, supabaseServiceKey, {
+		const adminClient = createClient(supabaseAdminUrl, supabasePublicKey, {
 			auth: { autoRefreshToken: false, persistSession: false },
 		});
 		if (!adminClient) {

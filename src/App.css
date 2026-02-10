@@ -138,3 +138,19 @@
 .card-maker-preview {
 	font-family: "Yu-Gi-Oh Matrix", ui-sans-serif, system-ui, sans-serif;
 }
+
+@keyframes emergency-pulse {
+	0%, 100% {
+		box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+	}
+	25% {
+		box-shadow: 0 0 30px 10px rgba(239, 68, 68, 0.8);
+	}
+	50% {
+		box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+	}
+}
+
+.emergency-animation {
+	animation: emergency-pulse 1.5s ease-in-out infinite;
+}

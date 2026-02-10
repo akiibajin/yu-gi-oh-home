@@ -8,6 +8,7 @@ export type LifePointsCounterProps = {
 	size?: number;
 	strokeWidth?: number;
 	className?: string;
+	isEmergency?: boolean;
 	label?: string;
 };
 
@@ -39,6 +40,7 @@ export function LifePointsCounter({
 	max,
 	size = 88,
 	strokeWidth = 14,
+	isEmergency = false,
 	className,
 	label = "Life points",
 }: LifePointsCounterProps) {
@@ -88,13 +90,12 @@ export function LifePointsCounter({
 			role="img"
 			aria-label={ringLabel}
 		>
-			<div className="pointer-events-none rounded-full bg-black absolute inset-0 flex flex-col items-center justify-center gap-1 ">
+			<div
+				className={`pointer-events-none rounded-full bg-black absolute inset-0 flex flex-col items-center justify-center gap-1 ${isEmergency ? "emergency-animation" : ""}`}
+			>
 				<div className="text-center text-white leading-none">
-					<div className="text-3xl md:text-6xl font-bold tabular-nums">
+					<div className="text-3xl md:text-4xl font-bold tabular-nums">
 						{clamped.toLocaleString()}
-					</div>
-					<div className="text-white text-base tabular-nums">
-						/{safeMax.toLocaleString()}
 					</div>
 				</div>
 				<CircleGaugeIcon size={24} className="text-white" />

@@ -6,7 +6,6 @@ import {
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
-	InputGroupText,
 } from "@/components/ui/input-group";
 import { MinusIcon, PlusIcon, RotateCcwIcon } from "lucide-react";
 import { useState } from "preact/hooks";
@@ -49,28 +48,42 @@ function PlayerLifePointsCard({
 	const halveLp = () => {
 		onLifePointsChange(Math.floor(clamped / 2));
 	};
+	const isEliminated = clamped === 0;
+	const isEmergency = clamped > 0 && clamped <= 2000;
 
 	return (
-		<Card className="bg-transparent h-fit">
-			<CardHeader className="space-y-1">
-				<div className="flex items-center justify-between gap-3">
-					<CardTitle className="min-w-0 flex-1 truncate">
-						<img src={playerImage} alt={player.name} />
+		<Card
+			className={`bg-transparent h-fit max-w-95 ${
+				isEliminated ? "opacity-60 grayscale" : ""
+			}`}
+		>
+			<CardHeader className="space-y-1 p-3">
+				<div className="flex items-center justify-between gap-2">
+					<CardTitle className="min-w-0 truncate">
+						<img
+							src={playerImage}
+							alt={player.name}
+							className={`size-35 object-contain ${
+								isEmergency ? "emergency-animation" : ""
+							}`}
+						/>
 					</CardTitle>
-					<LifePointsCounter
-						strokeWidth={isMobile ? 15 : 25}
-						size={isMobile ? 150 : 250}
-						value={clamped}
-						max={max}
-					/>
+					<div>
+						<LifePointsCounter
+							strokeWidth={isMobile ? 12 : 18}
+							size={isMobile ? 120 : 150}
+							value={clamped}
+							isEmergency={isEmergency}
+							max={max}
+						/>
+					</div>
 				</div>
 			</CardHeader>
-			<CardContent className="space-y-3">
+			<CardContent className="space-y-2 p-3 pt-0">
 				<div className="flex items-center gap-2">
-					<div className="flex-1">
-						<InputGroup className="bg-white">
+					<div className="">
+						<InputGroup className="bg-white w-40">
 							<InputGroupAddon align="inline-start">
-								<InputGroupText className="hidden md:block">LP</InputGroupText>
 								<InputGroupButton
 									aria-label={`plus life points`}
 									onClick={() => decreaseLifePoints()}
@@ -89,7 +102,6 @@ function PlayerLifePointsCard({
 							/>
 
 							<InputGroupAddon align="inline-end">
-								<InputGroupText className="hidden md:block">LP</InputGroupText>
 								<InputGroupButton
 									aria-label={`plus life points`}
 									onClick={() => inCreaseLifePoints()}
@@ -125,7 +137,7 @@ export function PlayerLifePointsCards({
 	step,
 }: PlayerLifePointsCardsProps) {
 	return (
-		<div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap gap-4">
+		<div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4">
 			{players.map((player) => (
 				<PlayerLifePointsCard
 					key={player.id}

@@ -7,7 +7,3 @@ pub mod greet;
 pub mod supabase;
 pub mod ygoprodeck;
 pub mod background;
-
-pub use db::{db_healthcheck, set_database_url};
-pub use greet::greet;
-pub use ygoprodeck::fetch_ygoprodeck_card;

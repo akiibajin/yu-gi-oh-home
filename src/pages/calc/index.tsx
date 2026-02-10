@@ -80,7 +80,7 @@ function Calc() {
 		return () => clearInterval(interval);
 	}, [currentBackground?.name]);
 	return (
-		<div className="relative size-full flex flex-col flex-1">
+		<div className="relative size-full flex flex-1">
 			{currentBackground ? (
 				<img
 					src={currentBackground.img_url}
@@ -88,19 +88,6 @@ function Calc() {
 					className="fixed inset-0 w-full h-full object-cover  pointer-events-none select-none opacity-80"
 				/>
 			) : null}
-			<Card className="hidden md:flex mb-4 relative bg-transparent z-10">
-				<CardHeader>
-					<CardTitle>Calculator</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className="text-xl font-semibold">
-						Player with highest life points: {highestLpPlayer?.name ?? "N/A"}
-					</p>
-					<div className="text-sm">
-						Players: {Number.isFinite(num) ? num : "Invalid"}
-					</div>
-				</CardContent>
-			</Card>
 			{isValidNum ? (
 				<PlayerLifePointsCards
 					players={players}
