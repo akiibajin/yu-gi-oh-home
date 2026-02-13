@@ -48,8 +48,9 @@ export default function JoinLobby() {
 			);
 
 			if (result) {
-				// Navigate to guest control with player data
-				route(`/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`);
+				const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;
+				console.log("Navigating to:", url);
+				route(url);
 			} else {
 				setError(
 					"Lobby not found or is no longer active. Please check the code.",
@@ -69,17 +70,17 @@ export default function JoinLobby() {
 	};
 
 	return (
-		<div class="flex items-center justify-center min-h-screen p-4">
-			<Card class="w-full max-w-md">
+		<div className="flex items-center justify-center min-h-screen p-4">
+			<Card className="w-full max-w-md">
 				<CardHeader>
 					<CardTitle>Join a Lobby</CardTitle>
 					<CardDescription>
 						Enter the lobby code to join an existing session
 					</CardDescription>
 				</CardHeader>
-				<CardContent class="space-y-4">
+				<CardContent className="space-y-4">
 					<div>
-						<label class="text-sm font-medium" for="playerName">
+						<label className="text-sm font-medium" for="playerName">
 							Your Name
 						</label>
 						<Input
@@ -95,10 +96,10 @@ export default function JoinLobby() {
 					</div>
 
 					<div>
-						<label class="text-sm font-medium" for="lobbyCode">
+						<label className="text-sm font-medium" for="lobbyCode">
 							Lobby Code
 						</label>
-						<div class="flex gap-2">
+						<div className="flex gap-2">
 							<Input
 								id="lobbyCode"
 								type="text"
@@ -115,7 +116,7 @@ export default function JoinLobby() {
 								}}
 								maxLength={6}
 								disabled={loading}
-								class="uppercase flex-1"
+								className="uppercase flex-1"
 							/>
 							<Button
 								variant="outline"
@@ -124,7 +125,7 @@ export default function JoinLobby() {
 								disabled={loading}
 								type="button"
 							>
-								<QrCodeIcon class="h-4 w-4" />
+								<QrCodeIcon className="h-4 w-4" />
 							</Button>
 						</div>
 					</div>
@@ -134,20 +135,22 @@ export default function JoinLobby() {
 						onSelectAvatar={setSelectedAvatar}
 					/>
 
-					{error && <div class="text-sm text-red-500">{error}</div>}
+					{error && <div className="text-sm text-red-500">{error}</div>}
 
 					<Button
 						onClick={handleJoinLobby}
 						disabled={loading || !playerName.trim() || !lobbyCode.trim()}
-						class="w-full"
+						className="w-full"
 					>
 						{loading ? "Joining..." : "Join Lobby"}
 					</Button>
 
 					<Button
 						variant="outline"
-						onClick={() => route("/lobby/create")}
-						class="w-full"
+						onClick={() => {
+							route("/lobby/create");
+						}}
+						className="w-full"
 					>
 						Create New Lobby Instead
 					</Button>

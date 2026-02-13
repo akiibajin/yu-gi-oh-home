@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PLAYERS_NAMES, ROYAL_LP, TAG_LP } from "@/lib/constants";
 import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
 import { getCurrentBackground } from "@/lib/tauri/background";
@@ -59,12 +58,6 @@ function Calc() {
 		route(`/calc/${num}/setup`, true);
 	}, [isValidNum, isSetupComplete, num, route]);
 
-	const highestLpPlayer = useMemo(() => {
-		return players.reduce<PlayerLifePoints | undefined>((best, current) => {
-			if (!best) return current;
-			return current.lifePoints > best.lifePoints ? current : best;
-		}, undefined);
-	}, [players]);
 	useEffect(() => {
 		initDuelSfx();
 	}, []);

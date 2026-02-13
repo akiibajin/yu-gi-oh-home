@@ -20,8 +20,8 @@ export function AvatarSelector({
 
 	return (
 		<div>
-			<p class="text-sm font-medium mb-2 block">Choose Your Avatar</p>
-			<div class="grid grid-cols-3 gap-3">
+			<p className="text-sm font-medium mb-2 block">Choose Your Avatar</p>
+			<div className="grid grid-cols-3 gap-3">
 				{avatars.map((avatar) => (
 					<button
 						key={avatar.name}
@@ -36,13 +36,13 @@ export function AvatarSelector({
 						<img
 							src={avatar.image}
 							alt={avatar.name}
-							class="w-full h-auto object-contain"
+							className="w-full h-auto object-contain"
 						/>
-						<div class="text-xs text-center mt-1 font-medium">
+						<div className="text-xs text-center mt-1 font-medium">
 							{avatar.name}
 						</div>
 						{selectedAvatar === avatar.image && (
-							<div class="absolute top-1 right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+							<div className="absolute top-1 right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
 								✓
 							</div>
 						)}

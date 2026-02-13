@@ -64,18 +64,10 @@ function Home() {
 					<Button type="button" onClick={() => route("/calc")}>
 						Go to Calculator
 					</Button>
-					<Button
-						type="button"
-						variant="outline"
-						onClick={() => route("/card-maker")}
-					>
+					<Button type="button" onClick={() => route("/card-maker")}>
 						Go to Card Maker
 					</Button>
-					<Button
-						type="button"
-						variant="ghost"
-						onClick={() => route("/fields-bg")}
-					>
+					<Button type="button" onClick={() => route("/fields-bg")}>
 						Set or add your Fields
 					</Button>
 				</div>
@@ -92,11 +84,7 @@ function Home() {
 							<Button type="button" onClick={() => route("/lobby/create")}>
 								Create Lobby
 							</Button>
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() => route("/lobby/join")}
-							>
+							<Button type="button" onClick={() => route("/lobby/join")}>
 								Join Lobby
 							</Button>
 						</div>

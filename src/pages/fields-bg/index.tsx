@@ -68,7 +68,10 @@ function FieldsBgPage() {
 				setIsLoadingCardsUser(true);
 				const cards = await getCardsByUserId(currentUser);
 				const normalizedCards = cards.map(normalizeCard);
-				setUserCards(normalizedCards);
+				const fieldsCards = normalizedCards.filter(
+					(card) => card.cardType === "Field",
+				);
+				setUserCards(fieldsCards);
 			} finally {
 				setIsLoadingCardsUser(false);
 			}
@@ -84,7 +87,6 @@ function FieldsBgPage() {
 		};
 		init();
 	}, []);
-	console.log({ currentBackground });
 	return (
 		<div className="flex-1 flex flex-col size-full">
 			<Card>
@@ -107,7 +109,7 @@ function FieldsBgPage() {
 						</div>
 					)}
 					<div className="flex flex-col gap-2 mt-4 w-full">
-						<label htmlFor="user-select" class="block font-medium">
+						<label htmlFor="user-select" className="block font-medium">
 							<span>User ID: *</span>
 						</label>
 						<Select value={currentUser} onValueChange={setCurrentUser}>
@@ -135,16 +137,16 @@ function FieldsBgPage() {
 									<Button
 										variant={selectedCard?.id === card.id ? "default" : "ghost"}
 										key={card.id}
-										className="h-fit!"
+										className="h-fit! flex-col"
 										onClick={() => setSelectedCard(card)}
 									>
 										<img
 											key={card.id}
 											src={card.imgUrl}
 											alt={card.name || "Yugioh Card"}
-											className="w-full max-w-10 h-auto rounded shadow"
+											className="w-full max-w-15 h-auto rounded shadow"
 										/>
-										{card.name}
+										<span className="max-w-15 truncate">{card.name}</span>
 									</Button>
 								))}
 							</div>

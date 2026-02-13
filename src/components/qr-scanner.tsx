@@ -79,20 +79,20 @@ export function QRScanner({ onScan, onClose }: QRScannerProps) {
 	};
 
 	return (
-		<div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-			<Card class="w-full max-w-md">
+		<div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+			<Card className="w-full max-w-md">
 				<CardHeader>
 					<CardTitle>Scan QR Code</CardTitle>
 					<CardDescription>
 						Point your camera at the QR code displayed on the host's screen
 					</CardDescription>
 				</CardHeader>
-				<CardContent class="space-y-4">
-					<div id="qr-reader" class="w-full" />
+				<CardContent className="space-y-4">
+					<div id="qr-reader" className="w-full" />
 
-					{error && <div class="text-sm text-red-500">{error}</div>}
+					{error && <div className="text-sm text-red-500">{error}</div>}
 
-					<Button variant="outline" onClick={handleClose} class="w-full">
+					<Button variant="outline" onClick={handleClose} className="w-full">
 						Cancel
 					</Button>
 				</CardContent>

@@ -20,6 +20,28 @@ export interface LobbyPlayer {
 	updated_at: string;
 }
 
+// Get all active lobbies
+export async function getActiveLobbies(): Promise<Lobby[]> {
+	try {
+		const client = await getAdminClient();
+		const { data, error } = await client
+			.from("lobbies")
+			.select()
+			.eq("is_active", true)
+			.order("created_at", { ascending: false });
+
+		if (error) {
+			console.error("Error fetching active lobbies:", error);
+			return [];
+		}
+
+		return data || [];
+	} catch (error) {
+		console.error("Error in getActiveLobbies:", error);
+		return [];
+	}
+}
+
 // Generate a random 6-character lobby code
 function generateLobbyCode(): string {
 	const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
