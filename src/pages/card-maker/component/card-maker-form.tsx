@@ -1,7 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/warcraftcn/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
+import { Input } from "@/components/ui/warcraftcn/input";
+import { Textarea } from "@/components/ui/warcraftcn/textarea";
 import {
 	Select,
 	SelectContent,
@@ -163,7 +168,7 @@ export function CardMakerForm() {
 
 						<Button
 							type="button"
-							variant="outline"
+							variant="frame"
 							onClick={() => handleImageUpload(null)}
 							disabled={!draft.img}
 						>
@@ -503,7 +508,7 @@ export function CardMakerForm() {
 				</div>
 
 				<div className="flex items-center justify-end gap-2">
-					<Button type="button" variant="outline" onClick={resetCardDraft}>
+					<Button type="button" variant="frame" onClick={resetCardDraft}>
 						Reset
 					</Button>
 					<Button type="button" onClick={onExport} disabled={exporting}>

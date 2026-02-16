@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Html5Qrcode } from "html5-qrcode";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/warcraftcn/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/warcraftcn/card";
 
 interface QRScannerProps {
 	onScan: (code: string) => void;
@@ -92,7 +92,7 @@ export function QRScanner({ onScan, onClose }: QRScannerProps) {
 
 					{error && <div className="text-sm text-red-500">{error}</div>}
 
-					<Button variant="outline" onClick={handleClose} className="w-full">
+					<Button variant="frame" onClick={handleClose} className="w-full">
 						Cancel
 					</Button>
 				</CardContent>

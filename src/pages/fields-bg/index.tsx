@@ -1,11 +1,13 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/warcraftcn/button";
+import { Badge } from "@/components/ui/warcraftcn/badge";
+import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/warcraftcn/card";
 import {
 	Select,
 	SelectContent,
@@ -17,8 +19,6 @@ import { PLAYERS_NAMES } from "@/lib/constants";
 import normalizeCard from "@/lib/normalize-card";
 import { getCardsByUserId } from "@/lib/tauri/get-cards-by-user-id";
 import type { YugiohBackground, YugiohCardWithImgUrl } from "@/lib/types";
-import { cn } from "@/lib/utils";
-import { Loader } from "lucide-react";
 import { useEffect, useState } from "preact/hooks";
 import SearchForm from "./component/search-form";
 import { toast } from "react-toastify";
@@ -27,6 +27,7 @@ import {
 	setCurrentBackground,
 } from "@/lib/tauri/background";
 import { assignYugiohCardToUser } from "@/lib/tauri/store-card";
+import { cn } from "@/lib/utils";
 
 function FieldsBgPage() {
 	const [currentUser, setCurrentUser] = useState<string>("");
@@ -88,35 +89,65 @@ function FieldsBgPage() {
 		init();
 	}, []);
 	return (
-		<div className="flex-1 flex flex-col size-full">
+		<div className="flex-1 flex flex-col size-full gap-6 p-4 md:p-6">
 			<Card>
-				<CardContent>
-					<CardHeader>
-						<CardTitle>Fields BG Page</CardTitle>
+				<CardContent className="p-6 md:px-12 md:py-10 overflow-y-auto">
+					<CardHeader className="px-4 pt-4">
+						<div className="flex items-center gap-3 flex-wrap">
+							<CardTitle>Fields BG Page</CardTitle>
+							{currentUser && (
+								<Badge variant="secondary" size="sm">
+									{currentUser}
+								</Badge>
+							)}
+							{userCards.length > 0 && (
+								<Badge size="sm">{userCards.length} Field Cards</Badge>
+							)}
+						</div>
 					</CardHeader>
-					<CardDescription>
+					<CardDescription className="px-6">
 						Find cards selecting the user, you can set, create cards associated
 						to that user and then set background from those
 					</CardDescription>
 					{currentBackground && (
-						<div className="mb-4">
-							<h3>Current Background</h3>
-							<img
-								src={currentBackground.img_url}
-								alt={currentBackground.name}
-								className="w-full max-w-10 h-auto rounded shadow"
-							/>
+						<div className="mt-2 mb-2 p-4 bg-black/20 rounded-lg border border-amber-900/30">
+							<div className="flex items-center gap-2 mb-3">
+								<h3 className="font-semibold text-amber-100 text-lg">
+									Current Background
+								</h3>
+								<Badge variant="default" size="sm">
+									Active
+								</Badge>
+							</div>
+							<div className="flex items-center gap-4 flex-col sm:flex-row">
+								<img
+									src={currentBackground.img_url}
+									alt={currentBackground.name}
+									className="w-full sm:w-32 h-auto rounded-lg shadow-lg border-2 border-amber-700/50"
+								/>
+								<span className="text-sm text-amber-200">
+									{currentBackground.name}
+								</span>
+							</div>
 						</div>
 					)}
-					<div className="flex flex-col gap-2 mt-4 w-full">
-						<label htmlFor="user-select" className="block font-medium">
-							<span>User ID: *</span>
-						</label>
+					<div className="flex flex-col gap-5 mt-8 w-full">
+						<div className="flex items-center gap-2">
+							<label
+								htmlFor="user-select"
+								className="block font-medium text-amber-100"
+							>
+								<span>User ID:</span>
+							</label>
+							<Badge variant="destructive" size="sm">
+								Required
+							</Badge>
+						</div>
 						<Select value={currentUser} onValueChange={setCurrentUser}>
 							<SelectTrigger
 								id="user-select"
 								enabled={!isLoadingCardsUser}
-								className="w-full sm:w-64"
+								className="w-full sm:w-80 md:w-96"
 							>
 								<SelectValue placeholder="Select a user" />
 							</SelectTrigger>
@@ -129,76 +160,102 @@ function FieldsBgPage() {
 							</SelectContent>
 						</Select>
 						{isLoadingCardsUser && (
-							<Loader className="animate-spin mx-auto mt-4" />
-						)}
-						{userCards.length > 0 && (
-							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-4">
-								{userCards.map((card) => (
-									<Button
-										variant={selectedCard?.id === card.id ? "default" : "ghost"}
-										key={card.id}
-										className="h-fit! flex-col"
-										onClick={() => setSelectedCard(card)}
-									>
-										<img
-											key={card.id}
-											src={card.imgUrl}
-											alt={card.name || "Yugioh Card"}
-											className="w-full max-w-15 h-auto rounded shadow"
-										/>
-										<span className="max-w-15 truncate">{card.name}</span>
-									</Button>
+							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 mt-4">
+								{[...Array(6)].map((_, i) => (
+									<Skeleton key={i} className="w-full h-40" />
 								))}
 							</div>
 						)}
-						<Button
-							disabled={!selectedCard}
-							onClick={() =>
-								handleSaveCard(
-									+(selectedCard?.id ?? 0),
-									selectedCard?.name ?? "",
-									selectedCard?.imgUrl ?? "",
-								)
-							}
-						>
-							Set Background from Selected Card
-						</Button>
+						{userCards.length > 0 && !isLoadingCardsUser && (
+							<div className="space-y-5 mt-6">
+								<div className="flex items-center gap-2">
+									<h4 className="font-semibold text-amber-100">
+										Your Field Cards
+									</h4>
+									{selectedCard && (
+										<Badge variant="default" size="sm">
+											1 Selected
+										</Badge>
+									)}
+								</div>
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+									{userCards.map((card) => (
+										<div key={card.id} className="relative group">
+											<Button
+												variant={
+													selectedCard?.id !== card.id ? "default" : "frame"
+												}
+												className={cn(
+													"w-full items-center gap-1! flex-col transition-transform hover:scale-105",
+													selectedCard?.id === card.id && "py-8!",
+												)}
+												onClick={() => setSelectedCard(card)}
+											>
+												<img
+													src={card.imgUrl}
+													alt={card.name || "Yugioh Card"}
+													className="size-25"
+												/>
+												<span className="text-xs truncate w-full text-center">
+													{card.name}
+												</span>
+											</Button>
+											{selectedCard?.id === card.id && (
+												<div className="absolute -top-2 -right-2">
+													<Badge size="sm" variant="default">
+														✓
+													</Badge>
+												</div>
+											)}
+										</div>
+									))}
+								</div>
+								<Button
+									className="w-full sm:w-auto"
+									disabled={!selectedCard}
+									onClick={() =>
+										handleSaveCard(
+											+(selectedCard?.id ?? 0),
+											selectedCard?.name ?? "",
+											selectedCard?.imgUrl ?? "",
+										)
+									}
+								>
+									Set Background from Selected Card
+								</Button>
+							</div>
+						)}
 					</div>
 				</CardContent>
 			</Card>
-			<Card className="mt-4">
-				<CardContent>
-					<CardHeader>
+			<Card>
+				<CardContent className="p-6 md:px-12 md:py-10 overflow-y-auto">
+					<CardHeader className="px-4 pt-4">
 						<CardTitle>Create or edit Card</CardTitle>
 					</CardHeader>
-					<CardDescription>
+					<CardDescription className="px-6">
 						Here you can create or edit a card for the selected user
 					</CardDescription>
-					<div className="inline-flex w-fit items-center rounded-md border p-1 mb-4">
+					<div className="flex items-center gap-2 mb-6 mt-6 flex-wrap">
 						<Button
 							type="button"
-							variant="ghost"
-							size="sm"
-							className={cn(
-								"rounded-sm",
-								tab === "find" && "bg-accent text-accent-foreground",
-							)}
+							variant={tab === "find" ? "default" : "frame"}
 							onClick={() => setTab("find")}
 						>
 							Card maker
 						</Button>
 						<Button
 							type="button"
-							variant="ghost"
-							size="sm"
-							className={cn(
-								"rounded-sm",
-								tab === "create" && "bg-accent text-accent-foreground",
-							)}
+							variant={tab === "create" ? "default" : "frame"}
 							onClick={() => setTab("create")}
 						>
 							Import deck
 						</Button>
+						{tab === "create" && (
+							<Badge variant="secondary" size="sm">
+								Coming Soon
+							</Badge>
+						)}
 					</div>
 					{tab === "find" ? (
 						<SearchForm user={currentUser} handleSaveCard={handleSaveCard} />

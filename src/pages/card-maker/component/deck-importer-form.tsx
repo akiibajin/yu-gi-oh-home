@@ -1,8 +1,13 @@
 import { useState } from "preact/hooks";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/warcraftcn/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
+import { Input } from "@/components/ui/warcraftcn/input";
 import { exportPreview } from "@/lib/export-card";
 import { loadDeckCardsFromYdkFile } from "@/lib/tauri/decks";
 import type { YugiohCardDraft } from "@/lib/types";

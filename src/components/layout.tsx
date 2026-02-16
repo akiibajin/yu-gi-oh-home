@@ -68,7 +68,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 
 	return (
 		<div className="grid grid-rows-[1fr_auto] md:grid-rows-[auto_1fr] h-svh min-h-svh min-w-0">
-			<header className="hidden md:flex row-start-1 w-full min-w-0 items-center gap-2 border-b bg-white px-4 py-2">
+			<header className="hidden md:flex row-start-1 w-full min-w-0 items-center gap-2 border-b bg-card px-4 py-2">
 				<Breadcrumb>
 					<BreadcrumbList>
 						{breadcrumbItems.map((item, index) => {
@@ -101,7 +101,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 			<main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-4 py-3">
 				{children}
 			</main>
-			<footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-white px-4 py-2">
+			<footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
 				<Breadcrumb>
 					<BreadcrumbList>
 						{breadcrumbItems.map((item, index) => {

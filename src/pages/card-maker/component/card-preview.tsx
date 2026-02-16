@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
 import {
 	FIELD_SPELL_ICON,
 	SPELL_ICONS,
@@ -157,7 +162,11 @@ export function CardPreview() {
 							)}
 						>
 							[
-							{isMonster ? (draft.subType ? `${draft.subType}|` : "") : draft.cardType}
+							{isMonster
+								? draft.subType
+									? `${draft.subType}|`
+									: ""
+								: draft.cardType}
 							{isMonster
 								? draft.isTuner
 									? `${draft.monsterType} | Tuner`
@@ -166,11 +175,11 @@ export function CardPreview() {
 									? draft.spellType
 										? ` | ${draft.spellType}`
 										: ""
-								: draft.cardType === "Trap"
-									? draft.trapType
-										? ` | ${draft.trapType}`
-										: ""
-								: ""}
+									: draft.cardType === "Trap"
+										? draft.trapType
+											? ` | ${draft.trapType}`
+											: ""
+										: ""}
 							]
 						</p>
 						<p

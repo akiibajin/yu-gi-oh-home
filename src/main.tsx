@@ -1,5 +1,6 @@
 import { render } from "preact";
 import App from "./App";
+import "@/components/ui/warcraftcn/styles/warcraft.css";
 
 const root = document.getElementById("root");
 if (!root) {

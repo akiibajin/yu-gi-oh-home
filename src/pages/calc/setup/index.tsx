@@ -1,6 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/warcraftcn/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
+import { Input } from "@/components/ui/warcraftcn/input";
 import {
 	Select,
 	SelectContent,
@@ -72,11 +77,7 @@ function CalcSetup() {
 					<CardContent>
 						<div className="text-sm">Invalid player count.</div>
 						<div className="mt-4">
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() => route("/")}
-							>
+							<Button type="button" variant="frame" onClick={() => route("/")}>
 								Back
 							</Button>
 						</div>
@@ -206,7 +207,7 @@ function CalcSetup() {
 					) : null}
 
 					<div className="flex items-center justify-between gap-2">
-						<Button type="button" variant="outline" onClick={() => route("/")}>
+						<Button type="button" variant="frame" onClick={() => route("/")}>
 							Back
 						</Button>
 						<Button

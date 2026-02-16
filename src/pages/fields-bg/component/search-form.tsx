@@ -1,11 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/warcraftcn/button";
+import { Badge } from "@/components/ui/warcraftcn/badge";
+import { Input } from "@/components/ui/warcraftcn/input";
+import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import { Switch } from "@/components/ui/switch";
 import {
 	fetchYgoprodeckCardInfo,
 	type YgoprodeckCard,
 } from "@/lib/tauri/ygoprodeck";
-import { Loader2Icon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { useState } from "preact/hooks";
 import { toast } from "react-toastify";
 
@@ -47,71 +49,120 @@ function SearchForm(props: SearchFormProps) {
 		}
 	};
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="flex gap-2 items-center w-full">
-				<div className="flex flex-col gap-1 w-full">
-					<label htmlFor="search-card">Search Card</label>
+		<div className="flex flex-col gap-6 mt-2">
+			<div className="flex gap-3 items-center w-full flex-col sm:flex-row">
+				<div className="flex flex-col gap-2 w-full">
+					<label htmlFor="search-card" className="font-medium text-amber-100">
+						Search Card
+					</label>
 					<Input
 						id="search-card"
 						value={query}
+						placeholder="Enter card name..."
 						onInput={(e) => setQuery(e.currentTarget.value)}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" && !isLoading && query) {
+								handleSearch();
+							}
+						}}
 					/>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 mt-1">
 						<Switch
 							id="exact-name-switch"
 							checked={isExactName}
 							onCheckedChange={setIsExactName}
 						/>
-						<label htmlFor="exact-name-switch">Exact name match</label>
+						<label htmlFor="exact-name-switch" className="text-sm">
+							Exact name match
+						</label>
 					</div>
 				</div>
-				<Button onClick={handleSearch} disabled={isLoading || !query}>
-					<SearchIcon />
+				<Button
+					onClick={handleSearch}
+					disabled={isLoading || !query}
+					className="w-full sm:w-auto"
+				>
+					<SearchIcon className="mr-2" />
+					Search
 				</Button>
 			</div>
-			{isLoading && <Loader2Icon className="animate-spin" />}
-			{!!cardsFound.length && (
-				<div className="flex flex-col flex-wrap gap-1">
-					<span className="w-full font-medium">Pick one card</span>
-					<div className="flex flex-wrap gap-2">
+			{isLoading && (
+				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+					{[...Array(5)].map((_, i) => (
+						<Skeleton key={i} className="w-full h-36" />
+					))}
+				</div>
+			)}
+			{!!cardsFound.length && !isLoading && (
+				<div className="flex flex-col gap-4">
+					<div className="flex items-center gap-2">
+						<span className="font-semibold text-amber-100">Pick one card</span>
+						<Badge size="sm">{cardsFound.length} Results</Badge>
+					</div>
+					<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
 						{cardsFound.map((card) => (
-							<button
-								type="button"
-								onClick={() => setSelectCardFound(card)}
-								className="flex flex-col gap-1 max-w-26 "
-								key={card.id}
-							>
-								<img
-									src={card.card_images?.[0]?.image_url_cropped}
-									alt={card.name}
-									className="size-24 object-cover"
-								/>
-								<span className="truncate text-xs font-medium">
-									{card.name}
-								</span>
-							</button>
+							<div key={card.id} className="relative group">
+								<Button
+									variant={
+										selectCardFound?.id === card.id ? "default" : "frame"
+									}
+									type="button"
+									onClick={() => setSelectCardFound(card)}
+									className="flex flex-col gap-2 p-2 w-full h-full transition-transform hover:scale-105"
+								>
+									<img
+										src={card.card_images?.[0]?.image_url_cropped}
+										alt={card.name}
+										className="w-full h-32 object-cover rounded"
+									/>
+									<span className="truncate text-xs w-full text-center">
+										{card.name}
+									</span>
+								</Button>
+								{selectCardFound?.id === card.id && (
+									<div className="absolute -top-2 -right-2">
+										<Badge size="sm" variant="default">
+											✓
+										</Badge>
+									</div>
+								)}
+							</div>
 						))}
 					</div>
 					{!!selectCardFound && (
-						<div className="mt-4">
-							<h3 className="font-medium mb-2">Selected Card:</h3>
-							<div className="flex flex-col gap-2">
+						<div className="mt-6 p-4 bg-black/20 rounded-lg border border-amber-900/30">
+							<div className="flex items-center gap-2 mb-4">
+								<h3 className="font-semibold text-amber-100">Selected Card:</h3>
+								<Badge variant="default" size="sm">
+									Ready to Save
+								</Badge>
+							</div>
+							<div className="flex flex-col sm:flex-row gap-4 items-start">
 								<img
 									src={selectCardFound.card_images?.[0]?.image_url_cropped}
 									alt={selectCardFound.name}
+									className="w-full sm:w-40 h-auto rounded-lg shadow-lg border-2 border-amber-700/50"
 								/>
+								<div className="flex flex-col gap-3 flex-1">
+									<div>
+										<p className="text-sm text-amber-200 mb-1">Card Name:</p>
+										<p className="font-medium">{selectCardFound.name}</p>
+									</div>
+									<Button
+										className="w-full sm:w-auto"
+										onClick={() =>
+											handleSaveCard(
+												+(selectCardFound.id ?? 0),
+												selectCardFound.name ?? "",
+												selectCardFound.card_images?.[0]?.image_url_cropped ??
+													"",
+											)
+										}
+									>
+										Save Card
+									</Button>
+								</div>
 							</div>
-							<Button
-								onClick={() =>
-									handleSaveCard(
-										+(selectCardFound.id ?? 0),
-										selectCardFound.name ?? "",
-										selectCardFound.card_images?.[0]?.image_url_cropped ?? "",
-									)
-								}
-							>
-								Save
-							</Button>
 						</div>
 					)}
 				</div>

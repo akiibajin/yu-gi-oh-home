@@ -9,19 +9,17 @@ export function AvatarSelector({
 	selectedAvatar,
 	onSelectAvatar,
 }: AvatarSelectorProps) {
-	const avatars = [
-		{ name: "Hector", image: PLAYERS_IMAGES.Hector },
-		{ name: "Wallys", image: PLAYERS_IMAGES.Wallys },
-		{ name: "Hassan", image: PLAYERS_IMAGES.Hassan },
-		{ name: "Jess", image: PLAYERS_IMAGES.Jess },
-		{ name: "Chauta", image: PLAYERS_IMAGES.Chauta },
-		{ name: "Guapo", image: PLAYERS_IMAGES.defaultAvatar },
-	];
+	const avatars = Object.entries(PLAYERS_IMAGES)
+		.map(([name, image]) => ({
+			name,
+			image,
+		}))
+		.sort((a, b) => a.name.localeCompare(b.name));
 
 	return (
 		<div>
 			<p className="text-sm font-medium mb-2 block">Choose Your Avatar</p>
-			<div className="grid grid-cols-3 gap-3">
+			<div className="max-h-96 overflow-y-auto pr-2 grid grid-cols-3 gap-3">
 				{avatars.map((avatar) => (
 					<button
 						key={avatar.name}

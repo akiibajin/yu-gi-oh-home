@@ -1,6 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/warcraftcn/button";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
+import { Input } from "@/components/ui/warcraftcn/input";
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 

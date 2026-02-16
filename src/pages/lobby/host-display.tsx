@@ -1,7 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
 import { useLocation } from "preact-iso";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/warcraftcn/button";
+import { Badge } from "@/components/ui/warcraftcn/badge";
+import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
 import {
 	getLobbyPlayers,
 	subscribeLobbyPlayers,
@@ -11,6 +18,7 @@ import {
 import { LobbyPlayerCard } from "@/components/lobby-player-card";
 import QRCodeReact from "react-qr-code";
 import { initDuelSfx } from "@/lib/sfx";
+import { CopyIcon, CrownIcon, UsersIcon, QrCodeIcon } from "lucide-react";
 
 // biome-ignore lint/suspicious/noExplicitAny: React component used in Preact
 const QRCode = QRCodeReact as any;
@@ -77,43 +85,64 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center min-h-screen">
-				<div className="text-lg">Loading lobby...</div>
+			<div className="flex items-center justify-center min-h-screen p-4">
+				<div className="text-center space-y-4">
+					<Skeleton className="w-64 h-32 mx-auto" />
+					<p className="text-lg text-amber-100">Loading lobby...</p>
+				</div>
 			</div>
 		);
 	}
 	return (
-		<div className="p-2 space-y-6">
-			<Card className="py-2">
-				<CardHeader>
-					<CardTitle className="flex items-center justify-between">
-						<span>Lobby Host</span>
-						<Button variant="outline" size="sm" onClick={handleCloseLobby}>
-							Close Lobby
-						</Button>
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="flex flex-col md:flex-row gap-6 items-center">
-						<div className="flex-1 space-y-2">
-							<div className="text-sm text-muted-foreground">
-								Share this code with players:
+		<div className="p-4 md:p-6 space-y-6">
+			<Card>
+				<CardContent className="p-6 md:p-8">
+					<CardHeader className="px-0 pt-0 pb-6">
+						<div className="flex items-center justify-between flex-wrap gap-4">
+							<div className="flex items-center gap-3">
+								<CrownIcon className="w-6 h-6 text-amber-400" />
+								<CardTitle>Lobby Host</CardTitle>
+								<Badge variant="default" size="sm">
+									Active
+								</Badge>
 							</div>
+							<Button
+								variant="destructive"
+								size="sm"
+								onClick={handleCloseLobby}
+							>
+								Close Lobby
+							</Button>
+						</div>
+					</CardHeader>
+					<div className="flex flex-col lg:flex-row gap-6 items-center">
+						<div className="flex-1 space-y-4 w-full">
 							<div className="flex items-center gap-2">
-								<div className="text-4xl font-bold tracking-wider">{code}</div>
-								<Button variant="outline" size="sm" onClick={copyLobbyCode}>
+								<QrCodeIcon className="w-5 h-5 text-amber-400" />
+								<span className="text-sm text-amber-200/70">
+									Share this code with players:
+								</span>
+							</div>
+							<div className="flex items-center gap-3 flex-wrap">
+								<div className="text-4xl md:text-5xl font-bold tracking-widest text-amber-100">
+									{code}
+								</div>
+								<Button variant="secondary" size="sm" onClick={copyLobbyCode}>
+									<CopyIcon className="w-4 h-4 mr-2" />
 									Copy
 								</Button>
 							</div>
-							<div className="text-sm text-muted-foreground">
-								{players.length} player{players.length !== 1 ? "s" : ""}{" "}
-								connected
+							<div className="flex items-center gap-2">
+								<UsersIcon className="w-5 h-5 text-amber-400" />
+								<Badge variant="secondary" size="sm">
+									{players.length} {players.length !== 1 ? "Players" : "Player"}
+								</Badge>
 							</div>
 						</div>
 						{code && (
-							<div className="bg-white p-4 rounded-lg">
-								<QRCode value={code} size={120} />
-								<div className="text-xs text-center text-muted-foreground mt-2">
+							<div className="bg-white p-5 rounded-lg shadow-lg">
+								<QRCode value={code} size={140} />
+								<div className="text-xs text-center text-gray-700 font-medium mt-3">
 									Scan to join
 								</div>
 							</div>
@@ -131,10 +160,20 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 				))}
 			</div>
 
-			{players.length === 0 && (
-				<div className="text-center text-muted-foreground py-12">
-					No players in lobby yet
-				</div>
+			{playersWithoutHost.length === 0 && (
+				<Card>
+					<CardContent className="p-12">
+						<div className="text-center space-y-3">
+							<UsersIcon className="w-16 h-16 mx-auto text-amber-700/50" />
+							<p className="text-muted-foreground">
+								Waiting for players to join...
+							</p>
+							<p className="text-sm text-muted-foreground/70">
+								Share the lobby code above
+							</p>
+						</div>
+					</CardContent>
+				</Card>
 			)}
 		</div>
 	);

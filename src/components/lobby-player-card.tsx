@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/warcraftcn/card";
 import { LifePointsCounter } from "@/components/life-points-counter";
 import { PLAYERS_IMAGES } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
