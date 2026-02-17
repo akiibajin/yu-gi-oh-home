@@ -98,6 +98,7 @@ export interface YugiohCardDraft {
 	spellType?: YugiohSpellType;
 	trapType?: YugiohTrapType;
 	img: Blob | null;
+	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 }
 
 export interface YugiohCardDB {

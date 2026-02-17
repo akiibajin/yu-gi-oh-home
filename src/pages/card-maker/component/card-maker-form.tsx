@@ -75,11 +75,6 @@ export function CardMakerForm() {
 		return true;
 	};
 
-	const onPendulumEffectInput = (value: string) => {
-		if (applySplitIfPresent(value)) return;
-		setDraftField("pendulumDescription", value);
-	};
-
 	const onMonsterEffectInput = (value: string) => {
 		if (applySplitIfPresent(value)) return;
 		setDraftField("description", value);
@@ -174,6 +169,25 @@ export function CardMakerForm() {
 						>
 							Clear
 						</Button>
+						<Select
+							onValueChange={(value: string) =>
+								setDraftField(
+									"objectFit",
+									value as "cover" | "contain" | "fill" | "none" | "scale-down",
+								)
+							}
+						>
+							<SelectTrigger className="h-8">
+								<SelectValue placeholder="Object Fit" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="contain">Contain</SelectItem>
+								<SelectItem value="cover">Cover</SelectItem>
+								<SelectItem value="fill">Fill</SelectItem>
+								<SelectItem value="scale-down">Scale-down</SelectItem>
+								<SelectItem value="none">None</SelectItem>
+							</SelectContent>
+						</Select>
 					</div>
 					{draft.img ? (
 						<div className="text-xs text-muted-foreground">
@@ -473,25 +487,6 @@ export function CardMakerForm() {
 						</div>
 					</fieldset>
 				) : null}
-
-				{isPendulum ? (
-					<div className="space-y-2">
-						<label
-							className="text-sm font-medium"
-							htmlFor="cm-pendulum-description"
-						>
-							Pendulum Effect
-						</label>
-						<Textarea
-							id="cm-pendulum-description"
-							value={draft.pendulumDescription ?? ""}
-							onInput={(e) => onPendulumEffectInput(e.currentTarget.value)}
-							placeholder="Pendulum effect text..."
-							rows={4}
-						/>
-					</div>
-				) : null}
-
 				<div className="space-y-2">
 					<label className="text-sm font-medium" htmlFor="cm-description">
 						{isPendulum ? "Monster Effect" : "Description"}

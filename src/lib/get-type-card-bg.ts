@@ -1,69 +1,128 @@
-import EffectMonsterCard from "@/assets/images/card-templates/Effect.webp";
-import NormalMonsterCard from "@/assets/images/card-templates/Normal.webp";
-import FusionMonsterCard from "@/assets/images/card-templates/Fusion.webp";
-import SynchroMonsterCard from "@/assets/images/card-templates/Synchro.webp";
-import RitualMonster from "@/assets/images/card-templates/Ritual Monster.webp";
-import XyzMonsterCard from "@/assets/images/card-templates/xyz.webp";
-import LinkMonsterCard from "@/assets/images/card-templates/Link.webp";
-import PendulumMonsterCard from "@/assets/images/card-templates/Pendulum Effect.webp";
-import PendulumNormalMonsterCard from "@/assets/images/card-templates/Pendulum Normal.webp";
-import PendulumRitualMonsterCard from "@/assets/images/card-templates/Pendulum Ritual.webp";
-import PendulumFusionMonsterCard from "@/assets/images/card-templates/Pendulum Fusion.webp";
-import PendulumSynchroMonsterCard from "@/assets/images/card-templates/Pendulum Synchro.webp";
-import PendulumXyzMonsterCard from "@/assets/images/card-templates/pendulum xyz.webp";
-import SpellCard from "@/assets/images/card-templates/Spell.webp";
-import TrapCard from "@/assets/images/card-templates/Trap.webp";
-import FieldCard from "@/assets/images/card-templates/Field.webp";
+const normalDescription = "/assets/images/normal-description.webp";
+import normalTitle from "@/assets/images/card-templates/normal-title.webp";
+import normalStats from "@/assets/images/card-templates/normal-stats.webp";
+const effectDescription = "/assets/images/effect-description.webp";
+import effectTitle from "@/assets/images/card-templates/effect-title.webp";
+import effectStats from "@/assets/images/card-templates/effect-stats.webp";
+const ritualDescription = "/assets/images/ritual-description.webp";
+// import ritualTitle from "@/assets/images/card-templates/ritual-title.webp";
+const fusionDescription = "/assets/images/fusion-description.webp";
+import fusionTitle from "@/assets/images/card-templates/fusion-title.webp";
+import fusionStats from "@/assets/images/card-templates/fusion-stats.webp";
+const synchroDescription = "/assets/images/synchro-description.webp";
+import synchroTitle from "@/assets/images/card-templates/synchro-title.webp";
+import synchroStats from "@/assets/images/card-templates/synchro-stats.webp";
+const xyzDescription = "/assets/images/xyz-desciption.webp";
+import xyzTitle from "@/assets/images/card-templates/xyz-title.webp";
+import xyzStats from "@/assets/images/card-templates/xyz-stats.webp";
+const linkDescription = "/assets/images/link-description.webp";
+import linkTitle from "@/assets/images/card-templates/link-title.webp";
+import linkStats from "@/assets/images/card-templates/link-stats.webp";
+const spellDescription = "/assets/images/spell-description.webp";
+import spellTitle from "@/assets/images/card-templates/spell-title.webp";
+const trapDescription = "/assets/images/trap-description.webp";
+import trapTitle from "@/assets/images/card-templates/trap-title.webp";
+const fieldDescription = "/assets/images/field-description.webp";
+import fieldTitle from "@/assets/images/card-templates/field-title.webp";
 import type { YugiohCardType, YugiohMonsterType } from "./types";
 
 const getTypeCardBg = (
 	type: YugiohMonsterType | null,
 	card: YugiohCardType,
-): { bg: string } => {
-	if (card === "Monster") {
-		console.log({ type, card });
-		const types: Record<YugiohMonsterType, { bg: string }> = {
-			Normal: { bg: NormalMonsterCard },
-			Effect: { bg: EffectMonsterCard },
-			Spirit: { bg: EffectMonsterCard },
-			Gemini: { bg: EffectMonsterCard },
-			Ritual: { bg: RitualMonster },
-			Fusion: { bg: FusionMonsterCard },
-			Synchro: { bg: SynchroMonsterCard },
-			Xyz: { bg: XyzMonsterCard },
-			Link: { bg: LinkMonsterCard },
+): { description: string, title: string, stats?: string } => {
+	if (card === "Monster") {		
+		const types: Record<YugiohMonsterType, { description: string, title: string, stats?: string }> = {
+			Normal: { description: normalDescription,
+				title: normalTitle,
+				stats: normalStats,
+			 },
+			Effect: { description: effectDescription,
+				title: effectTitle,
+				stats: effectStats,
+			 },
+			Spirit: { description: effectDescription,
+				title: effectTitle,
+				stats: effectStats,
+			 },
+			Gemini: { description: effectDescription,
+				title: effectTitle,
+				stats: effectStats,
+			 },			
+			 Ritual: { description: ritualDescription,
+				title: linkTitle,
+				stats: linkStats,
+			  },
+			Fusion: { description: fusionDescription,
+				title: fusionTitle,
+				stats: fusionStats,
+			 },
+			Synchro: { description: synchroDescription,
+				title: synchroTitle,
+				stats: synchroStats,
+			 },
+			Xyz: { description: xyzDescription,
+				title: xyzTitle,
+				stats: xyzStats,
+			},
+			Link: { description: linkDescription,
+				title: linkTitle,
+				stats: linkStats,
+			},
 			"Pendulum Normal": {
-				bg: PendulumNormalMonsterCard,
+				description: spellDescription,
+				title: normalTitle,
+				stats: normalStats,
 			},
 			"Pendulum Effect": {
-				bg: PendulumMonsterCard,
+				description: spellDescription,
+				title: effectTitle,
+				stats: effectStats,
 			},
 			"Pendulum Fusion": {
-				bg: PendulumFusionMonsterCard,
+				description: spellDescription,
+				title: fusionTitle,
+				stats: fusionStats,
 			},
 			"Pendulum Synchro": {
-				bg: PendulumSynchroMonsterCard,
+				description: spellDescription,
+				title: synchroTitle,
+				stats: synchroStats,
 			},
 			"Pendulum Xyz": {
-				bg: PendulumXyzMonsterCard,
+				description: spellDescription,
+				title: xyzTitle,
+				stats: xyzStats,
 			},
 			"Pendulum Ritual": {
-				bg: PendulumRitualMonsterCard,
+				description: spellDescription,
+				title: linkTitle,
+				stats: linkStats,
 			},
-			Trap: { bg: TrapCard },
+			Trap: { description: trapDescription,
+				title: trapTitle,
+				stats: effectStats,
+			 },
 		};
 		return types[type as YugiohMonsterType];
 	}
 	if (card === "Spell") {
-		return { bg: SpellCard };
+		return { description: spellDescription,
+			title: spellTitle,
+		 };
 	}
 	if (card === "Trap") {
-		return { bg: TrapCard };
+		return { description: trapDescription,
+			title: trapTitle,
+		 };
 	}
 	if (card === "Field") {
-		return { bg: FieldCard };
+		return { description: fieldDescription,
+			title: fieldTitle,
+		 };
 	}
-	return { bg: EffectMonsterCard };
+	return { description: effectDescription,
+		title: effectTitle,
+	 };
 };
 
 export default getTypeCardBg;

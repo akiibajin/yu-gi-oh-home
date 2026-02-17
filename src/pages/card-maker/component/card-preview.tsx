@@ -7,12 +7,9 @@ import {
 import getTypeCardBg from "@/lib/get-type-card-bg";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useState } from "preact/hooks";
-import star from "@/assets/images/card-templates/star.webp";
-import rank from "@/assets/images/card-templates/rank.webp";
-import statsBar from "@/assets/images/card-templates/stats-bar.webp";
-import bottomCard from "@/assets/images/card-templates/bottom-card.webp";
 import { cn } from "@/lib/utils";
-import RankImage from "@/pages/card-maker/component/rank-image";
+import borderCard from "@/assets/images/card-templates/border-card.webp";
+import MonsterLevel from "./monster-level";
 
 export function CardPreview() {
 	const draft = cardDraftSignal.value;
@@ -21,7 +18,6 @@ export function CardPreview() {
 	const isXyz = draft.monsterType?.includes("Xyz");
 	const isLink = draft.monsterType?.includes("Link");
 	const isPendulum = draft.monsterType?.includes("Pendulum");
-	const pendulumDescription = (draft.pendulumDescription ?? "").trim();
 	const monsterDescription = draft.description.trim();
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
 
@@ -66,87 +62,69 @@ export function CardPreview() {
 		};
 	}, [draft.img]);
 	return (
-		<div className="min-h-65 overflow-x-auto space-y-3">
-			<div className="relative w-92.5" id="card-preview">
-				<img src={typeCardImg.bg} alt={draft.name} className="relative z-1" />
-				<p
-					className={cn(
-						"absolute z-2 font-bold top-4 left-5 text-3xl max-w-[75%] w-full truncate uppercase",
-						isXyz && "text-yellow-300",
-					)}
-				>
-					{displayName}
-				</p>
+		<div className="min-h-65 overflow-x-auto space-y-3 card-maker-preview">
+			<div
+				className="relative px-5 flex flex-col gap-2 pb-6 size-full justify-end items-end w-105 h-154"
+				id="card-preview"
+			>
 				<img
-					src={iconImg ? iconImg : iconFallback}
-					className={cn(
-						"absolute top-4.5 right-4.5 size-12 z-2",
-						!isMonster && "size-12.5 right-3.75",
-					)}
-					alt={`${draft.cardType} icon`}
+					src={borderCard}
+					alt={draft.name}
+					className="absolute inset-0 size-full z-1"
 				/>
 				{imgUrl && (
-					<div className="absolute size-full max-w-84 max-h-84 top-13.5 left-1/2 -translate-x-1/2">
+					<div className="absolute size-[calc(100%-1.30rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
 						<img
 							src={imgUrl}
 							alt={draft.name}
 							className="size-full object-fill"
+							style={{
+								objectFit: draft.objectFit ?? "cover",
+							}}
 						/>
 					</div>
 				)}
 				{isMonster && (
 					<div
 						className={cn(
-							"absolute bottom-38 max-h-8 overflow-y-visible w-full max-w-[88%] left-4.5 z-2 flex items-end",
-							isPendulum ? "bottom-55" : "",
+							"absolute top-1 left-0 w-full flex",
+							isLink ? "justify-center" : "justify-around",
 						)}
 					>
-						<img
-							src={statsBar}
-							alt="stats bar"
-							className="size-full absolute opacity-80"
-						/>
-						<div className="relative min-w-12">
-							{isLink ? (
-								<RankImage card={draft} option="A" />
-							) : (
-								<>
-									<img
-										src={isXyz ? rank : star}
-										alt="Star"
-										className="size-12 object-cover"
-									/>
-									<p
-										className={cn(
-											"absolute top-[40%] text-white text-shadow-[0px_0px_2px_black] left-1/2 -translate-x-1/2 -translate-y-[40%] font-extrabold text-3xl",
-										)}
-									>
-										{draft.stats.level}
-									</p>
-								</>
-							)}
-						</div>
-						<div className="w-full h-8 relative flex items-end justify-center">
-							<p className="text-white text-shadow-[0px_0px_2px_black] pl-4 font-bold text-3xl">
-								{isLink
-									? `ATK ${draft.stats.atk}`
-									: `ATK ${draft.stats.atk} / DEF ${draft.stats.def}`}
+						<div className="relative w-30 flex items-center justify-center">
+							<img
+								className="min-w-30 absolute"
+								src={typeCardImg.stats ?? ""}
+								alt="atk"
+							/>
+							<p className="relative mb-2 text-5xl text-white text-shadow-outline">
+								{draft.stats.atk}
 							</p>
 						</div>
+						{!isLink && (
+							<div className="relative w-30 flex items-center justify-center">
+								<img
+									className="min-w-30 absolute"
+									src={typeCardImg.stats ?? ""}
+									alt="def"
+								/>
+								<p className="relative mb-2 text-5xl text-white text-shadow-outline">
+									{draft.stats.def}
+								</p>
+							</div>
+						)}
 					</div>
 				)}
-				<div className="absolute top-0 z-2 size-full">
-					{!isPendulum && <img src={bottomCard} alt={`${draft.name} bottom`} />}
-					{isPendulum && (
-						<p className="absolute bottom-37 left-6.5 text-sm tracking-tight leading-2.5 max-w-[85%] max-h-17 size-full whitespace-pre-line">
-							{pendulumDescription}
-						</p>
-					)}
+				<div className="relative z-2 max-h-full w-full flex pb-1.5 flex-col justify-start items-center">
+					<img
+						src={typeCardImg.description}
+						alt="description"
+						className="absolute size-full opacity-60 object-fill"
+					/>
 					<p
 						className={cn(
-							"absolute bottom-32.5 text-xl left-6 font-medium",
+							"text-lg text-shadow-outline relative z-2 font-medium",
 							isXyz && !isPendulum && "text-white",
-							isPendulum && "bottom-26.75 left-18 text-lg",
 						)}
 					>
 						[
@@ -172,12 +150,37 @@ export function CardPreview() {
 					</p>
 					<p
 						className={cn(
-							"absolute text-sm tracking-tight leading-2.5 bottom-6 left-7 max-w-[85%] max-h-26.5 size-full whitespace-pre-line",
-							isPendulum && "max-h-18 bottom-6",
+							"text-sm text-shadow-outline relative z-2 tracking-tight leading-2.5 max-w-11/12 size-full whitespace-pre-line",
 						)}
 					>
 						{monsterDescription}
 					</p>
+				</div>
+				<div className="relative flex items-center overflow-visible h-8 w-full">
+					{isMonster && (
+						<MonsterLevel
+							level={draft.stats.level}
+							link={{ markers: draft.linkMarkers, number: draft.linkRating }}
+							isXyz={isXyz}
+							isTuner={draft.isTuner}
+							isLink={isLink}
+						/>
+					)}
+					<div className="relative flex-1 w-full items-center">
+						<img
+							src={typeCardImg.title}
+							alt="title"
+							className="absolute w-full opacity-80 h-8"
+						/>
+						<p className="relative text-shadow-outline w-full leading-7 max-w-[70%] ml-4 z-2">
+							{displayName}
+						</p>
+					</div>
+					<img
+						src={iconImg ? iconImg : iconFallback}
+						className={cn("size-12", !isMonster && "size-12 right-3.75")}
+						alt={`${draft.cardType} icon`}
+					/>
 				</div>
 			</div>
 		</div>
