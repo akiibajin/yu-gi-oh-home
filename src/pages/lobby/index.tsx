@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
@@ -8,10 +9,16 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
-import { closeLobby, getActiveLobbies, type Lobby } from "@/lib/lobby";
-import { RefreshCwIcon, ShieldIcon, UsersIcon } from "lucide-react";
+import {
+	closeLobby,
+	getActiveLobbies,
+	getHostPlayer,
+	type Lobby,
+} from "@/lib/lobby";
+import { RefreshCwIcon, ShieldIcon, UsersIcon, CrownIcon } from "lucide-react";
 
 export default function LobbyIndex() {
+	const { route } = useLocation();
 	const [lobbies, setLobbies] = useState<Lobby[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -41,6 +48,19 @@ export default function LobbyIndex() {
 		setLobbies((prev) => prev.filter((lobby) => lobby.id !== lobbyId));
 	};
 
+	const handleEnterAsHost = async (lobby: Lobby) => {
+		// Get the host player for this lobby
+		const hostPlayer = await getHostPlayer(lobby.id);
+		if (!hostPlayer) {
+			setError("Could not find host player for this lobby.");
+			return;
+		}
+
+		// Navigate to host display
+		const url = `/lobby/host/${lobby.id}?code=${lobby.lobby_code}&playerId=${hostPlayer.id}`;
+		route(url);
+	};
+
 	return (
 		<div className="p-4 md:p-6 space-y-6">
 			<Card>
@@ -54,12 +74,7 @@ export default function LobbyIndex() {
 									<Badge size="sm">{lobbies.length}</Badge>
 								)}
 							</div>
-							<Button
-								variant="secondary"
-								size="sm"
-								onClick={loadLobbies}
-								disabled={loading}
-							>
+							<Button variant="frame" onClick={loadLobbies} disabled={loading}>
 								<RefreshCwIcon
 									className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
 								/>
@@ -115,14 +130,23 @@ export default function LobbyIndex() {
 										</span>
 									</div>
 								</div>
-								<Button
-									variant="destructive"
-									size="lg"
-									className="w-full md:w-auto"
-									onClick={() => handleCloseLobby(lobby.id)}
-								>
-									Shut Down Lobby
-								</Button>
+								<div className="flex flex-col gap-2 w-full md:w-auto">
+									<Button
+										variant="default"
+										className="w-full"
+										onClick={() => handleEnterAsHost(lobby)}
+									>
+										<CrownIcon className="w-4 h-4 mr-2" />
+										Enter as Host
+									</Button>
+									<Button
+										variant="frame"
+										className="w-full"
+										onClick={() => handleCloseLobby(lobby.id)}
+									>
+										Shut Down Lobby
+									</Button>
+								</div>
 							</div>
 						))}
 					</div>

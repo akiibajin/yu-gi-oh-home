@@ -12,10 +12,17 @@ import {
 import {
 	getLobbyPlayers,
 	subscribeLobbyPlayers,
+	subscribeLobby,
 	closeLobby,
+	getLobby,
 	type LobbyPlayer,
+	type Lobby,
 } from "@/lib/lobby";
 import { LobbyPlayerCard } from "@/components/lobby-player-card";
+import { Timer } from "@/components/timer";
+import { MatchTracker } from "@/components/match-tracker";
+import { DiceRoller } from "@/components/dice-roller";
+import { DuelHistoryViewer } from "@/components/duel-history-viewer";
 import QRCodeReact from "react-qr-code";
 import { initDuelSfx } from "@/lib/sfx";
 import { CopyIcon, CrownIcon, UsersIcon, QrCodeIcon } from "lucide-react";
@@ -27,9 +34,11 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 	const { route, query } = useLocation();
 	const code = query.code as string | undefined;
 	const [players, setPlayers] = useState<LobbyPlayer[]>([]);
+	const [lobby, setLobby] = useState<Lobby | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	const playersWithoutHost = players.filter((player) => !player.is_host);
+	const hostPlayer = players.find((player) => player.is_host);
 
 	const handleCloseLobby = async () => {
 		if (confirm("Are you sure you want to close this lobby?")) {
@@ -45,12 +54,18 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 		}
 	};
 
+	const refreshLobby = async () => {
+		const updated = await getLobby(lobbyId);
+		if (updated) setLobby(updated);
+	};
+
 	useEffect(() => {
 		initDuelSfx();
 	}, []);
 
 	useEffect(() => {
 		let channel: unknown = null;
+		let lobbyChannel: unknown = null;
 		let pollId: number | undefined;
 
 		const refreshPlayers = async () => {
@@ -59,14 +74,27 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 		};
 
 		const initializeLobby = async () => {
+			// Load initial lobby data
+			const lobbyData = await getLobby(lobbyId);
+			if (lobbyData) setLobby(lobbyData);
+
 			await refreshPlayers();
 			setLoading(false);
+
+			// Subscribe to player changes
 			channel = await subscribeLobbyPlayers(lobbyId, (updatedPlayers) => {
 				setPlayers(updatedPlayers);
 			});
+
+			// Subscribe to lobby changes (for timer)
+			lobbyChannel = await subscribeLobby(lobbyId, (updatedLobby) => {
+				setLobby(updatedLobby);
+			});
+
 			if (typeof window !== "undefined") {
 				pollId = window.setInterval(() => {
 					void refreshPlayers();
+					void refreshLobby();
 				}, 3000);
 			}
 		};
@@ -79,6 +107,13 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			}
 			if (channel && typeof channel === "object" && "unsubscribe" in channel) {
 				(channel as { unsubscribe: () => void }).unsubscribe();
+			}
+			if (
+				lobbyChannel &&
+				typeof lobbyChannel === "object" &&
+				"unsubscribe" in lobbyChannel
+			) {
+				(lobbyChannel as { unsubscribe: () => void }).unsubscribe();
 			}
 		};
 	}, [lobbyId]);
@@ -93,6 +128,18 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			</div>
 		);
 	}
+
+	if (!lobby) {
+		return (
+			<div className="flex items-center justify-center min-h-screen p-4">
+				<div className="text-center space-y-4">
+					<p className="text-lg text-red-400">Lobby not found</p>
+					<Button onClick={() => route("/lobby")}>Back to Lobbies</Button>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="p-4 md:p-6 space-y-6">
 			<Card>
@@ -106,11 +153,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 									Active
 								</Badge>
 							</div>
-							<Button
-								variant="destructive"
-								size="sm"
-								onClick={handleCloseLobby}
-							>
+							<Button variant="frame" onClick={handleCloseLobby}>
 								Close Lobby
 							</Button>
 						</div>
@@ -127,7 +170,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 								<div className="text-4xl md:text-5xl font-bold tracking-widest text-amber-100">
 									{code}
 								</div>
-								<Button variant="secondary" size="sm" onClick={copyLobbyCode}>
+								<Button variant="frame" onClick={copyLobbyCode}>
 									<CopyIcon className="w-4 h-4 mr-2" />
 									Copy
 								</Button>
@@ -150,6 +193,23 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 					</div>
 				</CardContent>
 			</Card>
+
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				<Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
+				<MatchTracker
+					lobby={lobby}
+					players={players}
+					isHost={true}
+					onUpdate={refreshLobby}
+				/>
+			</div>
+
+			<DiceRoller
+				lobbyId={lobbyId}
+				playerId={hostPlayer?.id || null}
+				playerName={hostPlayer?.player_name || null}
+			/>
+			<DuelHistoryViewer lobbyId={lobbyId} />
 			<div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4">
 				{playersWithoutHost.map((player) => (
 					<LobbyPlayerCard

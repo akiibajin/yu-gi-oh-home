@@ -13,10 +13,24 @@ import {
 	getLobbyPlayers,
 	updatePlayerLifePoints,
 	subscribeLobbyPlayers,
+	subscribeLobby,
+	getLobby,
+	recordGameResult,
 	type LobbyPlayer,
+	type Lobby,
 } from "@/lib/lobby";
 import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
-import { HeartIcon, UsersIcon, RefreshCwIcon } from "lucide-react";
+import { Timer } from "@/components/timer";
+import { MatchTracker } from "@/components/match-tracker";
+import { DiceRoller } from "@/components/dice-roller";
+import { DuelHistoryViewer } from "@/components/duel-history-viewer";
+import {
+	HeartIcon,
+	UsersIcon,
+	RefreshCwIcon,
+	TrophyIcon,
+	XCircleIcon,
+} from "lucide-react";
 
 export default function GuestControl() {
 	const { route, query } = useLocation();
@@ -25,6 +39,7 @@ export default function GuestControl() {
 	const playerId = query.playerId as string | undefined;
 	const [player, setPlayer] = useState<LobbyPlayer | null>(null);
 	const [allPlayers, setAllPlayers] = useState<LobbyPlayer[]>([]);
+	const [lobby, setLobby] = useState<Lobby | null>(null);
 	const [loading, setLoading] = useState(true);
 	const prevLifePointsRef = useRef<number | null>(null);
 
@@ -52,6 +67,38 @@ export default function GuestControl() {
 		);
 		await updatePlayerLifePoints(player.id, newLifePoints);
 	};
+
+	const recordWin = async (iWon: boolean) => {
+		if (!player || !lobby) return;
+
+		const hostPlayer = allPlayers.find((p) => p.is_host);
+		if (!hostPlayer) return;
+
+		const winnerId = iWon ? player.id : hostPlayer.id;
+		const durationSeconds = lobby.timer_seconds ?? 0;
+
+		await recordGameResult(
+			lobbyId,
+			winnerId,
+			hostPlayer.life_points,
+			player.life_points,
+			durationSeconds,
+		);
+
+		// Refresh data
+		const updatedLobby = await getLobby(lobbyId);
+		if (updatedLobby) setLobby(updatedLobby);
+
+		const updatedPlayers = await getLobbyPlayers(lobbyId);
+		setAllPlayers(updatedPlayers);
+		const updatedPlayer = updatedPlayers.find((p) => p.id === playerId);
+		if (updatedPlayer) setPlayer(updatedPlayer);
+	};
+
+	const refreshLobby = async () => {
+		const updated = await getLobby(lobbyId);
+		if (updated) setLobby(updated);
+	};
 	useEffect(() => {
 		initDuelSfx();
 	}, []);
@@ -69,6 +116,7 @@ export default function GuestControl() {
 	}, [player?.life_points]);
 	useEffect(() => {
 		let channel: unknown = null;
+		let lobbyChannel: unknown = null;
 		let pollId: number | undefined;
 
 		const refreshPlayers = async () => {
@@ -87,6 +135,11 @@ export default function GuestControl() {
 				route("/lobby/join");
 				return;
 			}
+
+			// Load lobby data
+			const lobbyData = await getLobby(lobbyId);
+			if (lobbyData) setLobby(lobbyData);
+
 			const players = await getLobbyPlayers(lobbyId);
 			const currentPlayer = players.find((p) => p.id === playerId);
 			if (!currentPlayer) {
@@ -98,6 +151,8 @@ export default function GuestControl() {
 			setPlayer(currentPlayer);
 			setAllPlayers(players);
 			setLoading(false);
+
+			// Subscribe to player changes
 			channel = await subscribeLobbyPlayers(lobbyId, (updatedPlayers) => {
 				const updatedPlayer = updatedPlayers.find((p) => p.id === playerId);
 				if (updatedPlayer) {
@@ -105,9 +160,16 @@ export default function GuestControl() {
 				}
 				setAllPlayers(updatedPlayers);
 			});
+
+			// Subscribe to lobby changes (for timer and match tracking)
+			lobbyChannel = await subscribeLobby(lobbyId, (updatedLobby) => {
+				setLobby(updatedLobby);
+			});
+
 			if (typeof window !== "undefined") {
 				pollId = window.setInterval(() => {
 					void refreshPlayers();
+					void refreshLobby();
 				}, 3000);
 			}
 		};
@@ -121,9 +183,16 @@ export default function GuestControl() {
 			if (channel && typeof channel === "object" && "unsubscribe" in channel) {
 				(channel as { unsubscribe: () => void }).unsubscribe();
 			}
+			if (
+				lobbyChannel &&
+				typeof lobbyChannel === "object" &&
+				"unsubscribe" in lobbyChannel
+			) {
+				(lobbyChannel as { unsubscribe: () => void }).unsubscribe();
+			}
 		};
 	}, [lobbyId, playerId]);
-	if (loading || !player) {
+	if (loading || !player || !lobby) {
 		return (
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
@@ -155,6 +224,57 @@ export default function GuestControl() {
 					</div>
 				</CardContent>
 			</Card>
+
+			<div className="grid grid-cols-1 gap-6">
+				<Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
+				<MatchTracker
+					lobby={lobby}
+					players={allPlayers}
+					isHost={false}
+					onUpdate={refreshLobby}
+				/>
+			</div>
+
+			{(lobby?.best_of ?? 1) > 1 && (
+				<Card>
+					<CardContent className="p-4 md:p-6">
+						<CardHeader className="px-0 pt-0 pb-4">
+							<div className="flex items-center gap-3">
+								<TrophyIcon className="w-5 h-5 text-amber-400" />
+								<CardTitle className="text-lg">Report Game Result</CardTitle>
+							</div>
+						</CardHeader>
+						<p className="text-sm text-amber-200/70 mb-4">
+							Report who won this game:
+						</p>
+						<div className="grid grid-cols-2 gap-3">
+							<Button
+								variant="default"
+								onClick={() => recordWin(true)}
+								className="h-16 flex flex-col gap-1"
+							>
+								<TrophyIcon className="w-5 h-5" />
+								<span>I Won</span>
+							</Button>
+							<Button
+								variant="frame"
+								onClick={() => recordWin(false)}
+								className="h-16 flex flex-col gap-1"
+							>
+								<XCircleIcon className="w-5 h-5" />
+								<span>I Lost</span>
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
+			)}
+
+			<DiceRoller
+				lobbyId={lobbyId}
+				playerId={player.id}
+				playerName={player.player_name}
+			/>
+			<DuelHistoryViewer lobbyId={lobbyId} />
 			<Card>
 				<CardContent className="p-6 md:p-8">
 					<CardHeader className="px-0 pt-0 pb-6">
@@ -172,24 +292,21 @@ export default function GuestControl() {
 						<div className="space-y-3">
 							<div className="grid grid-cols-3 gap-3">
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() => updateLifePoints(-2000)}
 									className="text-lg h-16"
 								>
 									-2000
 								</Button>
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() => updateLifePoints(-1000)}
 									className="text-lg h-16"
 								>
 									-1000
 								</Button>
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() => updateLifePoints(-500)}
 									className="text-lg h-16"
 								>
@@ -199,24 +316,21 @@ export default function GuestControl() {
 
 							<div className="grid grid-cols-3 gap-3">
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() => updateLifePoints(-100)}
 									className="text-lg h-16"
 								>
 									-100
 								</Button>
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() => updateLifePoints(-50)}
 									className="text-lg h-16"
 								>
 									-50
 								</Button>
 								<Button
-									variant="destructive"
-									size="lg"
+									variant="frame"
 									onClick={() =>
 										setLifePoints(Math.floor(player.life_points / 2))
 									}
@@ -229,7 +343,6 @@ export default function GuestControl() {
 							<div className="grid grid-cols-3 gap-3">
 								<Button
 									variant="default"
-									size="lg"
 									onClick={() => updateLifePoints(50)}
 									className="text-lg h-16"
 								>
@@ -237,7 +350,6 @@ export default function GuestControl() {
 								</Button>
 								<Button
 									variant="default"
-									size="lg"
 									onClick={() => updateLifePoints(100)}
 									className="text-lg h-16"
 								>
@@ -245,7 +357,6 @@ export default function GuestControl() {
 								</Button>
 								<Button
 									variant="default"
-									size="lg"
 									onClick={() => updateLifePoints(500)}
 									className="text-lg h-16"
 								>
@@ -256,7 +367,6 @@ export default function GuestControl() {
 							<div className="grid grid-cols-2 gap-3">
 								<Button
 									variant="default"
-									size="lg"
 									onClick={() => updateLifePoints(1000)}
 									className="text-lg h-16"
 								>
@@ -264,7 +374,6 @@ export default function GuestControl() {
 								</Button>
 								<Button
 									variant="default"
-									size="lg"
 									onClick={() => updateLifePoints(2000)}
 									className="text-lg h-16"
 								>
@@ -272,8 +381,7 @@ export default function GuestControl() {
 								</Button>
 							</div>
 							<Button
-								variant="secondary"
-								size="lg"
+								variant="frame"
 								onClick={() => setLifePoints(8000)}
 								className="w-full h-14"
 							>
