@@ -71,6 +71,7 @@ export function DeckImporterForm() {
 
 	const exportCardsSequentially = async (
 		list: (Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[],
+		folderName: string,
 	) => {
 		setProgress({ current: 0, total: list.length, failures: 0 });
 		let failures = 0;
@@ -126,6 +127,7 @@ export function DeckImporterForm() {
 				// when card names (or ids) repeat.
 				await exportPreview(cardDraftSignal.value, {
 					id: `${c.id}-${i + 1}`,
+					folderName,
 				});
 			} catch (err) {
 				failures++;
@@ -155,6 +157,7 @@ export function DeckImporterForm() {
 		setLastResult(undefined);
 		setCards([]);
 		try {
+			const deckFolderName = file.name.replace(/\.ydk$/i, "") || "deck-import";
 			const res = await loadDeckCardsFromYdkFile(file);
 			if (!res) {
 				setStatus("Deck import only works in Tauri (not web mode). ");
@@ -173,7 +176,7 @@ export function DeckImporterForm() {
 			setCards(normalized);
 
 			setStatus(`Loaded ${normalized.length} cards. Starting export...`);
-			await exportCardsSequentially(normalized);
+			await exportCardsSequentially(normalized, deckFolderName);
 		} catch (err) {
 			setStatus(err instanceof Error ? err.message : "Failed to load deck.");
 		} finally {

@@ -4,6 +4,7 @@ use crate::services;
 pub struct StoreCardMakerImageRequest {
 	pub id: String,
 	pub bytes: Vec<u8>,
+	pub folder_name: Option<String>,
 }
 
 #[derive(serde::Serialize)]
@@ -22,6 +23,7 @@ pub async fn store_card_maker_image(
 		&app,
 		&req.bytes,
 		req.id.trim(),
+		req.folder_name.as_deref(),
 	)
 	.map_err(|e| format!("{e:#}"))?;
 

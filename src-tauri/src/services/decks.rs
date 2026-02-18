@@ -69,6 +69,41 @@ pub fn parse_ydk_ids(input: &str) -> Vec<u64> {
 	out
 }
 
+async fn process_fetched_ygoprodeck_card(
+	pool: &PgPool,
+	supabase: Option<&services::storage::SupabaseStorageConfig>,
+	card: &serde_json::Value,
+) -> anyhow::Result<()> {
+	let req = services::normalize::ygoprodeck_card_to_store_req(card)?;
+	let card_id = req.id.clone();
+	let source_img_url = req.img_url.clone();
+	services::cards::store_yugioh_card(pool, req).await?;
+
+	if let (Some(sb), Some(source_url)) = (supabase, source_img_url) {
+		let public_prefix = format!(
+			"{}/storage/v1/object/public/",
+			sb.url.trim_end_matches('/')
+		);
+		if !source_url.starts_with(&public_prefix) {
+			let path = format!("ygoprodeck/{card_id}.webp");
+			match services::storage::cache_remote_image_as_webp(sb, &source_url, &path, 90).await {
+				Ok(public_url) => {
+					if let Err(err) =
+						services::cards::update_yugioh_card_img_url(pool, &card_id, &public_url).await
+					{
+						eprintln!("Failed to update card img_url for {card_id}: {err:#}");
+					}
+				}
+				Err(err) => {
+					eprintln!("Failed to cache image for {card_id}: {err:#}");
+				}
+			}
+		}
+	}
+
+	Ok(())
+}
+
 pub async fn load_deck_cards_from_ydk_contents(
 	pool: &PgPool,
 	contents: &str,
@@ -111,53 +146,45 @@ pub async fn load_deck_cards_from_ydk_contents(
 			.collect::<Vec<_>>()
 			.join(",");
 		eprintln!("Fetching YGOProDeck cards for IDs: {}", chunk_str);
-		
-		let json = match services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await {
-			Ok(j) => j,
-			Err(e) => {
-				eprintln!("Failed to fetch YGOProDeck data for IDs {}: {:#}", chunk_str, e);
-				return Err(e);
+
+		match services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await {
+			Ok(json) => {
+				let data = json
+					.get("data")
+					.and_then(|v| v.as_array())
+					.ok_or_else(|| anyhow::anyhow!("ygoprodeck response missing 'data' array"))?;
+
+				for card in data {
+					process_fetched_ygoprodeck_card(pool, supabase, card).await?;
+				}
 			}
-		};
-		let data = json
-			.get("data")
-			.and_then(|v| v.as_array())
-			.ok_or_else(|| anyhow::anyhow!("ygoprodeck response missing 'data' array"))?;
-
-		for card in data {
-			let req = services::normalize::ygoprodeck_card_to_store_req(card)?;
-			let card_id = req.id.clone();
-			let source_img_url = req.img_url.clone();
-			services::cards::store_yugioh_card(pool, req).await?;
-
-			if let (Some(sb), Some(source_url)) = (supabase, source_img_url) {
-				let public_prefix = format!(
-					"{}/storage/v1/object/public/",
-					sb.url.trim_end_matches('/')
+			Err(err) => {
+				eprintln!(
+					"Batch fetch failed for IDs {}: {:#}. Falling back to per-ID fetch.",
+					chunk_str,
+					err
 				);
-				if !source_url.starts_with(&public_prefix) {
-					let path = format!("ygoprodeck/{card_id}.webp");
-					match services::storage::cache_remote_image_as_webp(
-						sb,
-						&source_url,
-						&path,
-						90,
-					)
-					.await
-					{
-						Ok(public_url) => {
-							if let Err(err) = services::cards::update_yugioh_card_img_url(
-								pool,
-								&card_id,
-								&public_url,
-							)
-							.await
-							{
-								eprintln!("Failed to update card img_url for {card_id}: {err:#}");
+
+				for id in chunk {
+					match services::ygoprodeck::fetch_cardinfo(None, None, Some(*id)).await {
+						Ok(json) => {
+							let data = json
+								.get("data")
+								.and_then(|v| v.as_array())
+								.ok_or_else(|| {
+									anyhow::anyhow!("ygoprodeck response missing 'data' array")
+								})?;
+
+							for card in data {
+								process_fetched_ygoprodeck_card(pool, supabase, card).await?;
 							}
 						}
-						Err(err) => {
-							eprintln!("Failed to cache image for {card_id}: {err:#}");
+						Err(single_err) => {
+							eprintln!(
+								"Skipping unresolved YGOProDeck id {}: {:#}",
+								id,
+								single_err
+							);
 						}
 					}
 				}

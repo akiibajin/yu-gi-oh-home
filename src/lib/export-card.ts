@@ -4,7 +4,7 @@ import { storeCardMakerWebpById } from "./tauri/card-maker-images";
 
 export const exportPreview = async (
 	draft: YugiohCardDraft,
-	opts?: { id?: string },
+	opts?: { id?: string; folderName?: string },
 ) => {
 	const node = document.getElementById("card-preview");
 	if (!node) {
@@ -29,7 +29,9 @@ export const exportPreview = async (
 	});
 
 	const id = opts?.id?.trim() || draft.name.trim() || `card-${Date.now()}`;
-	const res = await storeCardMakerWebpById(id, webpBlob);
+	const res = await storeCardMakerWebpById(id, webpBlob, {
+		folderName: opts?.folderName,
+	});
 	if (!res) {
 		throw new Error("Export only works in Tauri (not web mode).");
 	}

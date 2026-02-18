@@ -104,6 +104,30 @@ pub async fn cache_remote_image_as_webp(
 	)
 	.context("failed to convert downloaded image to webp")?;
 
-	upload_object(cfg, path, webp, "image/webp", true).await?;
-	Ok(public_object_url(cfg, path))
+	let public_url = public_object_url(cfg, path);
+	let max_attempts = 3;
+	for attempt in 1..=max_attempts {
+		match upload_object(cfg, path, webp.clone(), "image/webp", true).await {
+			Ok(()) => return Ok(public_url),
+			Err(err) => {
+				let err_text = format!("{err:#}");
+				if err_text.contains("409 Conflict") {
+					return Ok(public_url);
+				}
+
+				if attempt < max_attempts {
+					tokio::time::sleep(Duration::from_millis(500 * attempt as u64)).await;
+					continue;
+				}
+
+				return Err(anyhow::anyhow!(
+					"failed to cache image to supabase after {max_attempts} attempts: {err_text}"
+				));
+			}
+		}
+	}
+
+	Err(anyhow::anyhow!(
+		"failed to cache image to supabase after retries"
+	))
 }

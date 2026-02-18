@@ -61,6 +61,7 @@ pub fn store_card_maker_image(
 	app: &tauri::AppHandle,
 	bytes: &[u8],
 	id: &str,
+	folder_name: Option<&str>,
 ) -> anyhow::Result<StoredCardMakerImage> {
 	if bytes.is_empty() {
 		return Err(anyhow::anyhow!("image bytes are empty"));
@@ -75,22 +76,34 @@ pub fn store_card_maker_image(
 	let stem = sanitize_filename_stem(id);
 	let filename = format!("{stem}.webp");
 
+	let folder = folder_name
+		.map(str::trim)
+		.filter(|v| !v.is_empty())
+		.map(sanitize_filename_stem)
+		.filter(|v| !v.is_empty());
+
 	#[cfg(target_os = "android")]
 	{
-		match android_public_documents::store_webp_in_public_documents(&filename, bytes) {
-			Ok(uri) => {
-				let dir = PathBuf::from("Documents/yu-gi-oh-home");
-				let path = PathBuf::from(uri);
-				return Ok(StoredCardMakerImage { dir, filename, path });
-			}
-			Err(_e) => {
-				// Fallback: keep exporting working even if public Documents writing fails.
-				// (e.g. OEM restrictions).
+		if folder.is_none() {
+			match android_public_documents::store_webp_in_public_documents(&filename, bytes) {
+				Ok(uri) => {
+					let dir = PathBuf::from("Documents/yu-gi-oh-home");
+					let path = PathBuf::from(uri);
+					return Ok(StoredCardMakerImage { dir, filename, path });
+				}
+				Err(_e) => {
+					// Fallback: keep exporting working even if public Documents writing fails.
+					// (e.g. OEM restrictions).
+				}
 			}
 		}
 	}
 
-	let dir = card_maker_images_dir(app)?;
+	let mut dir = card_maker_images_dir(app)?;
+	if let Some(folder) = folder.as_ref() {
+		dir = dir.join(folder);
+		std::fs::create_dir_all(&dir).context("failed to create deck export folder")?;
+	}
 	let path = dir.join(&filename);
 
 	std::fs::write(&path, bytes).with_context(|| format!("failed to write image: {path:?}"))?;
