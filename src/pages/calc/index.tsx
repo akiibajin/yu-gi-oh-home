@@ -1,4 +1,5 @@
-import { PLAYERS_NAMES, ROYAL_LP, TAG_LP } from "@/lib/constants";
+import { PLAYERS_NAMES } from "@/lib/avatars";
+import { ROYAL_LP, TAG_LP } from "@/lib/constants";
 import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
 import { getCurrentBackground } from "@/lib/tauri/background";
 import type { YugiohBackground } from "@/lib/types";

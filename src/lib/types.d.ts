@@ -86,11 +86,13 @@ export interface YugiohMonsterStats {
 export interface YugiohCardDraft {
 	name: string;
 	cardType: YugiohCardType;
+	showDescription?: boolean;
 	pendulumDescription?: string;
 	description: string;
 	attribute: YugiohCardAttribute;
 	monsterType?: YugiohMonsterType;
 	subType?: MonsterType;
+	scale?: number;
 	isTuner?: boolean;
 	linkRating?: number;
 	linkMarkers?: LinkMarker[];
@@ -105,6 +107,7 @@ export interface YugiohCardDB {
 	id: string | number;
 	name: string;
 	card_type: YugiohCardType;
+	scale: number | null;
 	description: string;
 	attribute: YugiohCardAttribute | null;
 	monster_type: `${YugiohMonsterType} Monster`;

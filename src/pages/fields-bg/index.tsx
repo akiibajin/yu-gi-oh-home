@@ -15,7 +15,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { PLAYERS_NAMES } from "@/lib/constants";
 import normalizeCard from "@/lib/normalize-card";
 import { getCardsByUserId } from "@/lib/tauri/get-cards-by-user-id";
 import type { YugiohBackground, YugiohCardWithImgUrl } from "@/lib/types";
@@ -28,6 +27,7 @@ import {
 } from "@/lib/tauri/background";
 import { assignYugiohCardToUser } from "@/lib/tauri/store-card";
 import { cn } from "@/lib/utils";
+import { PLAYERS_NAMES } from "@/lib/avatars";
 
 function FieldsBgPage() {
 	const [currentUser, setCurrentUser] = useState<string>("");

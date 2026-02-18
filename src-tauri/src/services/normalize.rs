@@ -142,6 +142,18 @@ pub fn ygoprodeck_card_to_store_req(
 		.unwrap_or(0)
 		.clamp(i32::MIN as i64, i32::MAX as i64) as i32;
 
+	let scale = card
+		.get("scale")
+		.or_else(|| card.get("pscale"))
+		.and_then(|v| {
+			v.as_i64().or_else(|| {
+				v.as_str()
+					.and_then(|s| s.trim().parse::<i64>().ok())
+			})
+		})
+		.unwrap_or(0)
+		.clamp(0, i32::MAX as i64) as i32;
+
 	let link_rating = card
 		.get("linkval")
 		.and_then(|v| v.as_i64())
@@ -196,6 +208,7 @@ pub fn ygoprodeck_card_to_store_req(
 		level,
 		atk,
 		def,
+		scale,
 
 		link_rating,
 		link_markers,

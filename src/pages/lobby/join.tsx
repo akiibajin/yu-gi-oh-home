@@ -12,9 +12,9 @@ import {
 } from "@/components/ui/warcraftcn/card";
 import { joinLobby } from "@/lib/lobby";
 import { AvatarSelector } from "@/components/avatar-selector";
-import { PLAYERS_IMAGES } from "@/lib/constants";
 import { QRScanner } from "@/components/qr-scanner";
 import { QrCodeIcon, UsersIcon } from "lucide-react";
+import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export default function JoinLobby() {
 	const { route } = useLocation();

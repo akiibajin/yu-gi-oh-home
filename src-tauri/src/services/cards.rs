@@ -16,6 +16,7 @@ pub struct YugiohCard {
 	pub level: i32,
 	pub atk: i32,
 	pub def: i32,
+	pub scale: i32,
 
 	pub link_rating: Option<i32>,
 	pub link_markers: Option<Vec<String>>,
@@ -42,6 +43,7 @@ pub struct StoreYugiohCardRequest {
 	pub level: i32,
 	pub atk: i32,
 	pub def: i32,
+	pub scale: i32,
 
 	pub link_rating: Option<i32>,
 	pub link_markers: Option<Vec<String>>,
@@ -76,6 +78,7 @@ pub async fn store_yugioh_card(
 			level,
 			atk,
 			def,
+			scale,
 			link_rating,
 			link_markers,
 			spell_type,
@@ -83,7 +86,7 @@ pub async fn store_yugioh_card(
 			img_url,
 			user_id
 		)
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
 		ON CONFLICT (id) DO UPDATE SET
 			name = EXCLUDED.name,
 			card_type = EXCLUDED.card_type,
@@ -95,6 +98,7 @@ pub async fn store_yugioh_card(
 			level = EXCLUDED.level,
 			atk = EXCLUDED.atk,
 			def = EXCLUDED.def,
+			scale = EXCLUDED.scale,
 			link_rating = EXCLUDED.link_rating,
 			link_markers = EXCLUDED.link_markers,
 			spell_type = EXCLUDED.spell_type,
@@ -114,6 +118,7 @@ pub async fn store_yugioh_card(
 	.bind(req.level)
 	.bind(req.atk)
 	.bind(req.def)
+	.bind(req.scale)
 	.bind(req.link_rating)
 	.bind(&req.link_markers)
 	.bind(&req.spell_type)
@@ -199,6 +204,7 @@ pub async fn fetch_yugioh_card_by_id(pool: &PgPool, id: &str) -> anyhow::Result<
 			level,
 			atk,
 			def,
+			scale,
 			link_rating,
 			link_markers,
 			spell_type,
@@ -237,6 +243,7 @@ pub async fn fetch_yugioh_cards_by_name(pool: &PgPool, name: &str) -> anyhow::Re
 			level,
 			atk,
 			def,
+			scale,
 			link_rating,
 			link_markers,
 			spell_type,
@@ -277,6 +284,7 @@ pub async fn fetch_yugioh_cards_by_fname(pool: &PgPool, fname: &str) -> anyhow::
 			level,
 			atk,
 			def,
+			scale,
 			link_rating,
 			link_markers,
 			spell_type,

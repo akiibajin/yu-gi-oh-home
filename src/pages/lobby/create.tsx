@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/warcraftcn/card";
 import { createLobby } from "@/lib/lobby";
 import { AvatarSelector } from "@/components/avatar-selector";
-import { PLAYERS_IMAGES } from "@/lib/constants";
 import { CrownIcon } from "lucide-react";
+import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export default function CreateLobby() {
 	const { route } = useLocation();

@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/input-group";
 import { MinusIcon, PlusIcon, RotateCcwIcon } from "lucide-react";
 import { useState } from "preact/hooks";
-import { PLAYERS_IMAGES } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export type PlayerLifePoints = {
 	id: string;
@@ -47,7 +47,7 @@ function PlayerLifePointsCard({
 	};
 	const playerImage =
 		PLAYERS_IMAGES?.[player.name as keyof typeof PLAYERS_IMAGES] ||
-		PLAYERS_IMAGES.hectorJess;
+		PLAYERS_IMAGES["Hassan - Zane"];
 	const decreaseLifePoints = () => {
 		onLifePointsChange(
 			clamped - valueToIterate < 0 ? 0 : clamped - valueToIterate,

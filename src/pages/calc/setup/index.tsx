@@ -14,9 +14,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { PLAYERS_NAMES } from "@/lib/constants";
 import { useLocation, useRoute } from "preact-iso";
 import { useEffect, useMemo, useState } from "preact/hooks";
+import { PLAYERS_NAMES } from "@/lib/avatars";
 
 function defaultNames(count: number) {
 	return Array.from({ length: count }, (_, index) => {

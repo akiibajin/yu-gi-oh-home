@@ -5,7 +5,8 @@ const effectDescription = "/assets/images/effect-description.webp";
 import effectTitle from "@/assets/images/card-templates/effect-title.webp";
 import effectStats from "@/assets/images/card-templates/effect-stats.webp";
 const ritualDescription = "/assets/images/ritual-description.webp";
-// import ritualTitle from "@/assets/images/card-templates/ritual-title.webp";
+import ritualTitle from "@/assets/images/card-templates/ritual-title.webp";
+import ritualStats from "@/assets/images/card-templates/ritual-stats.webp";
 const fusionDescription = "/assets/images/fusion-description.webp";
 import fusionTitle from "@/assets/images/card-templates/fusion-title.webp";
 import fusionStats from "@/assets/images/card-templates/fusion-stats.webp";
@@ -22,6 +23,7 @@ const spellDescription = "/assets/images/spell-description.webp";
 import spellTitle from "@/assets/images/card-templates/spell-title.webp";
 const trapDescription = "/assets/images/trap-description.webp";
 import trapTitle from "@/assets/images/card-templates/trap-title.webp";
+import trapStats from "@/assets/images/card-templates/trap-stats.webp";
 const fieldDescription = "/assets/images/field-description.webp";
 import fieldTitle from "@/assets/images/card-templates/field-title.webp";
 import type { YugiohCardType, YugiohMonsterType } from "./types";
@@ -29,42 +31,50 @@ import type { YugiohCardType, YugiohMonsterType } from "./types";
 const getTypeCardBg = (
 	type: YugiohMonsterType | null,
 	card: YugiohCardType,
-): { description: string, title: string, stats?: string } => {
-	if (card === "Monster") {		
-		const types: Record<YugiohMonsterType, { description: string, title: string, stats?: string }> = {
-			Normal: { description: normalDescription,
+): { description: string; title: string; stats?: string } => {
+	if (card === "Monster") {
+		const types: Record<
+			YugiohMonsterType,
+			{ description: string; title: string; stats?: string }
+		> = {
+			Normal: {
+				description: normalDescription,
 				title: normalTitle,
 				stats: normalStats,
-			 },
-			Effect: { description: effectDescription,
+			},
+			Effect: {
+				description: effectDescription,
 				title: effectTitle,
 				stats: effectStats,
-			 },
-			Spirit: { description: effectDescription,
+			},
+			Spirit: {
+				description: effectDescription,
 				title: effectTitle,
 				stats: effectStats,
-			 },
-			Gemini: { description: effectDescription,
+			},
+			Gemini: {
+				description: effectDescription,
 				title: effectTitle,
 				stats: effectStats,
-			 },			
-			 Ritual: { description: ritualDescription,
-				title: linkTitle,
-				stats: linkStats,
-			  },
-			Fusion: { description: fusionDescription,
+			},
+			Ritual: {
+				description: ritualDescription,
+				title: ritualTitle,
+				stats: ritualStats,
+			},
+			Fusion: {
+				description: fusionDescription,
 				title: fusionTitle,
 				stats: fusionStats,
-			 },
-			Synchro: { description: synchroDescription,
+			},
+			Synchro: {
+				description: synchroDescription,
 				title: synchroTitle,
 				stats: synchroStats,
-			 },
-			Xyz: { description: xyzDescription,
-				title: xyzTitle,
-				stats: xyzStats,
 			},
-			Link: { description: linkDescription,
+			Xyz: { description: xyzDescription, title: xyzTitle, stats: xyzStats },
+			Link: {
+				description: linkDescription,
 				title: linkTitle,
 				stats: linkStats,
 			},
@@ -98,31 +108,24 @@ const getTypeCardBg = (
 				title: linkTitle,
 				stats: linkStats,
 			},
-			Trap: { description: trapDescription,
+			Trap: {
+				description: trapDescription,
 				title: trapTitle,
-				stats: effectStats,
-			 },
+				stats: trapStats,
+			},
 		};
 		return types[type as YugiohMonsterType];
 	}
 	if (card === "Spell") {
-		return { description: spellDescription,
-			title: spellTitle,
-		 };
+		return { description: spellDescription, title: spellTitle };
 	}
 	if (card === "Trap") {
-		return { description: trapDescription,
-			title: trapTitle,
-		 };
+		return { description: trapDescription, title: trapTitle };
 	}
 	if (card === "Field") {
-		return { description: fieldDescription,
-			title: fieldTitle,
-		 };
+		return { description: fieldDescription, title: fieldTitle };
 	}
-	return { description: effectDescription,
-		title: effectTitle,
-	 };
+	return { description: effectDescription, title: effectTitle };
 };
 
 export default getTypeCardBg;

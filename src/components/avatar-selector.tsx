@@ -1,4 +1,4 @@
-import { PLAYERS_IMAGES } from "@/lib/constants";
+import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 interface AvatarSelectorProps {
 	selectedAvatar: string;

@@ -56,7 +56,7 @@ export function DeckImporterForm() {
 		await new Promise<void>((r) => requestAnimationFrame(() => r()));
 
 		const start = Date.now();
-		const timeoutMs = 8000;
+		const timeoutMs = 3000;
 		while (Date.now() - start < timeoutMs) {
 			const imgs = Array.from(node.querySelectorAll("img"));
 			const allLoaded = imgs.every(
@@ -81,22 +81,26 @@ export function DeckImporterForm() {
 			setStatus(`Exporting ${i + 1}/${list.length}: ${c.name}`);
 
 			try {
+				const currentDraft = cardDraftSignal.value;
 				// Always map the card first (with no image) so the preview never
 				// "sticks" on the previous card if fetching the new image fails.
 				cardDraftSignal.value = {
 					name: c.name,
 					cardType: c.cardType,
+					showDescription: currentDraft.showDescription ?? true,
 					pendulumDescription: c.pendulumDescription ?? "",
 					description: c.description,
 					attribute: c.attribute,
 					monsterType: c.monsterType,
 					subType: c.subType,
 					isTuner: c.isTuner,
+					scale: c.scale,
 					linkRating: c.linkRating,
 					linkMarkers: c.linkMarkers,
 					stats: c.stats,
 					spellType: c.spellType,
 					trapType: c.trapType,
+					objectFit: currentDraft.objectFit,
 					img: null,
 				};
 
@@ -227,7 +231,7 @@ export function DeckImporterForm() {
 							/>
 							<Button
 								type="button"
-								variant="outline"
+								variant="frame"
 								onClick={() => {
 									setFile(null);
 									setStatus("");

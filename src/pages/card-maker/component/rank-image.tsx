@@ -59,7 +59,7 @@ function RankImage(props: RankImageProps) {
 				alt={`Rank option ${option}`}
 				className="size-full absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
 			/>
-			<p className="text-white leading-7.5 relative mt-px bg-black size-9 rounded-full text-center text-shadow-[0px_0px_2px_black] font-extrabold text-3xl">
+			<p className="text-white leading-7.5 relative mt-px bg-black size-9 rounded-full text-center text-shadow-[0px_0px_2px_black] font-extrabold text-4xl">
 				{value}
 			</p>
 			{arrows.map((a) => (

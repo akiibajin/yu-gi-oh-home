@@ -31,24 +31,6 @@ import warrior from "../assets/images/Warrior.webp";
 import wingedBeast from "../assets/images/Winged_Beast.webp";
 import wyrm from "../assets/images/Wyrm_Type.webp";
 import zombie from "../assets/images/Zombie.webp";
-import hassanJoey from "@/assets/images/avatars/hassan - joey.webp";
-import hassanJaden from "@/assets/images/avatars/hassan - jaden.webp";
-import hassanZane from "@/assets/images/avatars/hassan - zane.webp";
-import hassanMako from "@/assets/images/avatars/hassan - mako.webp";
-import hectorYusei from "@/assets/images/avatars/hector - yusei.webp";
-import hectorNinja from "@/assets/images/avatars/hector - ninja.webp";
-import hectorYisus from "@/assets/images/avatars/hector - yisus.webp";
-import hectorAtikus from "@/assets/images/avatars/hector - atikus.webp";
-import jessDarks from "@/assets/images/avatars/jess - darks.webp";
-import jessKaiba from "@/assets/images/avatars/jess - kaiba.webp";
-import jessCrowler from "@/assets/images/avatars/jess - crowler.webp";
-import jessPegasus from "@/assets/images/avatars/jess - pegasus.webp";
-import wallysMarik from "@/assets/images/avatars/wallys - marik.webp";
-import wallysYuya from "@/assets/images/avatars/wallys - yuya.webp";
-import wallysChaz from "@/assets/images/avatars/wallys - chaz.webp";
-import wallysJack from "@/assets/images/avatars/wallys - jack.webp";
-import joeyYuya from "@/assets/images/avatars/joey - yuya.webp";
-import yuseiPegasus from "@/assets/images/avatars/yusei - pegasus.webp";
 import normalSpellIcon from "../assets/images/card-templates/Normal Spell.webp";
 import continuousSpellIcon from "../assets/images/card-templates/Continue.webp";
 import equipSpellIcon from "../assets/images/card-templates/equip.webp";
@@ -72,42 +54,8 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const ROYAL_LP = 8000;
 export const TAG_LP = 12000;
-export const PLAYERS_NAMES = [
-	"Hector",
-	"Wallys",
-	"Hassan",
-	"Jess",
-	"Chauta",
-	"hectorJess",
-	"hassanWallys",
-];
-export const PLAYERS_IMAGES = {
-	// Hector variants
-	"Hector - Yusei": hectorYusei,
-	"Hector - Ninja": hectorNinja,
-	"Hector - Yisus": hectorYisus,
-	"Hector - Atikus": hectorAtikus,
-	// Wallys variants
-	"Wallys - Yuya": wallysYuya,
-	"Wallys - Marik": wallysMarik,
-	"Wallys - Chaz": wallysChaz,
-	"Wallys - Jack": wallysJack,
-	// Hassan variants
-	"Hassan - Joey": hassanJoey,
-	"Hassan - Jaden": hassanJaden,
-	"Hassan - Zane": hassanZane,
-	"Hassan - Mako": hassanMako,
-	// Jess variants
-	"Jess - Darks": jessDarks,
-	"Jess - Kaiba": jessKaiba,
-	"Jess - Crowler": jessCrowler,
-	"Jess - Pegasus": jessPegasus,
-	// Team variants
-	"Hector & Jess": yuseiPegasus,
-	"Hassan & Wallys": joeyYuya,
-};
 
-export const YUGIOH_MAX_STARS = 12;
+export const YUGIOH_MAX_STARS = 13;
 export const YUGIOH_MAX_STAT = 99999;
 
 export const YUGIOH_ATTRIBUTES = [

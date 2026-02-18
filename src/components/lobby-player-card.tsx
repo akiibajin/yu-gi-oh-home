@@ -5,11 +5,11 @@ import {
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
 import { LifePointsCounter } from "@/components/life-points-counter";
-import { PLAYERS_IMAGES } from "@/lib/constants";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { playLifePointsChangeSfx } from "@/lib/sfx";
 import type { LobbyPlayer } from "@/lib/lobby";
 import { useEffect, useRef } from "preact/hooks";
+import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 interface LobbyPlayerCardProps {
 	player: LobbyPlayer;
@@ -37,7 +37,7 @@ export function LobbyPlayerCard({
 		}
 		prevLifePointsRef.current = player.life_points;
 	}, [player.life_points]);
-	const playerImage = player.avatar_url || PLAYERS_IMAGES.defaultAvatar;
+	const playerImage = player.avatar_url || PLAYERS_IMAGES["Hector - Ninja"];
 	return (
 		<Card
 			className={`bg-transparent h-fit max-w-95 ${

@@ -21,6 +21,7 @@ pub struct YugiohCard {
 	pub level: i32,
 	pub atk: i32,
 	pub def: i32,
+	pub scale: i32,
 
 	pub link_rating: Option<i32>,
 	pub link_markers: Option<Vec<String>>,
@@ -56,7 +57,12 @@ pub fn parse_ydk_ids(input: &str) -> Vec<u64> {
 		}
 
 		if let Ok(id) = line.parse::<u64>() {
-			out.push(id);
+			// Reject ID 0 and extremely large IDs that are likely errors
+			if id > 0 && id < 1_000_000_000 {
+				out.push(id);
+			} else {
+				eprintln!("Skipping invalid card ID from .ydk: {}", id);
+			}
 		}
 	}
 
@@ -99,7 +105,20 @@ pub async fn load_deck_cards_from_ydk_contents(
 		.collect();
 
 	for (idx, chunk) in missing_ids_u64.chunks(10).enumerate() {
-		let json = services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await?;
+		let chunk_str = chunk
+			.iter()
+			.map(|id| id.to_string())
+			.collect::<Vec<_>>()
+			.join(",");
+		eprintln!("Fetching YGOProDeck cards for IDs: {}", chunk_str);
+		
+		let json = match services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await {
+			Ok(j) => j,
+			Err(e) => {
+				eprintln!("Failed to fetch YGOProDeck data for IDs {}: {:#}", chunk_str, e);
+				return Err(e);
+			}
+		};
 		let data = json
 			.get("data")
 			.and_then(|v| v.as_array())
@@ -193,6 +212,7 @@ async fn fetch_cards_by_ids(pool: &PgPool, ids: &[String]) -> anyhow::Result<Vec
 			level,
 			atk,
 			def,
+			scale,
 			link_rating,
 			link_markers,
 			spell_type,

@@ -51,6 +51,7 @@ const normalizeCard = (card: YugiohCardDB): YugiohCardWithImgUrl => {
 		monsterType: formatMonsterType(card.monster_type),
 		subType: card.sub_type || undefined,
 		isTuner: card.is_tuner || undefined,
+		scale: card.scale ?? undefined,
 		linkRating: card.link_rating || undefined,
 		linkMarkers: card.link_markers || undefined,
 		stats: {

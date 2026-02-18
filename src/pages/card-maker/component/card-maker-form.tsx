@@ -65,6 +65,14 @@ export function CardMakerForm() {
 			[key]: value,
 		};
 	};
+	const onPendulumEffectInput = (value: string) => {
+		setDraftField("pendulumDescription", value);
+		const currentDescription = draft.description;
+		if (!currentDescription) return;
+		const split = splitPendulumDescription(currentDescription);
+		if (!split.didSplit) return;
+		setDraftField("description", split.monsterDescription);
+	};
 
 	const applySplitIfPresent = (value: string) => {
 		if (!isPendulum) return false;
@@ -358,6 +366,20 @@ export function CardMakerForm() {
 										setDraftField("isTuner", checked)
 									}
 								/>
+								<Input
+									id="cm-scale"
+									type="number"
+									min={0}
+									max={13}
+									value={String(draft.scale ?? 0)}
+									onInput={(e) => {
+										const parsed = Number.parseInt(e.currentTarget.value, 10);
+										const next = Number.isFinite(parsed)
+											? clampInt(parsed, 0, 13)
+											: 0;
+										setDraftField("scale", next);
+									}}
+								/>
 							</div>
 						</div>
 
@@ -487,7 +509,36 @@ export function CardMakerForm() {
 						</div>
 					</fieldset>
 				) : null}
+				{isPendulum ? (
+					<div className="space-y-2">
+						<label
+							className="text-sm font-medium"
+							htmlFor="cm-pendulum-description"
+						>
+							Pendulum Effect
+						</label>
+						<Textarea
+							id="cm-pendulum-description"
+							value={draft.pendulumDescription ?? ""}
+							onInput={(e) => onPendulumEffectInput(e.currentTarget.value)}
+							placeholder="Pendulum effect text..."
+							rows={4}
+						/>
+					</div>
+				) : null}
 				<div className="space-y-2">
+					<div className="flex items-center justify-between">
+						<label className="text-sm font-medium" htmlFor="cm-show-description">
+							Show Description in Preview
+						</label>
+						<Switch
+							id="cm-show-description"
+							checked={draft.showDescription ?? true}
+							onCheckedChange={(checked: boolean) =>
+								setDraftField("showDescription", checked)
+							}
+						/>
+					</div>
 					<label className="text-sm font-medium" htmlFor="cm-description">
 						{isPendulum ? "Monster Effect" : "Description"}
 					</label>
