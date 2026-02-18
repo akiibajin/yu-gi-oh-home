@@ -43,7 +43,7 @@ function Home() {
 	};
 
 	return (
-		<div className="flex flex-1 items-center size-full justify-center p-4">
+		<div className="flex min-h-full w-full justify-center p-4 md:items-center">
 			<div className="w-full max-w-4xl space-y-6">
 				<Card>
 					<CardHeader>

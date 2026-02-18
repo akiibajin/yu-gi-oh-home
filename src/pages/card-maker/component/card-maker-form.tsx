@@ -158,10 +158,11 @@ export function CardMakerForm() {
 					<label className="text-sm font-medium" htmlFor="cm-image">
 						Image
 					</label>
-					<div className="flex items-center gap-2">
+					<div className="flex flex-col md:flex-row items-center gap-2">
 						<Input
 							id="cm-image"
 							type="file"
+							className="w-11/12 md:w-auto"
 							accept="image/*"
 							onChange={(e) => {
 								const file = e.currentTarget.files?.[0] ?? null;

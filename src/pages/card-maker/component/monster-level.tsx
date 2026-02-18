@@ -30,7 +30,7 @@ function MonsterLevel(props: MonsterLevelProps) {
 			<img src={isXyz ? rank : star} alt="level" className="size-12" />
 			<p
 				className={cn(
-					"absolute text-shadow-outline text-4xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+					"absolute text-shadow-outline text-4xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-[40%] md:-translate-y-1/2",
 				)}
 			>
 				{level}

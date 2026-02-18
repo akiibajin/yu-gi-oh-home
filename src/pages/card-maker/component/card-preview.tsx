@@ -170,7 +170,9 @@ export function CardPreview() {
 	return (
 		<div className="min-h-65 overflow-x-auto space-y-3 card-maker-preview">
 			<div
-				className="relative px-5 flex flex-col gap-2 pb-6 size-full justify-end items-end w-105 h-154"
+				className={cn(
+					"relative px-5 flex flex-col gap-2 pb-6 size-full justify-end items-end w-105 h-154",					
+				)}
 				id="card-preview"
 			>
 				<img
@@ -201,7 +203,7 @@ export function CardPreview() {
 							{isPendulum && (
 								<div className="absolute flex items-center justify-center -right-8 z-1">
 									<img src={blueGem} alt="blue-gem" className="size-12" />
-									<p className="absolute text-3xl text-white text-shadow-outline">
+									<p className="absolute top-1/2 left-1/2 text-3xl leading-6 transform -translate-x-1/2 -translate-y-2/5 md:-translate-y-1/2 text-white text-shadow-outline">
 										{draft.scale}
 									</p>
 								</div>
@@ -211,7 +213,7 @@ export function CardPreview() {
 								src={typeCardImg.stats ?? ""}
 								alt="atk"
 							/>
-							<p className="relative mb-2 text-5xl text-white text-shadow-outline">
+							<p className="relative mt-2 md:mt-0 md:mb-2 text-5xl text-white text-shadow-outline">
 								{draft.stats.atk}
 							</p>
 						</div>
@@ -220,7 +222,7 @@ export function CardPreview() {
 								{isPendulum && (
 									<div className="absolute flex items-center justify-center -left-8 z-1">
 										<img src={redGem} alt="red-gem" className="size-12" />
-										<p className="absolute top-1/2 left-1/2 text-3xl leading-6 transform -translate-x-1/2 -translate-y-1/2 text-white text-shadow-outline">
+										<p className="absolute top-1/2 left-1/2 text-3xl leading-6 transform -translate-x-1/2 -translate-y-2/5 md:-translate-y-1/2 text-white text-shadow-outline">
 											{draft.scale}
 										</p>
 									</div>
@@ -230,7 +232,7 @@ export function CardPreview() {
 									src={typeCardImg.stats ?? ""}
 									alt="def"
 								/>
-								<p className="relative mb-2 text-5xl text-white text-shadow-outline">
+								<p className="relative mt-2 md:mt-0 md:mb-2 text-5xl text-white text-shadow-outline">
 									{draft.stats.def}
 								</p>
 							</div>
@@ -303,7 +305,7 @@ export function CardPreview() {
 							className="absolute w-full opacity-70 h-8"
 						/>
 						<p
-							className="relative text-3xl text-shadow-outline w-full leading-7 max-w-[90%] ml-4 z-2 whitespace-nowrap"
+							className="relative text-3xl text-shadow-outline w-full md:leading-7 max-w-[90%] ml-4 z-2 whitespace-nowrap"
 							ref={displayNameRef}
 						>
 							{displayName}
