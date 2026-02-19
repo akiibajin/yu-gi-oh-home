@@ -23,7 +23,8 @@ export type YugiohMonsterType =
 	| "Pendulum Synchro"
 	| "Pendulum Xyz"
 	| "Pendulum Ritual"
-	| "Trap";
+	| "Trap"
+	| "Token";
 export type MonsterType =
 	| "Aqua"
 	| "Beast"
@@ -60,6 +61,19 @@ export type YugiohSpellType =
 	| "Ritual";
 export type YugiohTrapType = "Normal" | "Continuous" | "Counter";
 
+export type YugiohDescriptionStatsBoxColor =
+	| "auto"
+	| "void"
+	| "Normal"
+	| "Effect"
+	| "Ritual"
+	| "Fusion"
+	| "Synchro"
+	| "Xyz"
+	| "Link"
+	| "Trap"
+	| "Spell";
+
 export type YugiohCardType = "Monster" | "Spell" | "Trap" | "Field";
 
 export type YugiohRarity =
@@ -79,8 +93,8 @@ export type LinkMarker =
 	| "Top-right";
 export interface YugiohMonsterStats {
 	level: number; // stars
-	atk: number;
-	def: number;
+	atk: number | string;
+	def: number | string;
 }
 
 export interface YugiohCardDraft {
@@ -99,6 +113,7 @@ export interface YugiohCardDraft {
 	stats: YugiohMonsterStats;
 	spellType?: YugiohSpellType;
 	trapType?: YugiohTrapType;
+	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
 	img: Blob | null;
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 }

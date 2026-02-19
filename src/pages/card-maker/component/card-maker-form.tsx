@@ -25,6 +25,7 @@ import {
 	MONSTER_TYPES,
 	SPELL_ICONS,
 	TRAP_ICONS,
+	YUGIOH_DESCRIPTION_STATS_BOX_COLORS,
 } from "@/lib/constants";
 import type {
 	LinkMarker,
@@ -32,6 +33,7 @@ import type {
 	YugiohCardAttribute,
 	YugiohCardDraft,
 	YugiohCardType,
+	YugiohDescriptionStatsBoxColor,
 	YugiohMonsterType,
 	YugiohSpellType,
 	YugiohTrapType,
@@ -45,6 +47,23 @@ import { exportPreview } from "@/lib/export-card";
 
 function clampInt(value: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, Math.trunc(value)));
+}
+
+function parseBattleStatInput(
+	value: string,
+	currentValue: number | string,
+): number | string {
+	const trimmed = value.trim();
+	if (!trimmed) return 0;
+	if (trimmed === "?") return "?";
+	if (trimmed === "∞") return "∞";
+	if (/^x\d+$/i.test(trimmed)) {
+		return `x${trimmed.slice(1)}`;
+	}
+	if (/^\d+$/.test(trimmed)) {
+		return clampInt(Number.parseInt(trimmed, 10), 0, YUGIOH_MAX_STAT);
+	}
+	return currentValue;
 }
 
 export function CardMakerForm() {
@@ -149,54 +168,152 @@ export function CardMakerForm() {
 		}
 	};
 	return (
-		<Card className="w-full">
+		<Card className="w-full min-w-0">
 			<CardHeader>
 				<CardTitle>Card Options</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-4">
-				<div className="space-y-2">
+			<CardContent className="space-y-5 min-w-0 **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full">
+				<div className="space-y-4 rounded-md border p-3 sm:p-4">
+					<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
+						<div className="space-y-2 min-w-0">
+							<label className="text-sm font-medium" htmlFor="cm-name">
+								Name
+							</label>
+							<Input
+								id="cm-name"
+								className="w-full"
+								value={draft.name}
+								onInput={(e) => setDraftField("name", e.currentTarget.value)}
+								placeholder="Dark Magician"
+							/>
+						</div>
+
+						<div className="space-y-2 min-w-0">
+							<label className="text-sm font-medium" htmlFor="cm-card-type">
+								Card Type
+							</label>
+							<Select
+								value={draft.cardType}
+								onValueChange={(value: string) =>
+									setDraftField("cardType", value as YugiohCardType)
+								}
+							>
+								<SelectTrigger id="cm-card-type" className="w-full">
+									<SelectValue placeholder="Type" />
+								</SelectTrigger>
+								<SelectContent>
+									{YUGIOH_CARD_TYPES.map((t) => (
+										<SelectItem key={t} value={t}>
+											{t}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+
+						{!isFieldSpell && !isMonster ? (
+							<div className="space-y-2 min-w-0 md:col-span-2">
+								<label
+									className="text-sm font-medium"
+									htmlFor="cm-spell-trap-type"
+								>
+									Spell/Trap Type
+								</label>
+								<Select
+									value={
+										draft.cardType === "Spell"
+											? draft.spellType
+											: draft.trapType
+									}
+									onValueChange={(value: string) =>
+										setDraftField(
+											draft.cardType === "Spell" ? "spellType" : "trapType",
+											value as YugiohSpellType | YugiohTrapType,
+										)
+									}
+								>
+									<SelectTrigger id="cm-spell-trap-type" className="w-full">
+										<SelectValue placeholder="Select Spell/Trap Type" />
+									</SelectTrigger>
+									<SelectContent>
+										{draft.cardType === "Spell"
+											? SPELL_TYPES.map((t) => (
+													<SelectItem key={t} value={t}>
+														<img
+															src={SPELL_ICONS[t]}
+															alt={t}
+															className="size-4"
+														/>
+														{t}
+													</SelectItem>
+												))
+											: TRAP_TYPES.map((t) => (
+													<SelectItem key={t} value={t}>
+														<img
+															src={TRAP_ICONS[t]}
+															alt={t}
+															className="size-4"
+														/>
+														{t}
+													</SelectItem>
+												))}
+									</SelectContent>
+								</Select>
+							</div>
+						) : null}
+					</div>
+				</div>
+
+				<div className="space-y-3 rounded-md border p-3 sm:p-4">
 					<label className="text-sm font-medium" htmlFor="cm-image">
-						Image
+						Card Image
 					</label>
-					<div className="flex flex-col md:flex-row items-center gap-2">
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center *:min-w-0">
 						<Input
 							id="cm-image"
 							type="file"
-							className="w-11/12 md:w-auto"
+							className="w-full max-w-full"
 							accept="image/*"
 							onChange={(e) => {
 								const file = e.currentTarget.files?.[0] ?? null;
 								handleImageUpload(file);
 							}}
 						/>
-
-						<Button
-							type="button"
-							variant="frame"
-							onClick={() => handleImageUpload(null)}
-							disabled={!draft.img}
-						>
-							Clear
-						</Button>
-						<Select
-							onValueChange={(value: string) =>
-								setDraftField(
-									"objectFit",
-									value as "cover" | "contain" | "fill" | "none" | "scale-down",
-								)
-							}
-						>
-							<SelectTrigger className="h-8">
-								<SelectValue placeholder="Object Fit" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="contain">Contain</SelectItem>
-								<SelectItem value="cover">Cover</SelectItem>
-								<SelectItem value="fill">Fill</SelectItem>
-								<SelectItem value="scale-down">Scale-down</SelectItem>
-								<SelectItem value="none">None</SelectItem>
-							</SelectContent>
-						</Select>
+						<div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-[auto_minmax(10rem,1fr)]">
+							<Button
+								type="button"
+								variant="frame"
+								onClick={() => handleImageUpload(null)}
+								disabled={!draft.img}
+							>
+								Clear
+							</Button>
+							<Select
+								value={draft.objectFit}
+								onValueChange={(value: string) =>
+									setDraftField(
+										"objectFit",
+										value as
+											| "cover"
+											| "contain"
+											| "fill"
+											| "none"
+											| "scale-down",
+									)
+								}
+							>
+								<SelectTrigger className="h-8 w-full">
+									<SelectValue placeholder="Object Fit" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="contain">Contain</SelectItem>
+									<SelectItem value="cover">Cover</SelectItem>
+									<SelectItem value="fill">Fill</SelectItem>
+									<SelectItem value="scale-down">Scale-down</SelectItem>
+									<SelectItem value="none">None</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 					{draft.img ? (
 						<div className="text-xs text-muted-foreground">
@@ -205,83 +322,14 @@ export function CardMakerForm() {
 						</div>
 					) : null}
 				</div>
-
-				<div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-					<div className="min-w-0 flex-1 space-y-2">
-						<label className="text-sm font-medium" htmlFor="cm-name">
-							Name
-						</label>
-						<Input
-							id="cm-name"
-							value={draft.name}
-							onInput={(e) => setDraftField("name", e.currentTarget.value)}
-							placeholder="Dark Magician"
-						/>
-					</div>
-
-					<div className="w-full space-y-2 sm:w-44">
-						<label className="text-sm font-medium" htmlFor="cm-card-type">
-							Card Type
-						</label>
-						<Select
-							value={draft.cardType}
-							onValueChange={(value: string) =>
-								setDraftField("cardType", value as YugiohCardType)
-							}
-						>
-							<SelectTrigger id="cm-card-type" className="w-full">
-								<SelectValue placeholder="Type" />
-							</SelectTrigger>
-							<SelectContent>
-								{YUGIOH_CARD_TYPES.map((t) => (
-									<SelectItem key={t} value={t}>
-										{t}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-				{!isFieldSpell && !isMonster ? (
-					<Select
-						value={
-							draft.cardType === "Spell" ? draft.spellType : draft.trapType
-						}
-						onValueChange={(value: string) =>
-							setDraftField(
-								draft.cardType === "Spell" ? "spellType" : "trapType",
-								value as YugiohSpellType | YugiohTrapType,
-							)
-						}
-					>
-						<SelectTrigger className="w-full">
-							<SelectValue placeholder="Select Spell/Trap Type" />
-						</SelectTrigger>
-						<SelectContent>
-							{draft.cardType === "Spell"
-								? SPELL_TYPES.map((t) => (
-										<SelectItem key={t} value={t}>
-											<img src={SPELL_ICONS[t]} alt={t} className="size-4" />
-											{t}
-										</SelectItem>
-									))
-								: TRAP_TYPES.map((t) => (
-										<SelectItem key={t} value={t}>
-											<img src={TRAP_ICONS[t]} alt={t} className="size-4" />
-											{t}
-										</SelectItem>
-									))}
-						</SelectContent>
-					</Select>
-				) : null}
 				{isMonster ? (
-					<fieldset className="space-y-4 rounded-md border p-4">
+					<fieldset className="space-y-4 rounded-md border p-3 sm:p-4">
 						<legend className="px-1 text-sm font-medium">
 							Monster Options
 						</legend>
 
-						<div className="grid gap-4 md:grid-cols-2">
-							<div className="space-y-2">
+						<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
+							<div className="space-y-2 min-w-0">
 								<label className="text-sm font-medium" htmlFor="cm-attribute">
 									Attribute
 								</label>
@@ -304,30 +352,7 @@ export function CardMakerForm() {
 									</SelectContent>
 								</Select>
 							</div>
-							<div className="space-y-2">
-								<label className="text-sm font-medium" htmlFor="cm-sub-type">
-									Type
-								</label>
-								<Select
-									value={draft.subType}
-									onValueChange={(value: string) =>
-										setDraftField("subType", value as MonsterType)
-									}
-								>
-									<SelectTrigger id="cm-sub-type" className="w-full">
-										<SelectValue placeholder="Select an attribute" />
-									</SelectTrigger>
-									<SelectContent>
-										{MONSTER_TYPES.map((a) => (
-											<SelectItem key={a.title} value={a.title}>
-												<img className="size-4" src={a.img} alt={a.title} />
-												{a.title}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="space-y-2">
+							<div className="space-y-2 min-w-0">
 								<label
 									className="text-sm font-medium"
 									htmlFor="cm-monster-type"
@@ -352,46 +377,81 @@ export function CardMakerForm() {
 									</SelectContent>
 								</Select>
 							</div>
-							<div className="space-y-2 flex items-end gap-2">
-								<label
-									className="text-sm font-medium m-0"
-									htmlFor="cm-is-tuner"
-								>
-									Is Tuner?
+
+							<div className="space-y-2 min-w-0">
+								<label className="text-sm font-medium" htmlFor="cm-sub-type">
+									Type
 								</label>
-								<Switch
-									id="cm-is-tuner"
-									type="checkbox"
-									checked={draft.isTuner}
-									onCheckedChange={(checked: boolean) =>
-										setDraftField("isTuner", checked)
+								<Select
+									value={draft.subType}
+									onValueChange={(value: string) =>
+										setDraftField("subType", value as MonsterType)
 									}
-								/>
-								<Input
-									id="cm-scale"
-									type="number"
-									min={0}
-									max={13}
-									value={String(draft.scale ?? 0)}
-									onInput={(e) => {
-										const parsed = Number.parseInt(e.currentTarget.value, 10);
-										const next = Number.isFinite(parsed)
-											? clampInt(parsed, 0, 13)
-											: 0;
-										setDraftField("scale", next);
-									}}
-								/>
+								>
+									<SelectTrigger id="cm-sub-type" className="w-full">
+										<SelectValue placeholder="Select an attribute" />
+									</SelectTrigger>
+									<SelectContent>
+										{MONSTER_TYPES.map((a) => (
+											<SelectItem key={a.title} value={a.title}>
+												<img className="size-4" src={a.img} alt={a.title} />
+												{a.title}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
+							<div className="space-y-3 min-w-0">
+								<div className="flex items-center justify-between rounded-md border px-3 py-2">
+									<label className="text-sm font-medium" htmlFor="cm-is-tuner">
+										Is Tuner?
+									</label>
+									<Switch
+										id="cm-is-tuner"
+										type="checkbox"
+										checked={draft.isTuner}
+										onCheckedChange={(checked: boolean) =>
+											setDraftField("isTuner", checked)
+										}
+									/>
+								</div>
+								{isPendulum ? (
+									<div className="space-y-2">
+										<label className="text-sm font-medium" htmlFor="cm-scale">
+											Pendulum Scale
+										</label>
+										<Input
+											id="cm-scale"
+											className="w-full"
+											type="number"
+											min={0}
+											max={13}
+											value={String(draft.scale ?? 0)}
+											onInput={(e) => {
+												const parsed = Number.parseInt(
+													e.currentTarget.value,
+													10,
+												);
+												const next = Number.isFinite(parsed)
+													? clampInt(parsed, 0, 13)
+													: 0;
+												setDraftField("scale", next);
+											}}
+										/>
+									</div>
+								) : null}
 							</div>
 						</div>
 
-						<div className="grid gap-4 md:grid-cols-3">
+						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 *:min-w-0">
 							{!isLink ? (
-								<div className="space-y-2">
+								<div className="space-y-2 min-w-0">
 									<label className="text-sm font-medium" htmlFor="cm-level">
 										Stars (Level)
 									</label>
 									<Input
 										id="cm-level"
+										className="w-full"
 										type="number"
 										min={1}
 										max={YUGIOH_MAX_STARS}
@@ -412,54 +472,56 @@ export function CardMakerForm() {
 								</div>
 							) : null}
 
-							<div className="space-y-2">
+							<div className="space-y-2 min-w-0">
 								<label className="text-sm font-medium" htmlFor="cm-atk">
 									ATK
 								</label>
 								<Input
 									id="cm-atk"
-									type="number"
-									min={0}
-									max={YUGIOH_MAX_STAT}
+									className="w-full"
+									type="text"
 									value={String(draft.stats.atk)}
 									onInput={(e) => {
-										const parsed = Number.parseInt(e.currentTarget.value, 10);
+										const parsed = parseBattleStatInput(
+											e.currentTarget.value,
+											cardDraftSignal.value.stats.atk,
+										);
 										cardDraftSignal.value = {
 											...cardDraftSignal.value,
 											stats: {
 												...cardDraftSignal.value.stats,
-												atk: Number.isFinite(parsed)
-													? clampInt(parsed, 0, YUGIOH_MAX_STAT)
-													: 0,
+												atk: parsed,
 											},
 										};
 									}}
+									placeholder="0, ?, ∞, x0000"
 								/>
 							</div>
 
 							{!isLink ? (
-								<div className="space-y-2">
+								<div className="space-y-2 min-w-0">
 									<label className="text-sm font-medium" htmlFor="cm-def">
 										DEF
 									</label>
 									<Input
 										id="cm-def"
-										type="number"
-										min={0}
-										max={YUGIOH_MAX_STAT}
+										className="w-full"
+										type="text"
 										value={String(draft.stats.def)}
 										onInput={(e) => {
-											const parsed = Number.parseInt(e.currentTarget.value, 10);
+											const parsed = parseBattleStatInput(
+												e.currentTarget.value,
+												cardDraftSignal.value.stats.def,
+											);
 											cardDraftSignal.value = {
 												...cardDraftSignal.value,
 												stats: {
 													...cardDraftSignal.value.stats,
-													def: Number.isFinite(parsed)
-														? clampInt(parsed, 0, YUGIOH_MAX_STAT)
-														: 0,
+													def: parsed,
 												},
 											};
 										}}
+										placeholder="0, ?, ∞, x0000"
 									/>
 								</div>
 							) : null}
@@ -468,15 +530,16 @@ export function CardMakerForm() {
 				) : null}
 
 				{isMonster && isLink ? (
-					<fieldset className="space-y-4 rounded-md border p-4">
+					<fieldset className="space-y-4 rounded-md border p-3 sm:p-4">
 						<legend className="px-1 text-sm font-medium">Link Markers</legend>
-						<div className="grid gap-4 md:grid-cols-2">
-							<div className="space-y-2">
+						<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
+							<div className="space-y-2 min-w-0">
 								<label className="text-sm font-medium" htmlFor="cm-link-rating">
 									Link Rating
 								</label>
 								<Input
 									id="cm-link-rating"
+									className="w-full"
 									type="number"
 									min={1}
 									max={8}
@@ -492,7 +555,7 @@ export function CardMakerForm() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+						<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
 							{LINK_MARKERS.map((marker) => {
 								const checked = (draft.linkMarkers ?? []).includes(marker);
 								return (
@@ -511,7 +574,7 @@ export function CardMakerForm() {
 					</fieldset>
 				) : null}
 				{isPendulum ? (
-					<div className="space-y-2">
+					<div className="space-y-2 rounded-md border p-3 sm:p-4">
 						<label
 							className="text-sm font-medium"
 							htmlFor="cm-pendulum-description"
@@ -527,9 +590,39 @@ export function CardMakerForm() {
 						/>
 					</div>
 				) : null}
-				<div className="space-y-2">
-					<div className="flex items-center justify-between">
-						<label className="text-sm font-medium" htmlFor="cm-show-description">
+				{isMonster ? (
+					<div className="space-y-2 rounded-md border p-3 sm:p-4">
+						<label className="text-sm font-medium" htmlFor="cm-box-color">
+							Description/Stats Box Color
+						</label>
+						<Select
+							value={draft.descriptionStatsBoxColor ?? "auto"}
+							onValueChange={(value: string) =>
+								setDraftField(
+									"descriptionStatsBoxColor",
+									value as YugiohDescriptionStatsBoxColor,
+								)
+							}
+						>
+							<SelectTrigger id="cm-box-color" className="w-full">
+								<SelectValue placeholder="Select box color" />
+							</SelectTrigger>
+							<SelectContent>
+								{YUGIOH_DESCRIPTION_STATS_BOX_COLORS.map((option) => (
+									<SelectItem key={option.value} value={option.value}>
+										{option.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+				) : null}
+				<div className="space-y-2 rounded-md border p-3 sm:p-4">
+					<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+						<label
+							className="text-sm font-medium"
+							htmlFor="cm-show-description"
+						>
 							Show Description in Preview
 						</label>
 						<Switch
@@ -554,11 +647,21 @@ export function CardMakerForm() {
 					/>
 				</div>
 
-				<div className="flex items-center justify-end gap-2">
-					<Button type="button" variant="frame" onClick={resetCardDraft}>
+				<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+					<Button
+						type="button"
+						variant="frame"
+						onClick={resetCardDraft}
+						className="w-full sm:w-auto"
+					>
 						Reset
 					</Button>
-					<Button type="button" onClick={onExport} disabled={exporting}>
+					<Button
+						type="button"
+						onClick={onExport}
+						disabled={exporting}
+						className="w-full sm:w-auto"
+					>
 						{exporting ? "Exporting..." : "Export"}
 					</Button>
 				</div>

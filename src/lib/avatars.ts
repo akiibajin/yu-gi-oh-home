@@ -29,6 +29,11 @@ const phoenixJaden = "/assets/images/avatars/phoenix-jaden.webp";
 const sartoriusKaiba = "/assets/images/avatars/sartorius - kaiba.webp";
 const gladiatorYisus = "/assets/images/avatars/gladiator - yisus.webp";
 const ishizuYisus = "/assets/images/avatars/ishizu - yisus.webp";
+const ninjaYuya = "/assets/images/avatars/ninja - yuya.webp";
+const makoYisus = "/assets/images/avatars/mako - yisus.webp";
+const joeyYusei = "/assets/images/avatars/joey - yusei.webp";
+const all1 = "/assets/images/avatars/all - 1.webp";
+const all2 = "/assets/images/avatars/all - 2.webp";
 
 export const PLAYERS_NAMES = [
 	"Hector",
@@ -39,6 +44,25 @@ export const PLAYERS_NAMES = [
 	"Hector & Jess",
 	"Hassan & Wallys",
 ];
+
+export const TAG_IMAGES = {
+	"Joey - Jack": joeyJack,
+	"Yugi - Darks": yugiDarks,
+	"Zane - Kaiba": zaneKaiba,
+	"Atikus - Marik": atikusMarik,
+	"Crowler - Chazz": crowlerChazz,
+	"Phoenix - Jaden": phoenixJaden,
+	"Sartorius - Kaiba": sartoriusKaiba,
+	"Gladiator - Yisus": gladiatorYisus,
+	"Ishizu - Yisus": ishizuYisus,
+	"Yusei - Pegasus": yuseiPegasus,
+	"Joey - Yuya": joeyYuya,
+	"Ninja - Yuya": ninjaYuya,
+	"Mako - Yisus": makoYisus,
+	"Joey - Yusei": joeyYusei,
+	"all - 1": all1,
+	"all - 2": all2,
+};
 export const PLAYERS_IMAGES = {
 	// Hector variants
 	"Hector - Yusei": hectorYusei,
@@ -65,17 +89,4 @@ export const PLAYERS_IMAGES = {
 	"Jess - Kaiba": jessKaiba,
 	"Jess - Crowler": jessCrowler,
 	"Jess - Pegasus": jessPegasus,
-	// Additional variants
-	"Joey - Jack": joeyJack,
-	"Yugi - Darks": yugiDarks,
-	"Zane - Kaiba": zaneKaiba,
-	"Atikus - Marik": atikusMarik,
-	"Crowler - Chazz": crowlerChazz,
-	"Phoenix - Jaden": phoenixJaden,
-	"Sartorius - Kaiba": sartoriusKaiba,
-	"Gladiator - Yisus": gladiatorYisus,
-	"Ishizu - Yisus": ishizuYisus,
-	// Team variants
-	"Hector & Jess": yuseiPegasus,
-	"Hassan & Wallys": joeyYuya,
 };

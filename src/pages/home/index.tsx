@@ -43,9 +43,9 @@ function Home() {
 	};
 
 	return (
-		<div className="flex min-h-full w-full justify-center p-4 md:items-center">
+		<div className="flex min-h-full w-full justify-center p-1 sm:p-4 md:items-center">
 			<div className="w-full max-w-4xl space-y-6">
-				<Card>
+				<Card className="px-2 sm:px-6">
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<div>
@@ -64,7 +64,7 @@ function Home() {
 							<Button
 								type="button"
 								onClick={() => route("/calc")}
-								className="flex items-center justify-center"
+								className="flex items-center justify-center text-xs sm:text-sm"
 								variant="default"
 							>
 								⚔️ Calculator
@@ -90,7 +90,7 @@ function Home() {
 				</Card>
 
 				{/* Multiplayer Section */}
-				<Card>
+				<Card className="px-2 sm:px-6">
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<div>
@@ -105,11 +105,6 @@ function Home() {
 						</div>
 					</CardHeader>
 					<CardContent className="space-y-4 px-10 py-6">
-						<p className="text-sm text-amber-100/70 leading-relaxed">
-							Create a custom lobby or join an existing one to engage in
-							synchronized duels. Perfect for local multiplayer and tournament
-							tracking.
-						</p>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 							<Button
 								type="button"
@@ -132,7 +127,7 @@ function Home() {
 				</Card>
 
 				{/* System Status Section */}
-				<Card>
+				<Card className="px-2 sm:px-6">
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<CardTitle>System Status</CardTitle>

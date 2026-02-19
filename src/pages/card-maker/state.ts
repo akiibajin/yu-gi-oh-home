@@ -10,6 +10,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 		description: "",
 		attribute: "DARK",
 		monsterType: "Effect",
+		descriptionStatsBoxColor: "auto",
 		scale: 0,
 		stats: {
 			level: 4,

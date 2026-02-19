@@ -125,6 +125,7 @@ export const YUGIOH_MONSTER_TYPES = [
 	"Pendulum Synchro",
 	"Pendulum Xyz",
 	"Pendulum Ritual",
+	"Token",
 	"Trap",
 ] as const;
 
@@ -147,3 +148,16 @@ export const SPELL_TYPES = [
 ] as const;
 
 export const TRAP_TYPES = ["Normal", "Continuous", "Counter"] as const;
+
+export const YUGIOH_DESCRIPTION_STATS_BOX_COLORS = [
+	{ value: "auto", label: "Auto (By card type)" },
+	{ value: "void", label: "Void (Hide description/stats box images)" },
+	{ value: "Normal", label: "Normal (Orange)" },
+	{ value: "Effect", label: "Effect (Brown)" },
+	{ value: "Ritual", label: "Ritual (Blue)" },
+	{ value: "Fusion", label: "Fusion (Purple)" },
+	{ value: "Synchro", label: "Synchro (White)" },
+	{ value: "Xyz", label: "Xyz (Black)" },
+	{ value: "Link", label: "Link (Blue)" },
+	{ value: "Trap", label: "Trap (Pink)" },
+] as const;

@@ -8,9 +8,20 @@ import {
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
 import { Input } from "@/components/ui/warcraftcn/input";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import { exportPreview } from "@/lib/export-card";
 import { loadDeckCardsFromYdkFile } from "@/lib/tauri/decks";
-import type { YugiohCardDraft } from "@/lib/types";
+import type {
+	YugiohCardDraft,
+	YugiohDescriptionStatsBoxColor,
+} from "@/lib/types";
 import normalizeCard from "@/lib/normalize-card";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 
@@ -101,6 +112,8 @@ export function DeckImporterForm() {
 					stats: c.stats,
 					spellType: c.spellType,
 					trapType: c.trapType,
+					descriptionStatsBoxColor:
+						currentDraft.descriptionStatsBoxColor ?? "auto",
 					objectFit: currentDraft.objectFit,
 					img: null,
 				};
@@ -250,6 +263,33 @@ export function DeckImporterForm() {
 								Selected: {file.name}
 							</div>
 						) : null}
+					</div>
+
+					<div className="space-y-2">
+						<label className="text-sm font-medium" htmlFor="deck-box-color">
+							Description/Stats Box Color
+						</label>
+						<Select
+							value={cardDraftSignal.value.descriptionStatsBoxColor ?? "auto"}
+							onValueChange={(value: string) => {
+								cardDraftSignal.value = {
+									...cardDraftSignal.value,
+									descriptionStatsBoxColor:
+										value as YugiohDescriptionStatsBoxColor,
+								};
+							}}
+						>
+							<SelectTrigger id="deck-box-color" className="w-full">
+								<SelectValue placeholder="Select box color" />
+							</SelectTrigger>
+							<SelectContent>
+								{YUGIOH_DESCRIPTION_STATS_BOX_COLORS.map((option) => (
+									<SelectItem key={option.value} value={option.value}>
+										{option.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 					</div>
 
 					<div className="flex items-center gap-2">

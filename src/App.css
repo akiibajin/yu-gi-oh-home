@@ -3,7 +3,7 @@
 
 @font-face {
 	font-family: "Yu-Gi-Oh Matrix";
-	src: url("/assets/fonts/Yu-Gi-Oh!%20Matrix%20Regular%20Small%20Caps%201.ttf")
+	src: url("/assets/fonts/Stone Serif Semibold.ttf")
 		format("truetype");
 	font-weight: 400;
 	font-style: normal;
@@ -135,14 +135,10 @@
 	}
 }
 
-.card-maker-form,
 .card-maker-preview {
 	font-family: "Yu-Gi-Oh Matrix", ui-sans-serif, system-ui, sans-serif;
 }
 
-.android-card-preview-fix .text-shadow-outline {
-	translate: 0 2px;
-}
 
 @keyframes emergency-pulse {
 	0%, 100% {

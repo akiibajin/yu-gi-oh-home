@@ -71,8 +71,8 @@ export default function JoinLobby() {
 	};
 
 	return (
-		<div className="flex items-center justify-center min-h-screen p-4">
-			<Card className="w-full max-w-md">
+			<div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
+			<Card className="w-full">
 				<CardContent className="p-6 md:p-8">
 					<CardHeader className="px-0 pt-0">
 						<div className="flex items-center gap-3 mb-2">
@@ -97,6 +97,7 @@ export default function JoinLobby() {
 							<Input
 								id="playerName"
 								type="text"
+								className="w-full"
 								placeholder="Enter your name"
 								value={playerName}
 								onInput={(e) =>
@@ -166,7 +167,7 @@ export default function JoinLobby() {
 							onClick={() => {
 								route("/lobby/create");
 							}}
-							className="w-full"
+							className="w-full text-[10px]"
 						>
 							Create New Lobby Instead
 						</Button>

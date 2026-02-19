@@ -28,6 +28,12 @@ export type StoreYugiohCardResponse = {
 	imgUrl?: string | null;
 };
 
+const toNumberStat = (value: number | string): number => {
+	if (typeof value === "number") return value;
+	const parsed = Number.parseInt(value, 10);
+	return Number.isFinite(parsed) ? parsed : 0;
+};
+
 function createId() {
 	if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
 		return crypto.randomUUID();
@@ -119,8 +125,8 @@ export async function storeYugiohCardDraft(
 		sub_type: draft.subType ?? null,
 		is_tuner: draft.isTuner ?? null,
 		level: draft.stats.level,
-		atk: draft.stats.atk,
-		def: draft.stats.def,
+		atk: toNumberStat(draft.stats.atk),
+		def: toNumberStat(draft.stats.def),
 		spell_type: draft.spellType ?? null,
 		trap_type: draft.trapType ?? null,
 		img_url: imgUrl,
@@ -136,7 +142,7 @@ export async function storeYugiohCardDraft(
 export async function assignYugiohCardToUser(opts: {
 	cardId: string;
 	userName: string;
-}): Promise<void | undefined> {
+}): Promise<void> {
 	if (!canInvokeTauri()) return undefined;
 	await invoke<void>("assign_yugioh_card_to_user", {
 		cardId: opts.cardId,
