@@ -84,17 +84,23 @@ pub fn store_card_maker_image(
 
 	#[cfg(target_os = "android")]
 	{
-		if folder.is_none() {
-			match android_public_documents::store_webp_in_public_documents(&filename, bytes) {
-				Ok(uri) => {
-					let dir = PathBuf::from("Documents/yu-gi-oh-home");
-					let path = PathBuf::from(uri);
-					return Ok(StoredCardMakerImage { dir, filename, path });
-				}
-				Err(_e) => {
-					// Fallback: keep exporting working even if public Documents writing fails.
-					// (e.g. OEM restrictions).
-				}
+		let folder_name = folder.as_deref();
+		match android_public_documents::store_webp_in_public_documents_with_folder(
+			&filename,
+			bytes,
+			folder_name,
+		) {
+			Ok(uri) => {
+				let dir = match folder_name {
+					Some(folder) => PathBuf::from("Documents/yu-gi-oh-home").join(folder),
+					None => PathBuf::from("Documents/yu-gi-oh-home"),
+				};
+				let path = PathBuf::from(uri);
+				return Ok(StoredCardMakerImage { dir, filename, path });
+			}
+			Err(_e) => {
+				// Fallback: keep exporting working even if public Documents writing fails.
+				// (e.g. OEM restrictions).
 			}
 		}
 	}

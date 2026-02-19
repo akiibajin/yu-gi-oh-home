@@ -57,6 +57,10 @@ export function CardPreview() {
 			setImgUrl(null);
 			return;
 		}
+		if(typeof draft.img === "string") {
+			setImgUrl(draft.img);
+			return;
+		}
 		let cancelled = false;
 		const reader = new FileReader();
 		reader.onload = () => {

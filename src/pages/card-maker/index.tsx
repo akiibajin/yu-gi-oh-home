@@ -3,9 +3,13 @@ import { CardPreview } from "@/pages/card-maker/component/card-preview";
 import { DeckImporterForm } from "@/pages/card-maker/component/deck-importer-form";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { useState } from "preact/hooks";
+import type { YugiohCardDraft } from "@/lib/types";
 
 function CardMaker() {
 	const [tab, setTab] = useState<"maker" | "deck">("maker");
+	const [cards, setCards] = useState<
+		(Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[]
+	>([]);
 
 	return (
 		<div className="flex w-full flex-col gap-4">
@@ -34,7 +38,7 @@ function CardMaker() {
 						<CardMakerForm />
 					) : (
 						<div className="min-w-0">
-							<DeckImporterForm />
+							<DeckImporterForm cards={cards} setCards={setCards} />
 						</div>
 					)}
 				</div>

@@ -318,7 +318,9 @@ export function CardMakerForm() {
 					{draft.img ? (
 						<div className="text-xs text-muted-foreground">
 							Selected:{" "}
-							{"name" in draft.img ? (draft.img as File).name : "image"}
+							{typeof draft.img === "object" && "name" in draft.img
+								? (draft.img as File).name
+								: "image"}
 						</div>
 					) : null}
 				</div>

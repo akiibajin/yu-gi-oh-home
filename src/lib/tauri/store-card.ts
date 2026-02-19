@@ -107,12 +107,14 @@ export async function storeYugiohCardDraft(
 
 	const id = createId();
 	let imgUrl: string | null = null;
-	if (draft.img) {
+	if (draft.img && typeof draft.img !== "string") {
 		const alreadyWebp = await isWebpBlob(draft.img);
 		const blobToUpload = alreadyWebp
 			? draft.img
 			: await convertBlobToWebp(draft.img, 90);
 		imgUrl = await uploadCardImage(blobToUpload, id);
+	} else {
+		imgUrl = typeof draft.img === "string" ? draft.img : null;
 	}
 
 	const payload: StoreYugiohCardRequest = {

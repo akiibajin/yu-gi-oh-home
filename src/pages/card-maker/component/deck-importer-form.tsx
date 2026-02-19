@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { type Dispatch, type StateUpdater, useState } from "preact/hooks";
 
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
@@ -25,7 +25,19 @@ import type {
 import normalizeCard from "@/lib/normalize-card";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 
-export function DeckImporterForm() {
+interface DeckImporterFormProps {
+	cards: (Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[];
+	setCards: Dispatch<
+		StateUpdater<
+			(Omit<YugiohCardDraft, "img"> & {
+				imgUrl: string;
+				id: string;
+			})[]
+		>
+	>;
+}
+export function DeckImporterForm(props: DeckImporterFormProps) {
+	const { cards, setCards } = props;
 	const [file, setFile] = useState<File | null>(null);
 	const [running, setRunning] = useState(false);
 	const [status, setStatus] = useState<string>("");
@@ -33,9 +45,8 @@ export function DeckImporterForm() {
 	const [progress, setProgress] = useState<
 		{ current: number; total: number; failures: number } | undefined
 	>(undefined);
-	const [cards, setCards] = useState<
-		(Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[]
-	>([]);
+
+	const [selectedCardKey, setSelectedCardKey] = useState<string | null>(null);
 	const [lastResult, setLastResult] = useState<
 		| {
 				totalIds: number;
@@ -78,6 +89,34 @@ export function DeckImporterForm() {
 			if (allLoaded && hasCardArt) return;
 			await sleep(50);
 		}
+	};
+
+	const selectCardForPreview = async (
+		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
+		cardKey: string,
+	) => {
+		const currentDraft = cardDraftSignal.value;
+		setSelectedCardKey(cardKey);
+		cardDraftSignal.value = {
+			name: card.name,
+			cardType: card.cardType,
+			showDescription: currentDraft.showDescription ?? true,
+			pendulumDescription: card.pendulumDescription ?? "",
+			description: card.description,
+			attribute: card.attribute,
+			monsterType: card.monsterType,
+			subType: card.subType,
+			isTuner: card.isTuner,
+			scale: card.scale,
+			linkRating: card.linkRating,
+			linkMarkers: card.linkMarkers,
+			stats: card.stats,
+			spellType: card.spellType,
+			trapType: card.trapType,
+			descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor ?? "auto",
+			objectFit: currentDraft.objectFit,
+			img: card.imgUrl,
+		};
 	};
 
 	const exportCardsSequentially = async (
@@ -316,13 +355,24 @@ export function DeckImporterForm() {
 					{cards.length ? (
 						<div className="text-xs flex-1 max-h-[30dvh] overflow-auto flex flex-col gap-4">
 							{cards.map((c) => (
-								<div
+								<button
 									key={`${c.id}-${c.name}-${c.imgUrl}`}
-									className="flex items-center gap-1"
+									type="button"
+									onClick={() =>
+										void selectCardForPreview(
+											c,
+											`${c.id}-${c.name}-${c.imgUrl}`,
+										)
+									}
+									className={`flex w-full items-center gap-2 rounded-md border px-2 py-1 text-left transition-colors ${
+										selectedCardKey === `${c.id}-${c.name}-${c.imgUrl}`
+											? "border-primary bg-accent/40"
+											: "border-border hover:border-muted-foreground/60"
+									}`}
 								>
 									<img className="size-8" src={c.imgUrl} alt={c.name} />
-									<span>{c.name}</span>
-								</div>
+									<span className="truncate">{c.name}</span>
+								</button>
 							))}
 						</div>
 					) : null}

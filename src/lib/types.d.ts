@@ -114,7 +114,7 @@ export interface YugiohCardDraft {
 	spellType?: YugiohSpellType;
 	trapType?: YugiohTrapType;
 	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
-	img: Blob | null;
+	img: Blob | string | null;
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 }
 
