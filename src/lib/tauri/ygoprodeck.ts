@@ -14,8 +14,8 @@ export type YgoprodeckCard = {
 	race?: string;
 	attribute?: string;
 	level?: number;
-	atk?: number;
-	def?: number;
+	atk?: number | string;
+	def?: number | string;
 	linkval?: number;
 	linkmarkers?: string[];
 	card_images?: YgoprodeckCardImage[];

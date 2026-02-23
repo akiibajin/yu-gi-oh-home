@@ -135,8 +135,8 @@ export interface YugiohCardDB {
 	img_url: string;
 	spell_type: YugiohSpellType | null;
 	trap_type: YugiohTrapType | null;
-	atk: number | null;
-	def: number | null;
+	atk: string | null;
+	def: string | null;
 	level: number | null;
 }
 

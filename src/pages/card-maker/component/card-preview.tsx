@@ -1,5 +1,6 @@
 import {
 	FIELD_SPELL_ICON,
+	MONSTER_TYPES,
 	SPELL_ICONS,
 	TRAP_ICONS,
 	YUGIOH_ATTRIBUTES,
@@ -61,6 +62,7 @@ export function CardPreview() {
 		return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)
 			?.img;
 	}, [draft]);
+	const monsterTypeIcon = isMonster ? MONSTER_TYPES.find(mt=>draft.subType && mt.title === draft.subType)?.img : "";
 	const iconFallback = SPELL_ICONS.Normal;
 	useEffect(() => {
 		if (!draft.img) {
@@ -278,6 +280,7 @@ export function CardPreview() {
 									className={cn("size-full")}
 									alt={`${draft.cardType} icon`}
 								/>
+                                <img src={monsterTypeIcon} alt={`${draft.subType} icon`} className="size-4/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 							</div>
 						</div>
 					</div>

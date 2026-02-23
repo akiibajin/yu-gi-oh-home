@@ -38,6 +38,7 @@ import quickPlaySpellIcon from "../assets/images/card-templates/quick-spell.webp
 import ritualSpellIcon from "../assets/images/card-templates/ritual.webp";
 import fieldSpellIcon from "@/assets/images/card-templates/field.webp";
 import counter from "../assets/images/card-templates/counter.webp";
+import { MonsterType } from "./types";
 
 export type NavItem = {
 	title: string;
@@ -80,7 +81,7 @@ export const TRAP_ICONS = {
 	Normal: normalSpellIcon,
 	Continuous: continuousSpellIcon,
 };
-export const MONSTER_TYPES = [
+export const MONSTER_TYPES: { title: MonsterType; img: string }[] = [
 	{ title: "Aqua", img: aqua },
 	{ title: "Beast", img: beast },
 	{ title: "Beast Warrior", img: beastWarrior },

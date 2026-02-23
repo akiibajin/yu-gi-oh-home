@@ -15,8 +15,8 @@ export type StoreYugiohCardRequest = {
 	sub_type?: string | null;
 	is_tuner?: boolean | null;
 	level: number;
-	atk: number;
-	def: number;
+	atk: string;
+	def: string;
 	spell_type?: string | null;
 	trap_type?: string | null;
 	img_url?: string | null;
@@ -28,10 +28,9 @@ export type StoreYugiohCardResponse = {
 	imgUrl?: string | null;
 };
 
-const toNumberStat = (value: number | string): number => {
-	if (typeof value === "number") return value;
-	const parsed = Number.parseInt(value, 10);
-	return Number.isFinite(parsed) ? parsed : 0;
+const toTextStat = (value: number | string): string => {
+	const s = String(value).trim();
+	return s ? s : "0";
 };
 
 function createId() {
@@ -127,8 +126,8 @@ export async function storeYugiohCardDraft(
 		sub_type: draft.subType ?? null,
 		is_tuner: draft.isTuner ?? null,
 		level: draft.stats.level,
-		atk: toNumberStat(draft.stats.atk),
-		def: toNumberStat(draft.stats.def),
+		atk: toTextStat(draft.stats.atk),
+		def: toTextStat(draft.stats.def),
 		spell_type: draft.spellType ?? null,
 		trap_type: draft.trapType ?? null,
 		img_url: imgUrl,

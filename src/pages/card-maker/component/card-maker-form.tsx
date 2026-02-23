@@ -1,12 +1,7 @@
-import { Button } from "@/components/ui/warcraftcn/button";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/warcraftcn/card";
-import { Input } from "@/components/ui/warcraftcn/input";
-import { Textarea } from "@/components/ui/warcraftcn/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -17,7 +12,6 @@ import {
 import {
 	YUGIOH_ATTRIBUTES,
 	YUGIOH_CARD_TYPES,
-	YUGIOH_MAX_STAT,
 	YUGIOH_MAX_STARS,
 	YUGIOH_MONSTER_TYPES,
 	SPELL_TYPES,
@@ -47,23 +41,6 @@ import { exportPreview } from "@/lib/export-card";
 
 function clampInt(value: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, Math.trunc(value)));
-}
-
-function parseBattleStatInput(
-	value: string,
-	currentValue: number | string,
-): number | string {
-	const trimmed = value.trim();
-	if (!trimmed) return 0;
-	if (trimmed === "?") return "?";
-	if (trimmed === "∞") return "∞";
-	if (/^x\d+$/i.test(trimmed)) {
-		return `x${trimmed.slice(1)}`;
-	}
-	if (/^\d+$/.test(trimmed)) {
-		return clampInt(Number.parseInt(trimmed, 10), 0, YUGIOH_MAX_STAT);
-	}
-	return currentValue;
 }
 
 export function CardMakerForm() {
@@ -168,7 +145,7 @@ export function CardMakerForm() {
 		}
 	};
 	return (
-		<Card className="w-full min-w-0">
+		<Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
 			<CardHeader>
 				<CardTitle>Card Options</CardTitle>
 			</CardHeader>
@@ -272,7 +249,7 @@ export function CardMakerForm() {
 						<Input
 							id="cm-image"
 							type="file"
-							className="w-full max-w-full"
+							className="md:w-1/2 max-w-full"
 							accept="image/*"
 							onChange={(e) => {
 								const file = e.currentTarget.files?.[0] ?? null;
@@ -282,37 +259,41 @@ export function CardMakerForm() {
 						<div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-[auto_minmax(10rem,1fr)]">
 							<Button
 								type="button"
-								variant="frame"
+								variant="secondary"
+								className="md:col-start-1 md:row-start-2 md:self-center"
 								onClick={() => handleImageUpload(null)}
 								disabled={!draft.img}
 							>
 								Clear
 							</Button>
-							<Select
-								value={draft.objectFit}
-								onValueChange={(value: string) =>
-									setDraftField(
-										"objectFit",
-										value as
-											| "cover"
-											| "contain"
-											| "fill"
-											| "none"
-											| "scale-down",
-									)
-								}
-							>
-								<SelectTrigger className="h-8 w-full">
-									<SelectValue placeholder="Object Fit" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="contain">Contain</SelectItem>
-									<SelectItem value="cover">Cover</SelectItem>
-									<SelectItem value="fill">Fill</SelectItem>
-									<SelectItem value="scale-down">Scale-down</SelectItem>
-									<SelectItem value="none">None</SelectItem>
-								</SelectContent>
-							</Select>
+							<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-2">
+								<span>Image format</span>
+								<Select
+									value={draft.objectFit}
+									onValueChange={(value: string) =>
+										setDraftField(
+											"objectFit",
+											value as
+												| "cover"
+												| "contain"
+												| "fill"
+												| "none"
+												| "scale-down",
+										)
+									}
+								>
+									<SelectTrigger className="h-8 w-full">
+										<SelectValue placeholder="Object Fit" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="contain">Contain</SelectItem>
+										<SelectItem value="cover">Cover</SelectItem>
+										<SelectItem value="fill">Fill</SelectItem>
+										<SelectItem value="scale-down">Scale-down</SelectItem>
+										<SelectItem value="none">None</SelectItem>
+									</SelectContent>
+								</Select>
+							</label>
 						</div>
 					</div>
 					{draft.img ? (
@@ -403,7 +384,7 @@ export function CardMakerForm() {
 									</SelectContent>
 								</Select>
 							</div>
-							<div className="space-y-3 min-w-0">
+							<div className="space-y-3 min-w-0 self-end">
 								<div className="flex items-center justify-between rounded-md border px-3 py-2">
 									<label className="text-sm font-medium" htmlFor="cm-is-tuner">
 										Is Tuner?
@@ -484,15 +465,11 @@ export function CardMakerForm() {
 									type="text"
 									value={String(draft.stats.atk)}
 									onInput={(e) => {
-										const parsed = parseBattleStatInput(
-											e.currentTarget.value,
-											cardDraftSignal.value.stats.atk,
-										);
 										cardDraftSignal.value = {
 											...cardDraftSignal.value,
 											stats: {
 												...cardDraftSignal.value.stats,
-												atk: parsed,
+												atk: e.currentTarget.value,
 											},
 										};
 									}}
@@ -511,15 +488,11 @@ export function CardMakerForm() {
 										type="text"
 										value={String(draft.stats.def)}
 										onInput={(e) => {
-											const parsed = parseBattleStatInput(
-												e.currentTarget.value,
-												cardDraftSignal.value.stats.def,
-											);
 											cardDraftSignal.value = {
 												...cardDraftSignal.value,
 												stats: {
 													...cardDraftSignal.value.stats,
-													def: parsed,
+													def: e.currentTarget.value,
 												},
 											};
 										}}
@@ -597,6 +570,8 @@ export function CardMakerForm() {
 						<Textarea
 							id="cm-pendulum-description"
 							value={draft.pendulumDescription ?? ""}
+							spellcheck={false}
+							className="w-full resize-none max-h-20"
 							onInput={(e) => onPendulumEffectInput(e.currentTarget.value)}
 							placeholder="Pendulum effect text..."
 							rows={4}
@@ -652,18 +627,20 @@ export function CardMakerForm() {
 					<Textarea
 						id="cm-description"
 						value={draft.description}
+						spellcheck={false}
 						onInput={(e) => onMonsterEffectInput(e.currentTarget.value)}
 						placeholder={
 							isPendulum ? "Monster effect text..." : "Card effect text..."
 						}
 						rows={5}
+						className="w-full resize-none max-h-20"
 					/>
 				</div>
 
 				<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
 					<Button
 						type="button"
-						variant="frame"
+						variant="secondary"
 						onClick={resetCardDraft}
 						className="w-full sm:w-auto"
 					>

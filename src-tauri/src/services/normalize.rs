@@ -1,5 +1,26 @@
 use crate::services;
 
+fn stat_to_text(card: &serde_json::Value, key: &str) -> String {
+	if let Some(v) = card.get(key) {
+		if let Some(s) = v.as_str() {
+			let trimmed = s.trim();
+			if !trimmed.is_empty() {
+				if trimmed == "-1" {
+					return "?".to_string();
+				}
+				return trimmed.to_string();
+			}
+		}
+		if let Some(n) = v.as_i64() {
+			if n == -1 {
+				return "?".to_string();
+			}
+			return n.to_string();
+		}
+	}
+	"0".to_string()
+}
+
 fn typeline_contains(typeline: &[String], tag: &str) -> bool {
 	typeline
 		.iter()
@@ -130,17 +151,8 @@ pub fn ygoprodeck_card_to_store_req(
 		.unwrap_or(0)
 		.clamp(0, i32::MAX as i64) as i32;
 
-	let atk = card
-		.get("atk")
-		.and_then(|v| v.as_i64())
-		.unwrap_or(0)
-		.clamp(i32::MIN as i64, i32::MAX as i64) as i32;
-
-	let def = card
-		.get("def")
-		.and_then(|v| v.as_i64())
-		.unwrap_or(0)
-		.clamp(i32::MIN as i64, i32::MAX as i64) as i32;
+	let atk = stat_to_text(card, "atk");
+	let def = stat_to_text(card, "def");
 
 	let scale = card
 		.get("scale")
