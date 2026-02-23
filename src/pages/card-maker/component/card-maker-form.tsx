@@ -556,7 +556,18 @@ export function CardMakerForm() {
 								/>
 							</div>
 						</div>
-
+						<div className="space-y-2 min-w-0 flex items-center gap-2">
+							<label htmlFor="rating-desc" className="m-0">
+								Has Arrows on description?
+							</label>
+							<Switch
+								id="rating-desc"
+								checked={draft.linkMarkersOnDescription ?? false}
+								onCheckedChange={(checked: boolean) =>
+									setDraftField("linkMarkersOnDescription", checked)
+								}
+							/>
+						</div>
 						<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
 							{LINK_MARKERS.map((marker) => {
 								const checked = (draft.linkMarkers ?? []).includes(marker);

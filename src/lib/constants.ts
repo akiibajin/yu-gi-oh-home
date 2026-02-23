@@ -1,10 +1,10 @@
-import dark from "../assets/images/DARK.svg";
-import light from "../assets/images/LIGHT.svg";
-import earth from "../assets/images/EARTH.svg";
-import water from "../assets/images/WATER.svg";
-import fire from "../assets/images/FIRE.svg";
-import wind from "../assets/images/WIND.svg";
-import divine from "../assets/images/DIVINE.svg";
+import dark from "../assets/images/card-templates/dark.webp";
+import light from "../assets/images/card-templates/light.webp";
+import earth from "../assets/images/card-templates/earth.webp";
+import water from "../assets/images/card-templates/water.webp";
+import fire from "../assets/images/card-templates/fire.webp";
+import wind from "../assets/images/card-templates/wind.webp";
+import divine from "../assets/images/card-templates/divine.webp";
 import aqua from "../assets/images/Aqua.webp";
 import beast from "../assets/images/Beast.webp";
 import beastWarrior from "../assets/images/Beast-Warrior.webp";
@@ -31,13 +31,13 @@ import warrior from "../assets/images/Warrior.webp";
 import wingedBeast from "../assets/images/Winged_Beast.webp";
 import wyrm from "../assets/images/Wyrm_Type.webp";
 import zombie from "../assets/images/Zombie.webp";
-import normalSpellIcon from "../assets/images/card-templates/Normal Spell.webp";
-import continuousSpellIcon from "../assets/images/card-templates/Continue.webp";
+import normalSpellIcon from "../assets/images/card-templates/normal.webp";
+import continuousSpellIcon from "../assets/images/card-templates/continuos.webp";
 import equipSpellIcon from "../assets/images/card-templates/equip.webp";
-import quickPlaySpellIcon from "../assets/images/card-templates/Quik play.webp";
-import ritualSpellIcon from "../assets/images/card-templates/Ritual.webp";
-import fieldSpellIcon from "@/assets/images/card-templates/Field-Spell.webp";
-import counter from "../assets/images/card-templates/Counter.webp";
+import quickPlaySpellIcon from "../assets/images/card-templates/quick-spell.webp";
+import ritualSpellIcon from "../assets/images/card-templates/ritual.webp";
+import fieldSpellIcon from "@/assets/images/card-templates/field.webp";
+import counter from "../assets/images/card-templates/counter.webp";
 
 export type NavItem = {
 	title: string;

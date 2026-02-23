@@ -112,6 +112,7 @@ export interface YugiohCardDraft {
 	linkMarkers?: LinkMarker[];
 	stats: YugiohMonsterStats;
 	spellType?: YugiohSpellType;
+	linkMarkersOnDescription?: boolean;
 	trapType?: YugiohTrapType;
 	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
 	img: Blob | string | null;

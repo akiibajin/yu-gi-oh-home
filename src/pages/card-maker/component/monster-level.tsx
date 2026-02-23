@@ -34,7 +34,8 @@ function MonsterLevel(props: MonsterLevelProps) {
 			<p
 				className={cn(
 					"relative text-black mt-1 text-4xl tracking-tighter",
-					!isXyz && "text-black!",
+					isXyz && "text-black!",
+					level >= 10 && "-tracking-[0.2em] mr-2",
 				)}
 			>
 				{level}
