@@ -100,6 +100,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		cardDraftSignal.value = {
 			name: card.name,
 			cardType: card.cardType,
+			iconProfile: currentDraft.iconProfile ?? "hector",
 			showDescription: currentDraft.showDescription ?? true,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
@@ -138,6 +139,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 				cardDraftSignal.value = {
 					name: c.name,
 					cardType: c.cardType,
+					iconProfile: currentDraft.iconProfile ?? "hector",
 					showDescription: currentDraft.showDescription ?? true,
 					pendulumDescription: c.pendulumDescription ?? "",
 					description: c.description,

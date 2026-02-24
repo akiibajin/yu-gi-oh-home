@@ -1,10 +1,10 @@
 import {
 	FIELD_SPELL_ICON,
-	MONSTER_TYPES,
 	SPELL_ICONS,
 	TRAP_ICONS,
 	YUGIOH_ATTRIBUTES,
 } from "@/lib/constants";
+import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
 import getTypeCardBg, { BOX_TEXTURES } from "@/lib/get-type-card-bg";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
@@ -62,7 +62,9 @@ export function CardPreview() {
 		return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)
 			?.img;
 	}, [draft]);
-	const monsterTypeIcon = isMonster ? MONSTER_TYPES.find(mt=>draft.subType && mt.title === draft.subType)?.img : "";
+	const monsterTypeIcon = isMonster
+		? getMonsterTypeIcon(draft.iconProfile, draft.subType)
+		: "";
 	const iconFallback = SPELL_ICONS.Normal;
 	useEffect(() => {
 		if (!draft.img) {
@@ -252,7 +254,7 @@ export function CardPreview() {
 							)}
 							<span
 								className={cn(
-									"relative -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
+									"relative w-26 text-end -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
 									(isFusion || isEffect || isRitual || isXyz) && "text-white!",
 								)}
 							>
@@ -267,7 +269,7 @@ export function CardPreview() {
 						>
 							<span
 								className={cn(
-									"relative -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
+									"relative text-start w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
 									(isFusion || isEffect || isRitual || isXyz) && "text-white!",
 									isLink && "opacity-0",
 								)}
@@ -280,7 +282,13 @@ export function CardPreview() {
 									className={cn("size-full")}
 									alt={`${draft.cardType} icon`}
 								/>
-                                <img src={monsterTypeIcon} alt={`${draft.subType} icon`} className="size-4/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+								{monsterTypeIcon ? (
+									<img
+										src={monsterTypeIcon}
+										alt={`${draft.subType} icon`}
+										className="size-4/5 absolute top-1/2 left-[52%] -translate-x-1/2 -translate-y-1/2"
+									/>
+								) : null}
 							</div>
 						</div>
 					</div>

@@ -31,12 +31,14 @@ export type MonsterType =
 	| "Beast Warrior"
 	| "Creator God"
 	| "Cyberse"
+	| "Cyborg"
 	| "Dinosaur"
 	| "Divine-Beast"
 	| "Dragon"
 	| "Fairy"
 	| "Fiend"
 	| "Fish"
+	| "Galaxy"
 	| "Insect"
 	| "Illusion"
 	| "Machine"
@@ -52,6 +54,8 @@ export type MonsterType =
 	| "Winged Beast"
 	| "Wyrm"
 	| "Zombie";
+
+export type MonsterTypeIconProfile = "hector" | "jaime";
 
 export type YugiohSpellType =
 	| "Normal"
@@ -100,6 +104,7 @@ export interface YugiohMonsterStats {
 export interface YugiohCardDraft {
 	name: string;
 	cardType: YugiohCardType;
+	iconProfile?: MonsterTypeIconProfile;
 	showDescription?: boolean;
 	pendulumDescription?: string;
 	description: string;

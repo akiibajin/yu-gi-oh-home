@@ -2,8 +2,16 @@ import { CardMakerForm } from "@/pages/card-maker/component/card-maker-form";
 import { CardPreview } from "@/pages/card-maker/component/card-preview";
 import { DeckImporterForm } from "@/pages/card-maker/component/deck-importer-form";
 import { Button } from "@/components/ui/warcraftcn/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { useState } from "preact/hooks";
-import type { YugiohCardDraft } from "@/lib/types";
+import type { MonsterTypeIconProfile, YugiohCardDraft } from "@/lib/types";
+import { cardDraftSignal } from "@/pages/card-maker/state";
 
 function CardMaker() {
 	const [tab, setTab] = useState<"maker" | "deck">("maker");
@@ -18,7 +26,8 @@ function CardMaker() {
 					<CardPreview />
 				</div>
 				<div className="min-w-0 flex-1">
-					<div className="inline-flex w-fit items-center rounded-md border p-1 mb-4">
+					<div className="flex flex-wrap items-center gap-3 mb-4">
+						<div className="inline-flex w-fit items-center rounded-md border p-1">
 						<Button
 							type="button"
 							variant="frame"
@@ -33,6 +42,30 @@ function CardMaker() {
 						>
 							Import deck
 						</Button>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<label className="text-sm font-medium" htmlFor="icon-profile">
+								Profile
+							</label>
+							<Select
+								value={cardDraftSignal.value.iconProfile ?? "hector"}
+								onValueChange={(value: string) => {
+									cardDraftSignal.value = {
+										...cardDraftSignal.value,
+										iconProfile: value as MonsterTypeIconProfile,
+									};
+								}}
+							>
+								<SelectTrigger id="icon-profile" className="w-40">
+									<SelectValue placeholder="Select profile" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="hector">hector</SelectItem>
+									<SelectItem value="jaime">jaime</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 					{tab === "maker" ? (
 						<CardMakerForm />

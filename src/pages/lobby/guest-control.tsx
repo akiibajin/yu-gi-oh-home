@@ -23,6 +23,7 @@ import { Timer } from "@/components/timer";
 import { MatchTracker } from "@/components/match-tracker";
 import { DiceRoller } from "@/components/dice-roller";
 import { RefreshCwIcon, TrophyIcon, XCircleIcon } from "lucide-react";
+import halveIcon from "@/assets/images/Halve.webp";
 
 export default function GuestControl() {
 	const { route, query } = useLocation();
@@ -217,14 +218,14 @@ export default function GuestControl() {
 									onClick={() => updateLifePoints(-2000)}
 									className="md:text-lg h-16"
 								>
-									-2000
+									-2k
 								</Button>
 								<Button
 									variant="frame"
 									onClick={() => updateLifePoints(-1000)}
 									className="md:text-lg h-16"
 								>
-									-1000
+									-1k
 								</Button>
 								<Button
 									variant="frame"
@@ -257,7 +258,7 @@ export default function GuestControl() {
 									}
 									className="md:text-lg h-16"
 								>
-									Halve
+									<img src={halveIcon} alt="Halve" className="w-5 h-5" />
 								</Button>
 							</div>
 
@@ -291,14 +292,14 @@ export default function GuestControl() {
 									onClick={() => updateLifePoints(1000)}
 									className="md:text-lg h-16"
 								>
-									+1000
+									+1k
 								</Button>
 								<Button
 									variant="default"
 									onClick={() => updateLifePoints(2000)}
 									className="md:text-lg h-16"
 								>
-									+2000
+									+2k
 								</Button>
 							</div>
 							<Button
@@ -307,7 +308,6 @@ export default function GuestControl() {
 								className="w-full h-14"
 							>
 								<RefreshCwIcon className="w-5 h-5 mr-2" />
-								Reset to 8000
 							</Button>
 						</div>
 					</div>

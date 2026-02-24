@@ -5,32 +5,34 @@ import water from "../assets/images/card-templates/water.webp";
 import fire from "../assets/images/card-templates/fire.webp";
 import wind from "../assets/images/card-templates/wind.webp";
 import divine from "../assets/images/card-templates/divine.webp";
-import aqua from "../assets/images/Aqua.webp";
-import beast from "../assets/images/Beast.webp";
-import beastWarrior from "../assets/images/Beast-Warrior.webp";
-import creatorGod from "../assets/images/Creator-God.webp";
-import cyberse from "../assets/images/Cyberse.webp";
-import dinosaur from "../assets/images/Dinosaur.webp";
-import divineBeast from "../assets/images/Divine-Beast.webp";
-import dragon from "../assets/images/Dragon.webp";
-import fairy from "../assets/images/Fairy.webp";
-import fiend from "../assets/images/Fiend.webp";
-import fish from "../assets/images/Fish.webp";
-import insect from "../assets/images/Insect.webp";
-import illusion from "../assets/images/Illusion.webp";
-import machine from "../assets/images/Machine.webp";
-import plant from "../assets/images/Plant.webp";
-import psychic from "../assets/images/Psychic.webp";
-import pyro from "../assets/images/Pyro.webp";
-import reptile from "../assets/images/Reptile.webp";
-import rock from "../assets/images/Rock.webp";
-import seaSerpent from "../assets/images/Sea_Serpent.webp";
-import spellcaster from "../assets/images/Spellcaster.webp";
-import thunder from "../assets/images/Thunder.webp";
-import warrior from "../assets/images/Warrior.webp";
-import wingedBeast from "../assets/images/Winged_Beast.webp";
-import wyrm from "../assets/images/Wyrm_Type.webp";
-import zombie from "../assets/images/Zombie.webp";
+import aqua from "../assets/images/hector/Aqua.webp";
+import beast from "../assets/images/hector/Beast.webp";
+import beastWarrior from "../assets/images/hector/Beast-warrior.webp";
+import creatorGod from "../assets/images/Creator.webp";
+import cyberse from "../assets/images/hector/Cyberse.webp";
+import dinosaur from "../assets/images/hector/Dinosaur.webp";
+import divineBeast from "../assets/images/hector/Divine.webp";
+import dragon from "../assets/images/hector/Dragon.webp";
+import fairy from "../assets/images/hector/Fairy.webp";
+import fiend from "../assets/images/hector/Fiend.webp";
+import fish from "../assets/images/hector/Fish.webp";
+import insect from "../assets/images/hector/Insect.webp";
+import illusion from "../assets/images/hector/Illusion.webp";
+import machine from "../assets/images/hector/Machine.webp";
+import plant from "../assets/images/hector/Plant.webp";
+import psychic from "../assets/images/hector/Psy.webp";
+import pyro from "../assets/images/hector/Pyro.webp";
+import reptile from "../assets/images/hector/Reptile.webp";
+import rock from "../assets/images/hector/Rock.webp";
+import seaSerpent from "../assets/images/hector/Sea-serpent.webp";
+import spellcaster from "../assets/images/hector/Spellcaster.webp";
+import thunder from "../assets/images/hector/Thunder.webp";
+import warrior from "../assets/images/hector/Warrior.webp";
+import wingedBeast from "../assets/images/hector/Winged-beast.webp";
+import wyrm from "../assets/images/hector/Wyrm.webp";
+import zombie from "../assets/images/hector/Zombie.webp";
+import cyborg from "@/assets/images/Cyborg.webp";
+import galaxy from "@/assets/images/Galaxy.webp";
 import normalSpellIcon from "../assets/images/card-templates/normal.webp";
 import continuousSpellIcon from "../assets/images/card-templates/continuos.webp";
 import equipSpellIcon from "../assets/images/card-templates/equip.webp";
@@ -38,7 +40,7 @@ import quickPlaySpellIcon from "../assets/images/card-templates/quick-spell.webp
 import ritualSpellIcon from "../assets/images/card-templates/ritual.webp";
 import fieldSpellIcon from "@/assets/images/card-templates/field.webp";
 import counter from "../assets/images/card-templates/counter.webp";
-import { MonsterType } from "./types";
+import type { MonsterType } from "./types";
 
 export type NavItem = {
 	title: string;
@@ -87,12 +89,14 @@ export const MONSTER_TYPES: { title: MonsterType; img: string }[] = [
 	{ title: "Beast Warrior", img: beastWarrior },
 	{ title: "Creator God", img: creatorGod },
 	{ title: "Cyberse", img: cyberse },
+	{ title: "Cyborg", img: cyborg },
 	{ title: "Dinosaur", img: dinosaur },
 	{ title: "Divine-Beast", img: divineBeast },
 	{ title: "Dragon", img: dragon },
 	{ title: "Fairy", img: fairy },
 	{ title: "Fiend", img: fiend },
 	{ title: "Fish", img: fish },
+	{ title: "Galaxy", img: galaxy },
 	{ title: "Insect", img: insect },
 	{ title: "Illusion", img: illusion },
 	{ title: "Machine", img: machine },
