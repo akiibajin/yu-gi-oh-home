@@ -63,7 +63,7 @@ const OVERRIDES: Record<
 	hector: {
 		Aqua: hectorAqua,
 		Beast: hectorBeast,
-		"Beast Warrior": hectorBeastWarrior,
+		"Beast-Warrior": hectorBeastWarrior,
 		Cyberse: hectorCyberse,
 		Cyborg: cyborg,
 		Dinosaur: hectorDinosaur,
@@ -92,7 +92,7 @@ const OVERRIDES: Record<
 	jaime: {
 		Aqua: jaimeAqua,
 		Beast: jaimeBeast,
-		"Beast Warrior": jaimeBeastWarrior,
+		"Beast-Warrior": jaimeBeastWarrior,
 		Cyberse: jaimeCyberse,
 		Cyborg: cyborg,
 		Dinosaur: jaimeDinosaur,

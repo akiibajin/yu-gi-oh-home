@@ -28,7 +28,7 @@ export type YugiohMonsterType =
 export type MonsterType =
 	| "Aqua"
 	| "Beast"
-	| "Beast Warrior"
+	| "Beast-Warrior"
 	| "Creator God"
 	| "Cyberse"
 	| "Cyborg"
@@ -155,4 +155,4 @@ export interface YugiohBackground {
 	img_url: string;
 }
 
-export {}; // ensure this is treated as a module
+export {};

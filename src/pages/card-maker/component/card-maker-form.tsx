@@ -111,6 +111,7 @@ export function CardMakerForm() {
 			setExporting(false);
 		}
 	};
+	console.log({ draft })
 	return (
 		<Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
 			<CardHeader>

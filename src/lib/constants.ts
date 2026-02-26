@@ -86,7 +86,7 @@ export const TRAP_ICONS = {
 export const MONSTER_TYPES: { title: MonsterType; img: string }[] = [
 	{ title: "Aqua", img: aqua },
 	{ title: "Beast", img: beast },
-	{ title: "Beast Warrior", img: beastWarrior },
+	{ title: "Beast-Warrior", img: beastWarrior },
 	{ title: "Creator God", img: creatorGod },
 	{ title: "Cyberse", img: cyberse },
 	{ title: "Cyborg", img: cyborg },
