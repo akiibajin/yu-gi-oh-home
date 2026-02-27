@@ -55,7 +55,7 @@ export type MonsterType =
 	| "Wyrm"
 	| "Zombie";
 
-export type MonsterTypeIconProfile = "hector" | "jaime";
+export type MonsterTypeIconProfile = "light" | "dark";
 
 export type YugiohSpellType =
 	| "Normal"
@@ -122,6 +122,8 @@ export interface YugiohCardDraft {
 	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
 	img: Blob | string | null;
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
+	imgRotationDeg?: number;
+	descriptionImageOpacity?: number;
 }
 
 export interface YugiohCardDB {

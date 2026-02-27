@@ -37,20 +37,27 @@ export function LobbyPlayerCard({
 		}
 		prevLifePointsRef.current = player.life_points;
 	}, [player.life_points]);
-	const playerImage = player.avatar_url || PLAYERS_IMAGES["Hector - Ninja"];
+	const playerImage =
+		PLAYERS_IMAGES[player.player_name as keyof typeof PLAYERS_IMAGES];
+	const currentPlayerImage =
+		clamped > 2000
+			? playerImage.standing
+			: isEmergency
+				? playerImage.risk
+				: playerImage.lost;
 	return (
 		<Card
-			className={`bg-transparent h-fit max-w-95 ${
-				isEliminated ? "opacity-60 grayscale" : ""
+			className={`bg-transparent h-fit max-w-95 gap-0 ${
+				isEliminated ? "" : ""
 			} ${player.is_host ? "border-blue-500 border-2" : ""}`}
 		>
-			<CardHeader className="space-y-1 p-3">
-				<div className="flex items-center justify-between gap-2">
-					<CardTitle className="min-w-0 flex-col truncate flex items-center gap-2">
+			<CardHeader className="space-y-1 pt-8">
+				<div className="flex justify-between gap-2">
+					<CardTitle className="min-w-0 flex-col truncate flex items-center p-0 gap-2">
 						<img
-							src={playerImage}
+							src={currentPlayerImage}
 							alt={player.player_name}
-							className={`size-35 object-contain ${
+							className={`size-45 object-cover ${
 								isEmergency ? "emergency-animation" : ""
 							}`}
 						/>

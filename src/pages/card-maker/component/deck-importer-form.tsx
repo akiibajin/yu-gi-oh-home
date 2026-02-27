@@ -100,7 +100,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		cardDraftSignal.value = {
 			name: card.name,
 			cardType: card.cardType,
-			iconProfile: currentDraft.iconProfile ?? "hector",
+			iconProfile: currentDraft.iconProfile ?? "light",
 			showDescription: currentDraft.showDescription ?? true,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
@@ -114,8 +114,11 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			stats: card.stats,
 			spellType: card.spellType,
 			trapType: card.trapType,
+			linkMarkersOnDescription: currentDraft.linkMarkersOnDescription ?? false,
 			descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor ?? "auto",
 			objectFit: currentDraft.objectFit,
+			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
+			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 			img: card.imgUrl,
 		};
 	};
@@ -139,7 +142,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 				cardDraftSignal.value = {
 					name: c.name,
 					cardType: c.cardType,
-					iconProfile: currentDraft.iconProfile ?? "hector",
+					iconProfile: currentDraft.iconProfile ?? "light",
 					showDescription: currentDraft.showDescription ?? true,
 					pendulumDescription: c.pendulumDescription ?? "",
 					description: c.description,
@@ -149,6 +152,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					isTuner: c.isTuner,
 					scale: c.scale,
 					linkRating: c.linkRating,
+					linkMarkersOnDescription:
+						currentDraft.linkMarkersOnDescription ?? false,
 					linkMarkers: c.linkMarkers,
 					stats: c.stats,
 					spellType: c.spellType,
@@ -156,6 +161,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					descriptionStatsBoxColor:
 						currentDraft.descriptionStatsBoxColor ?? "auto",
 					objectFit: currentDraft.objectFit,
+					imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
+					descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 					img: null,
 				};
 
@@ -216,6 +223,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			if (!res) {
 				setStatus("Deck import only works in Tauri (not web mode). ");
 				return;
+			}
+			if (typeof res === "string") {
+				throw new Error(res);
 			}
 
 			const uniqueIds = new Set(res.ids).size;
@@ -329,6 +339,70 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 										{option.label}
 									</SelectItem>
 								))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div className="space-y-2">
+						<label className="text-sm font-medium" htmlFor="deck-img-rotation">
+							Image Rotation (deg)
+						</label>
+						<Input
+							id="deck-img-rotation"
+							type="number"
+							inputMode="numeric"
+							value={String(cardDraftSignal.value.imgRotationDeg ?? 0)}
+							onInput={(e) => {
+								const raw = e.currentTarget.value;
+								const parsed = Number.parseFloat(raw);
+								cardDraftSignal.value = {
+									...cardDraftSignal.value,
+									imgRotationDeg: Number.isFinite(parsed) ? parsed : 0,
+								};
+							}}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<label
+							className="text-sm font-medium"
+							htmlFor="deck-description-opacity"
+						>
+							Description image opacity
+						</label>
+						<Select
+							value={
+								cardDraftSignal.value.descriptionImageOpacity === undefined
+									? "auto"
+									: String(cardDraftSignal.value.descriptionImageOpacity)
+							}
+							onValueChange={(value: string) => {
+								if (value === "auto") {
+									cardDraftSignal.value = {
+										...cardDraftSignal.value,
+										descriptionImageOpacity: undefined,
+									};
+									return;
+								}
+								const parsed = Number.parseFloat(value);
+								cardDraftSignal.value = {
+									...cardDraftSignal.value,
+									descriptionImageOpacity: Number.isFinite(parsed)
+										? parsed
+										: undefined,
+								};
+							}}
+						>
+							<SelectTrigger id="deck-description-opacity" className="w-full">
+								<SelectValue placeholder="Opacity" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="auto">Auto</SelectItem>
+								<SelectItem value="0">0%</SelectItem>
+								<SelectItem value="0.25">25%</SelectItem>
+								<SelectItem value="0.5">50%</SelectItem>
+								<SelectItem value="0.75">75%</SelectItem>
+								<SelectItem value="1">100%</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>

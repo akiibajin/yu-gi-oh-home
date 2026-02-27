@@ -17,7 +17,7 @@ export function AvatarSelector({
 	const avatars = Object.entries(imageSet)
 		.map(([name, image]) => ({
 			name,
-			image,
+			image: image.standing,
 		}))
 		.sort((a, b) => a.name.localeCompare(b.name));
 

@@ -71,6 +71,23 @@ export function CardMakerImageFields(props: {
 							</SelectContent>
 						</Select>
 					</label>
+					<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-3">
+						<span>Rotation (deg)</span>
+						<Input
+							type="number"
+							inputMode="numeric"
+							className="h-8"
+							value={String(draft.imgRotationDeg ?? 0)}
+							onInput={(e) => {
+								const raw = e.currentTarget.value;
+								const parsed = Number.parseFloat(raw);
+								setDraftField(
+									"imgRotationDeg",
+									Number.isFinite(parsed) ? parsed : 0,
+								);
+							}}
+						/>
+					</label>
 				</div>
 			</div>
 			{draft.img ? (

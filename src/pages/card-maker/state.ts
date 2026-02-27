@@ -5,7 +5,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 	return {
 		name: "",
 		cardType: "Monster",
-		iconProfile: "hector",
+		iconProfile: "light",
 		showDescription: true,
 		pendulumDescription: "",
 		description: "",
@@ -19,6 +19,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 			def: 0,
 		},
 		img: null,
+		imgRotationDeg: 0,
 	};
 }
 

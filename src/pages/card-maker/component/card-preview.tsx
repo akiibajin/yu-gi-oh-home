@@ -22,9 +22,15 @@ export function CardPreview() {
 	const isFusion = isMonster && draft.monsterType?.includes("Fusion");
 	const isSynchro = isMonster && draft.monsterType?.includes("Synchro");
 	const isEffect = isMonster && draft.monsterType?.includes("Effect");
+	const isNormal = isMonster && draft.monsterType?.includes("Normal");
 	const isLink = isMonster && draft.monsterType?.includes("Link");
+	const isSpell = draft.cardType === "Spell";
+	const isField = draft.cardType === "Field";
+	const isTrap = draft.cardType === "Trap";
 	const isPendulum = isMonster && draft.monsterType?.includes("Pendulum");
 	const isNumber = isXyz && draft.name.toLowerCase().includes("number");
+	const descriptionImageOpacity =
+		draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
 	const numberLabelValue = useMemo(() => {
 		if (!isNumber) return null;
 		const match = draft.name.match(/\bnumber\s*(\d+)/i);
@@ -63,7 +69,10 @@ export function CardPreview() {
 			?.img;
 	}, [draft]);
 	const monsterTypeIcon = isMonster
-		? getMonsterTypeIcon(draft.iconProfile, draft.subType)
+		? getMonsterTypeIcon(
+				draft.attribute === "DIVINE" ? "dark" : draft.iconProfile,
+				draft.subType,
+			)
 		: "";
 	const iconFallback = SPELL_ICONS.Normal;
 	useEffect(() => {
@@ -225,6 +234,8 @@ export function CardPreview() {
 							className="size-full object-fill"
 							style={{
 								objectFit: draft.objectFit ?? "cover",
+								transform: `rotate(${draft.imgRotationDeg ?? 0}deg)`,
+								transformOrigin: "center",
 							}}
 						/>
 					</div>
@@ -254,8 +265,8 @@ export function CardPreview() {
 							)}
 							<span
 								className={cn(
-									"relative w-26 text-end -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
-									(isFusion || isEffect || isRitual || isXyz) && "text-white!",
+									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									(isFusion || isRitual || isXyz) && "text-white!",
 								)}
 							>
 								{draft.stats.atk}
@@ -269,8 +280,8 @@ export function CardPreview() {
 						>
 							<span
 								className={cn(
-									"relative text-start w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter",
-									(isFusion || isEffect || isRitual || isXyz) && "text-white!",
+									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									(isFusion || isRitual || isXyz) && "text-white!",
 									isLink && "opacity-0",
 								)}
 							>
@@ -286,7 +297,7 @@ export function CardPreview() {
 									<img
 										src={monsterTypeIcon}
 										alt={`${draft.subType} icon`}
-										className="size-4/5 absolute top-1/2 left-[52%] -translate-x-1/2 -translate-y-1/2"
+										className="size-[95%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
 									/>
 								) : null}
 							</div>
@@ -299,10 +310,8 @@ export function CardPreview() {
 							<img
 								src={BOX_TEXTURES.Spell.description}
 								alt="description"
-								className={cn(
-									"absolute size-full opacity-50 object-fill",
-									(isSynchro || isXyz) && "opacity-80",
-								)}
+								className="absolute size-full object-fill"
+								style={{ opacity: descriptionImageOpacity }}
 							/>
 						) : null}
 						<p
@@ -335,10 +344,8 @@ export function CardPreview() {
 							<img
 								src={typeCardImg.description}
 								alt="description"
-								className={cn(
-									"absolute size-full opacity-50 object-fill",
-									(isSynchro || isXyz) && "opacity-80",
-								)}
+								className="absolute size-full object-fill"
+								style={{ opacity: descriptionImageOpacity }}
 							/>
 						) : null}
 						<p
@@ -363,23 +370,32 @@ export function CardPreview() {
 						ref={displayNameContainerRef}
 					>
 						<p
+							id="card-name"
 							className={cn(
-								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-black w-full max-w-[80%] z-2 whitespace-nowrap",
-								(isFusion || isEffect || isRitual || isXyz) && "text-white!",
+								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-black w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",
+								(isFusion ||
+									isEffect ||
+									isRitual ||
+									isXyz ||
+									isNormal ||
+									isSpell ||
+									isField ||
+									isTrap) &&
+									"text-white!",
 							)}
 							ref={displayNameRef}
 						>
 							{displayName}
 						</p>
 					</div>
-					{!isMonster && (
-						<img
-							src={iconImg ? iconImg : iconFallback}
-							alt={`${draft.cardType} icon`}
-							className="size-14 absolute right-0 z-2"
-						/>
-					)}
 				</div>
+				{!isMonster && (
+					<img
+						src={iconImg ? iconImg : iconFallback}
+						alt={`${draft.cardType} icon`}
+						className="size-14 absolute right-4 z-2 top-4"
+					/>
+				)}
 			</div>
 		</div>
 	);

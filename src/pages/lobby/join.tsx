@@ -18,18 +18,17 @@ import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export default function JoinLobby() {
 	const { route } = useLocation();
-	const [playerName, setPlayerName] = useState("");
 	const [lobbyCode, setLobbyCode] = useState("");
 	const [selectedAvatar, setSelectedAvatar] = useState(
-		Object.values(PLAYERS_IMAGES)[0],
+		Object.keys(PLAYERS_IMAGES)[0],
 	);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [showScanner, setShowScanner] = useState(false);
 
 	const handleJoinLobby = async () => {
-		if (!playerName.trim()) {
-			setError("Please enter your name");
+		if (!selectedAvatar.trim()) {
+			setError("Please select an avatar");
 			return;
 		}
 
@@ -44,7 +43,7 @@ export default function JoinLobby() {
 		try {
 			const result = await joinLobby(
 				lobbyCode.trim(),
-				playerName.trim(),
+				selectedAvatar,
 				selectedAvatar,
 			);
 
@@ -71,7 +70,7 @@ export default function JoinLobby() {
 	};
 
 	return (
-			<div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
+		<div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
 			<Card className="w-full">
 				<CardContent className="p-6 md:p-8">
 					<CardHeader className="px-0 pt-0">
@@ -99,10 +98,8 @@ export default function JoinLobby() {
 								type="text"
 								className="w-full"
 								placeholder="Enter your name"
-								value={playerName}
-								onInput={(e) =>
-									setPlayerName((e.target as HTMLInputElement).value)
-								}
+								value={selectedAvatar}
+								readOnly
 								disabled={loading}
 							/>
 						</div>
@@ -157,7 +154,7 @@ export default function JoinLobby() {
 
 						<Button
 							onClick={handleJoinLobby}
-							disabled={loading || !playerName.trim() || !lobbyCode.trim()}
+							disabled={loading || !selectedAvatar.trim() || !lobbyCode.trim()}
 							className="w-full"
 						>
 							{loading ? "Joining..." : "Join Lobby"}

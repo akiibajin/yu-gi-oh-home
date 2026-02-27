@@ -19,7 +19,8 @@ import type { SetDraftField } from "./card-maker-form/types";
 export function CardMakerForm() {
 	const draft = cardDraftSignal.value;
 	const isMonster = draft.cardType === "Monster";
-	const isPendulum = isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
+	const isPendulum =
+		isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
 	const isLink = isMonster && (draft.monsterType?.includes("Link") ?? false);
 	const [saveStatus, setSaveStatus] = useState<string>("");
 	// const [saving, setSaving] = useState(false);
@@ -111,7 +112,7 @@ export function CardMakerForm() {
 			setExporting(false);
 		}
 	};
-	console.log({ draft })
+	console.log({ draft });
 	return (
 		<Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
 			<CardHeader>
@@ -155,6 +156,10 @@ export function CardMakerForm() {
 					showDescription={draft.showDescription ?? true}
 					onShowDescriptionChange={(checked) =>
 						setDraftField("showDescription", checked)
+					}
+					descriptionImageOpacity={draft.descriptionImageOpacity}
+					onDescriptionImageOpacityChange={(value) =>
+						setDraftField("descriptionImageOpacity", value)
 					}
 					label={isPendulum ? "Monster Effect" : "Description"}
 					value={draft.description}

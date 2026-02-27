@@ -9,11 +9,14 @@ export type LoadDeckCardsResponse = {
 
 export async function loadDeckCardsFromYdkFile(
 	file: File,
-): Promise<LoadDeckCardsResponse | undefined> {
+): Promise<LoadDeckCardsResponse | string | undefined> {
 	if (!canInvokeTauri()) return undefined;
 
 	const bytes = new Uint8Array(await file.arrayBuffer());
-	return invoke<LoadDeckCardsResponse>("load_deck_cards_from_ydk_bytes", {
-		req: { bytes: Array.from(bytes) },
-	});
+	return invoke<LoadDeckCardsResponse | string>(
+		"load_deck_cards_from_ydk_bytes",
+		{
+			req: { bytes: Array.from(bytes) },
+		},
+	);
 }

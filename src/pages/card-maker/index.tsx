@@ -28,20 +28,20 @@ function CardMaker() {
 				<div className="min-w-0 flex-1">
 					<div className="flex flex-wrap items-center gap-3 mb-4">
 						<div className="inline-flex w-fit items-center rounded-md border p-1">
-						<Button
-							type="button"
-							variant="frame"
-							onClick={() => setTab("maker")}
-						>
-							Card maker
-						</Button>
-						<Button
-							type="button"
-							variant="frame"
-							onClick={() => setTab("deck")}
-						>
-							Import deck
-						</Button>
+							<Button
+								type="button"
+								variant="frame"
+								onClick={() => setTab("maker")}
+							>
+								Card maker
+							</Button>
+							<Button
+								type="button"
+								variant="frame"
+								onClick={() => setTab("deck")}
+							>
+								Import deck
+							</Button>
 						</div>
 
 						<div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ function CardMaker() {
 								Profile
 							</label>
 							<Select
-								value={cardDraftSignal.value.iconProfile ?? "hector"}
+								value={cardDraftSignal.value.iconProfile ?? "light"}
 								onValueChange={(value: string) => {
 									cardDraftSignal.value = {
 										...cardDraftSignal.value,
@@ -61,8 +61,8 @@ function CardMaker() {
 									<SelectValue placeholder="Select profile" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="hector">hector</SelectItem>
-									<SelectItem value="jaime">jaime</SelectItem>
+									<SelectItem value="light">Light</SelectItem>
+									<SelectItem value="dark">Dark</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
