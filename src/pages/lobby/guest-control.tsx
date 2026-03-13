@@ -190,7 +190,9 @@ export default function GuestControl() {
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
 					<Skeleton className="w-64 h-64 mx-auto" />
-					<p className="text-lg text-amber-100">Loading player data...</p>
+					<p className="text-lg text-amber-100">
+						Cargando datos del jugador...
+					</p>
 				</div>
 			</div>
 		);
@@ -202,7 +204,7 @@ export default function GuestControl() {
 				<CardContent className="px-0 py-4 md:p-8">
 					<CardHeader className="px-0 pt-0 pb-6">
 						<div className="flex items-center gap-3">
-							<CardTitle>Your Life Points</CardTitle>
+							<CardTitle>Tus Puntos de Vida</CardTitle>
 						</div>
 					</CardHeader>
 					<div className="space-y-6">
@@ -258,7 +260,7 @@ export default function GuestControl() {
 									}
 									className="md:text-lg h-16"
 								>
-									<img src={halveIcon} alt="Halve" className="w-5 h-5" />
+									<img src={halveIcon} alt="Mitad" className="w-5 h-5" />
 								</Button>
 							</div>
 
@@ -329,11 +331,13 @@ export default function GuestControl() {
 						<CardHeader className="px-0 pt-0 pb-4">
 							<div className="flex items-center gap-3">
 								<TrophyIcon className="w-5 h-5 text-amber-400" />
-								<CardTitle className="text-lg">Report Game Result</CardTitle>
+								<CardTitle className="text-lg">
+									Reportar resultado del duelo
+								</CardTitle>
 							</div>
 						</CardHeader>
 						<p className="text-sm text-amber-200/70 mb-4">
-							Report who won this game:
+							Indica quién ganó este duelo:
 						</p>
 						<div className="grid grid-cols-2 gap-3">
 							<Button
@@ -342,7 +346,7 @@ export default function GuestControl() {
 								className="h-16 flex flex-col gap-1"
 							>
 								<TrophyIcon className="w-5 h-5" />
-								<span>I Won</span>
+								<span>Gané</span>
 							</Button>
 							<Button
 								variant="frame"
@@ -350,7 +354,7 @@ export default function GuestControl() {
 								className="h-16 flex flex-col gap-1"
 							>
 								<XCircleIcon className="w-5 h-5" />
-								<span>I Lost</span>
+								<span>Perdí</span>
 							</Button>
 						</div>
 					</CardContent>

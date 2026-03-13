@@ -16,7 +16,7 @@ import NumberCardLabel from "./numberCardLabel";
 
 export function CardPreview() {
 	const draft = cardDraftSignal.value;
-	const displayName = draft.name.trim() || "(Unnamed card)";
+	const displayName = draft.name.trim() || "(Carta sin nombre)";
 	const isMonster = draft.cardType === "Monster";
 	const isXyz = isMonster && draft.monsterType?.includes("Xyz");
 	const isFusion = isMonster && draft.monsterType?.includes("Fusion");
@@ -250,7 +250,7 @@ export function CardPreview() {
 						<img
 							className="w-full opacity-70 absolute"
 							src={typeCardImg.stats ?? ""}
-							alt="atk"
+							alt="ATK"
 						/>
 						<div className="relative z-2 w-1/2 flex items-center justify-start">
 							{isMonster && (
@@ -291,12 +291,12 @@ export function CardPreview() {
 								<img
 									src={iconImg ? iconImg : iconFallback}
 									className={cn("size-full")}
-									alt={`${draft.cardType} icon`}
+									alt={`Icono de ${draft.cardType}`}
 								/>
 								{monsterTypeIcon ? (
 									<img
 										src={monsterTypeIcon}
-										alt={`${draft.subType} icon`}
+										alt={`Icono de ${draft.subType}`}
 										className="size-[95%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
 									/>
 								) : null}
@@ -309,7 +309,7 @@ export function CardPreview() {
 						{!isVoidDescriptionStatsBox ? (
 							<img
 								src={BOX_TEXTURES.Spell.description}
-								alt="description"
+								alt="descripción"
 								className="absolute size-full object-fill"
 								style={{ opacity: descriptionImageOpacity }}
 							/>
@@ -343,7 +343,7 @@ export function CardPreview() {
 						{!isVoidDescriptionStatsBox ? (
 							<img
 								src={typeCardImg.description}
-								alt="description"
+								alt="descripción"
 								className="absolute size-full object-fill"
 								style={{ opacity: descriptionImageOpacity }}
 							/>
@@ -392,7 +392,7 @@ export function CardPreview() {
 				{!isMonster && (
 					<img
 						src={iconImg ? iconImg : iconFallback}
-						alt={`${draft.cardType} icon`}
+						alt={`Icono de ${draft.cardType}`}
 						className="size-14 absolute right-4 z-2 top-4"
 					/>
 				)}

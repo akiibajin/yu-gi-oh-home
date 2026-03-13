@@ -5,18 +5,31 @@ const hassanJaden = "/assets/images/avatars/hassan - jaden.webp";
 const jadenRisk = "/assets/images/avatars/jaden - risk.webp";
 const jadenLost = "/assets/images/avatars/jaden - lost.webp";
 const hassanZane = "/assets/images/avatars/hassan - zane.webp";
+const hassanZaneRisk = "/assets/images/avatars/hassan - zane - risk.webp";
+const hassanZaneLost = "/assets/images/avatars/hassan - zane - lost.webp";
 const hassanMako = "/assets/images/avatars/hassan - mako.webp";
+const hassanMakoRisk = "/assets/images/avatars/hassan - mako - risk.webp";
+const hassanMakoLost = "/assets/images/avatars/hassan - mako - lost.webp";
 const hectorYusei = "/assets/images/avatars/hector - yusei.webp";
 const yuseiRisk = "/assets/images/avatars/yusei - risk.webp";
 const yuseiLost = "/assets/images/avatars/yusei - lost.webp";
 const hectorNinja = "/assets/images/avatars/hector - ninja.webp";
+const hectorTitan = "/assets/images/avatars/hector - titan.webp";
+const hectorTitanRisk = "/assets/images/avatars/hector - titan - risk.webp";
+const hectorTitanLost = "/assets/images/avatars/hector - titan - lost.webp";
 const hectorYisus = "/assets/images/avatars/hector - yisus.webp";
 const hectorAtikus = "/assets/images/avatars/hector - atikus.webp";
 const atikusRisk = "/assets/images/avatars/atikus - risk.webp";
 const atikusLost = "/assets/images/avatars/atikus - lost.webp";
 const jessDarks = "/assets/images/avatars/jess - darks.webp";
+const jessDarksRisk = "/assets/images/avatars/jess - darks - risk.webp";
+const jessDarksLost = "/assets/images/avatars/jess - darks - lost.webp";
 const jessKaiba = "/assets/images/avatars/jess - kaiba.webp";
+const jessKaibaRisk = "/assets/images/avatars/jess - kaiba - risk.webp";
+const jessKaibaLost = "/assets/images/avatars/jess - kaiba - lost.webp";
 const jessCrowler = "/assets/images/avatars/jess - crowler.webp";
+const crowlerRisk = "/assets/images/avatars/jess - crowler - risk.webp";
+const crowlerLost = "/assets/images/avatars/jess - crowler - lost.webp";
 const jessPegasus = "/assets/images/avatars/jess - pegasus.webp";
 const pegasusRisk = "/assets/images/avatars/pegasus - risk.webp";
 const pegasusLost = "/assets/images/avatars/pegasus - lost.webp";
@@ -24,18 +37,28 @@ const wallysMarik = "/assets/images/avatars/wallys - marik.webp";
 const marikRisk = "/assets/images/avatars/marik - risk.webp";
 const marikLost = "/assets/images/avatars/marik - lost.webp";
 const wallysYuya = "/assets/images/avatars/wallys - yuya.webp";
+const wallysYuyaRisk = "/assets/images/avatars/wallys - yuya - risk.webp";
+const wallysYuyaLost = "/assets/images/avatars/wallys - yuya - lost.webp";
 const wallysChaz = "/assets/images/avatars/wallys - chaz.webp";
 const chazzRisk = "/assets/images/avatars/chazz - risk.webp";
 const chazzLost = "/assets/images/avatars/chazz - lost.webp";
 const wallysJack = "/assets/images/avatars/wallys - jack.webp";
+const jackRisk = "/assets/images/avatars/wallys - jack - risk.webp";
+const jackLost = "/assets/images/avatars/wallys - jack - lost.webp";
 const chautaYugi = "/assets/images/avatars/chauta-yugi.webp";
 const yugiRisk = "/assets/images/avatars/yugi - risk.webp";
 const yugiLost = "/assets/images/avatars/yugi - lost.webp";
 const chautaIshizu = "/assets/images/avatars/chauta-ishizu.webp";
+const chautaIshizuRisk = "/assets/images/avatars/chauta - ishizu - risk.webp";
+const chautaIshizuLost = "/assets/images/avatars/chauta - ishizu - lost.webp";
 const chautaPhoenix = "/assets/images/avatars/chauta-phoenix.webp";
 const phoenixRisk = "/assets/images/avatars/phoenix - risk.webp";
 const phoenixLost = "/assets/images/avatars/phoenix - lost.webp";
 const chautaGladiator = "/assets/images/avatars/chauta-gladiator.webp";
+const chautaGladiatorRisk =
+	"/assets/images/avatars/chauta - gladiator - risk.webp";
+const chautaGladiatorLost =
+	"/assets/images/avatars/chauta - gladiator - lost.webp";
 const joeyYuya = "/assets/images/avatars/joey - yuya.webp";
 const joeyJack = "/assets/images/avatars/joey - jack.webp";
 const zaneKaiba = "/assets/images/avatars/zane-kaiba.webp";
@@ -50,6 +73,7 @@ const ishizuYisus = "/assets/images/avatars/ishizu - yisus.webp";
 const ninjaYuya = "/assets/images/avatars/ninja - yuya.webp";
 const makoYisus = "/assets/images/avatars/mako - yisus.webp";
 const joeyYusei = "/assets/images/avatars/joey - yusei.webp";
+const titanYuya = "/assets/images/avatars/titan - yuya.webp";
 const all1 = "/assets/images/avatars/all - 1.webp";
 const all2 = "/assets/images/avatars/all - 2.webp";
 
@@ -106,6 +130,9 @@ export const TAG_IMAGES = {
 	"Joey - Yusei": {
 		standing: joeyYusei,
 	},
+	"titan - yuya": {
+		standing: titanYuya,
+	},
 	"all - 1": {
 		standing: all1,
 	},
@@ -135,11 +162,16 @@ export const PLAYERS_IMAGES = {
 		risk: atikusRisk,
 		lost: atikusLost,
 	},
+	"Hector - Titan": {
+		standing: hectorTitan,
+		risk: hectorTitanRisk,
+		lost: hectorTitanLost,
+	},
 	// Wallys variants
 	"Wallys - Yuya": {
 		standing: wallysYuya,
-		risk: undefined,
-		lost: undefined,
+		risk: wallysYuyaRisk,
+		lost: wallysYuyaLost,
 	},
 	"Wallys - Marik": {
 		standing: wallysMarik,
@@ -153,8 +185,8 @@ export const PLAYERS_IMAGES = {
 	},
 	"Wallys - Jack": {
 		standing: wallysJack,
-		risk: undefined,
-		lost: undefined,
+		risk: jackRisk,
+		lost: jackLost,
 	},
 	// Chauta variants
 	"Chauta - Yugi": {
@@ -164,8 +196,8 @@ export const PLAYERS_IMAGES = {
 	},
 	"Chauta - Ishizu": {
 		standing: chautaIshizu,
-		risk: undefined,
-		lost: undefined,
+		risk: chautaIshizuRisk,
+		lost: chautaIshizuLost,
 	},
 	"Chauta - Phoenix": {
 		standing: chautaPhoenix,
@@ -174,8 +206,8 @@ export const PLAYERS_IMAGES = {
 	},
 	"Chauta - Gladiator": {
 		standing: chautaGladiator,
-		risk: undefined,
-		lost: undefined,
+		risk: chautaGladiatorRisk,
+		lost: chautaGladiatorLost,
 	},
 	// Hassan variants
 	"Hassan - Joey": {
@@ -190,29 +222,29 @@ export const PLAYERS_IMAGES = {
 	},
 	"Hassan - Zane": {
 		standing: hassanZane,
-		risk: undefined,
-		lost: undefined,
+		risk: hassanZaneRisk,
+		lost: hassanZaneLost,
 	},
 	"Hassan - Mako": {
 		standing: hassanMako,
-		risk: undefined,
-		lost: undefined,
+		risk: hassanMakoRisk,
+		lost: hassanMakoLost,
 	},
 	// Jess variants
 	"Jess - Darks": {
 		standing: jessDarks,
-		risk: undefined,
-		lost: undefined,
+		risk: jessDarksRisk,
+		lost: jessDarksLost,
 	},
 	"Jess - Kaiba": {
 		standing: jessKaiba,
-		risk: undefined,
-		lost: undefined,
+		risk: jessKaibaRisk,
+		lost: jessKaibaLost,
 	},
 	"Jess - Crowler": {
 		standing: jessCrowler,
-		risk: undefined,
-		lost: undefined,
+		risk: crowlerRisk,
+		lost: crowlerLost,
 	},
 	"Jess - Pegasus": {
 		standing: jessPegasus,

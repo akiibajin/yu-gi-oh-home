@@ -33,7 +33,7 @@ export function CardMakerDescriptionFields(props: {
 		<div className="space-y-2 rounded-md border p-3 sm:p-4">
 			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<label className="text-sm font-medium" htmlFor="cm-show-description">
-					Show Description in Preview
+					Mostrar descripción en la vista previa
 				</label>
 				<Switch
 					id="cm-show-description"
@@ -43,7 +43,7 @@ export function CardMakerDescriptionFields(props: {
 			</div>
 			<div className="space-y-2">
 				<label className="text-sm font-medium" htmlFor="cm-description-opacity">
-					Description image opacity
+					Opacidad de la imagen de descripción
 				</label>
 				<Select
 					value={
@@ -63,10 +63,10 @@ export function CardMakerDescriptionFields(props: {
 					}}
 				>
 					<SelectTrigger id="cm-description-opacity" className="h-8 w-full">
-						<SelectValue placeholder="Opacity" />
+						<SelectValue placeholder="Opacidad" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="auto">Auto</SelectItem>
+						<SelectItem value="auto">Automático</SelectItem>
 						<SelectItem value="0.25">25%</SelectItem>
 						<SelectItem value="0.5">50%</SelectItem>
 						<SelectItem value="0.75">75%</SelectItem>

@@ -99,15 +99,17 @@ export function CardMakerForm() {
 
 	const onExport = async () => {
 		setExporting(true);
-		setSaveStatus("Exporting...");
+		setSaveStatus("Exportando...");
 		try {
 			const res = await exportPreview(draft);
 			const shownPath =
 				res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
-			setSaveStatus(`exported to: ${shownPath}`);
+			setSaveStatus(`exportado en: ${shownPath}`);
 		} catch (err) {
 			console.error(err);
-			setSaveStatus(err instanceof Error ? err.message : "Failed to export.");
+			setSaveStatus(
+				err instanceof Error ? err.message : "No se pudo exportar.",
+			);
 		} finally {
 			setExporting(false);
 		}
@@ -116,7 +118,7 @@ export function CardMakerForm() {
 	return (
 		<Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
 			<CardHeader>
-				<CardTitle>Card Options</CardTitle>
+				<CardTitle>Opciones de la carta</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-5 min-w-0 **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full">
 				<CardMakerBasicFields draft={draft} setDraftField={setDraftField} />
@@ -161,11 +163,13 @@ export function CardMakerForm() {
 					onDescriptionImageOpacityChange={(value) =>
 						setDraftField("descriptionImageOpacity", value)
 					}
-					label={isPendulum ? "Monster Effect" : "Description"}
+					label={isPendulum ? "Efecto de monstruo" : "Descripción"}
 					value={draft.description}
 					onInput={onMonsterEffectInput}
 					placeholder={
-						isPendulum ? "Monster effect text..." : "Card effect text..."
+						isPendulum
+							? "Texto del efecto del monstruo..."
+							: "Texto del efecto de la carta..."
 					}
 				/>
 

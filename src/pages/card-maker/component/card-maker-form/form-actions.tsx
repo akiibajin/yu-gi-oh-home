@@ -17,7 +17,7 @@ export function CardMakerFormActions(props: {
 					onClick={onReset}
 					className="w-full sm:w-auto"
 				>
-					Reset
+					Restablecer
 				</Button>
 				<Button
 					type="button"
@@ -25,7 +25,7 @@ export function CardMakerFormActions(props: {
 					disabled={exporting}
 					className="w-full sm:w-auto"
 				>
-					{exporting ? "Exporting..." : "Export"}
+					{exporting ? "Exportando..." : "Exportar"}
 				</Button>
 			</div>
 

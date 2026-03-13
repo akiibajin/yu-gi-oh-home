@@ -22,21 +22,27 @@ async function tryTauriInvoke<T>(cmd: string, args?: Record<string, unknown>) {
 
 function Home() {
 	const { route } = useLocation();
-	const [status, setStatus] = useState<string>("");
+	type SystemStatus = "idle" | "testing" | "online" | "offline";
+	const [systemStatus, setSystemStatus] = useState<SystemStatus>("idle");
+	const [statusMessage, setStatusMessage] = useState<string>("");
 	const [busy, setBusy] = useState(false);
 
 	const test = async () => {
 		setBusy(true);
-		setStatus("Testing connection...");
+		setSystemStatus("testing");
+		setStatusMessage("Probando conexión...");
 		try {
 			const res = await tryTauriInvoke<void>("db_healthcheck");
 			if (res === undefined) {
-				setStatus("Healthcheck only works in Tauri.");
+				setSystemStatus("testing");
+				setStatusMessage("La comprobación de estado solo funciona en Tauri.");
 				return;
 			}
-			setStatus("DB connection OK.");
+			setSystemStatus("online");
+			setStatusMessage("Conexión a la base de datos: OK.");
 		} catch {
-			setStatus("DB healthcheck failed.");
+			setSystemStatus("offline");
+			setStatusMessage("Falló la comprobación de la base de datos.");
 		} finally {
 			setBusy(false);
 		}
@@ -49,9 +55,9 @@ function Home() {
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<div>
-								<CardTitle>Duel Tools & Features</CardTitle>
+								<CardTitle>Herramientas y funciones de duelo</CardTitle>
 								<CardDescription>
-									Essential utilities for any duelist
+									Utilidades esenciales para cualquier duelista
 								</CardDescription>
 							</div>
 							<Badge variant="default" faction="none" size="lg">
@@ -67,7 +73,7 @@ function Home() {
 								className="flex items-center justify-center text-xs sm:text-sm"
 								variant="default"
 							>
-								⚔️ Calculator
+								⚔️ Calculadora
 							</Button>
 							<Button
 								type="button"
@@ -75,7 +81,7 @@ function Home() {
 								className="flex items-center justify-center"
 								variant="default"
 							>
-								✨ Card Maker
+								✨ Creador de cartas
 							</Button>
 							<Button
 								type="button"
@@ -83,7 +89,7 @@ function Home() {
 								className="flex items-center justify-center"
 								variant="default"
 							>
-								🏰 Field Spells
+								🏰 Magias de Campo
 							</Button>
 						</div>
 					</CardContent>
@@ -94,9 +100,9 @@ function Home() {
 					<CardHeader>
 						<div className="flex items-center justify-between">
 							<div>
-								<CardTitle>Multiplayer Battle</CardTitle>
+								<CardTitle>Duelo multijugador</CardTitle>
 								<CardDescription>
-									Challenge opponents and track life points in real-time
+									Desafía oponentes y registra los puntos de vida en tiempo real
 								</CardDescription>
 							</div>
 							<Badge variant="default" faction="none" size="lg">
@@ -112,7 +118,7 @@ function Home() {
 								className="flex items-center justify-center"
 								variant="default"
 							>
-								🎪 Create Lobby
+								🎪 Crear sala
 							</Button>
 							<Button
 								type="button"
@@ -120,7 +126,7 @@ function Home() {
 								className="flex items-center justify-center"
 								variant="default"
 							>
-								🔗 Join Lobby
+								🔗 Unirse a sala
 							</Button>
 						</div>
 					</CardContent>
@@ -130,28 +136,29 @@ function Home() {
 				<Card className="px-2 sm:px-6">
 					<CardHeader>
 						<div className="flex items-center justify-between">
-							<CardTitle>System Status</CardTitle>
+							<CardTitle>Estado del sistema</CardTitle>
 							<Badge
 								variant={
-									status.includes("OK")
+									systemStatus === "online"
 										? "default"
-										: status.includes("failed")
+										: systemStatus === "offline"
 											? "destructive"
 											: "secondary"
 								}
 								size="sm"
 							>
-								{status.includes("OK")
-									? "ONLINE"
-									: status.includes("failed")
-										? "OFFLINE"
-										: "TESTING"}
+								{systemStatus === "online"
+									? "EN LÍNEA"
+									: systemStatus === "offline"
+										? "FUERA DE LÍNEA"
+										: "PROBANDO"}
 							</Badge>
 						</div>
 					</CardHeader>
 					<CardContent className="space-y-3 px-10 py-6">
 						<p className="text-sm text-amber-100/70">
-							Verify backend database connectivity and system health
+							Verifica la conectividad de la base de datos y el estado del
+							sistema
 						</p>
 						<div className="flex gap-2">
 							<Button
@@ -161,20 +168,20 @@ function Home() {
 								disabled={busy}
 								className="px-4 py-2"
 							>
-								{busy ? "Testing..." : "Test Connection"}
+								{busy ? "Probando..." : "Probar conexión"}
 							</Button>
 						</div>
-						{status ? (
+						{statusMessage ? (
 							<div
 								className={`text-sm px-3 py-2 rounded border ${
-									status.includes("OK")
+									systemStatus === "online"
 										? "text-emerald-200 border-emerald-700/50 bg-emerald-950/30"
-										: status.includes("failed")
+										: systemStatus === "offline"
 											? "text-red-200 border-red-700/50 bg-red-950/30"
 											: "text-amber-200 border-amber-700/50 bg-amber-950/30"
 								}`}
 							>
-								{status}
+								{statusMessage}
 							</div>
 						) : null}
 					</CardContent>

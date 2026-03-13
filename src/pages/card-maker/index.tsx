@@ -33,20 +33,20 @@ function CardMaker() {
 								variant="frame"
 								onClick={() => setTab("maker")}
 							>
-								Card maker
+								Creador de cartas
 							</Button>
 							<Button
 								type="button"
 								variant="frame"
 								onClick={() => setTab("deck")}
 							>
-								Import deck
+								Importar mazo
 							</Button>
 						</div>
 
 						<div className="flex items-center gap-2">
 							<label className="text-sm font-medium" htmlFor="icon-profile">
-								Profile
+								Perfil
 							</label>
 							<Select
 								value={cardDraftSignal.value.iconProfile ?? "light"}
@@ -58,11 +58,11 @@ function CardMaker() {
 								}}
 							>
 								<SelectTrigger id="icon-profile" className="w-40">
-									<SelectValue placeholder="Select profile" />
+									<SelectValue placeholder="Selecciona un perfil" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="light">Light</SelectItem>
-									<SelectItem value="dark">Dark</SelectItem>
+									<SelectItem value="light">Claro</SelectItem>
+									<SelectItem value="dark">Oscuro</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>

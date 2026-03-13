@@ -55,7 +55,7 @@ export function LobbyPlayerCard({
 				<div className="flex justify-between gap-2">
 					<CardTitle className="min-w-0 flex-col truncate flex items-center p-0 gap-2">
 						<img
-							src={currentPlayerImage}
+							src={currentPlayerImage ?? playerImage.standing}
 							alt={player.player_name}
 							className={`size-45 object-cover ${
 								isEmergency ? "emergency-animation" : ""

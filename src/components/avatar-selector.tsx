@@ -56,7 +56,7 @@ export function AvatarSelector({
 					<button
 						key={avatar.name}
 						type="button"
-						onClick={() => onSelectAvatar(avatar.image)}
+						onClick={() => onSelectAvatar(avatar.name)}
 						aria-pressed={selectedAvatar === avatar.image}
 						className={`relative w-full min-w-0 rounded-lg border-2 p-1.5 transition-transform active:scale-[0.98] sm:p-2 ${
 							selectedAvatar === avatar.image

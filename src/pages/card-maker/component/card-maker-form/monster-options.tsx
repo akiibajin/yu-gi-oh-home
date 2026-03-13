@@ -24,6 +24,67 @@ import { cardDraftSignal } from "@/pages/card-maker/state";
 import type { SetDraftField } from "./types";
 import { clampInt } from "./utils";
 
+const ATTRIBUTE_LABELS: Record<YugiohCardAttribute, string> = {
+	DARK: "OSCURIDAD",
+	LIGHT: "LUZ",
+	EARTH: "TIERRA",
+	WATER: "AGUA",
+	FIRE: "FUEGO",
+	WIND: "VIENTO",
+	DIVINE: "DIVINO",
+};
+
+const MONSTER_TYPE_LABELS: Record<YugiohMonsterType, string> = {
+	Normal: "Normal",
+	Effect: "Efecto",
+	Gemini: "Géminis",
+	Spirit: "Espíritu",
+	Ritual: "Ritual",
+	Fusion: "Fusión",
+	Synchro: "Sincronía",
+	Xyz: "Xyz",
+	Link: "Enlace",
+	"Pendulum Effect": "Péndulo (Efecto)",
+	"Pendulum Normal": "Péndulo (Normal)",
+	"Pendulum Fusion": "Péndulo (Fusión)",
+	"Pendulum Synchro": "Péndulo (Sincronía)",
+	"Pendulum Xyz": "Péndulo (Xyz)",
+	"Pendulum Ritual": "Péndulo (Ritual)",
+	Token: "Ficha",
+	Trap: "Trampa",
+};
+
+const SUBTYPE_LABELS: Record<MonsterType, string> = {
+	Aqua: "Aqua",
+	Beast: "Bestia",
+	"Beast-Warrior": "Bestia guerrera",
+	"Creator God": "Dios creador",
+	Cyberse: "Ciberso",
+	Cyborg: "Ciborg",
+	Dinosaur: "Dinosaurio",
+	"Divine-Beast": "Bestia divina",
+	Dragon: "Dragón",
+	Fairy: "Hada",
+	Fiend: "Demonio",
+	Fish: "Pez",
+	Galaxy: "Galaxia",
+	Insect: "Insecto",
+	Illusion: "Ilusión",
+	Machine: "Máquina",
+	Plant: "Planta",
+	Psychic: "Psíquico",
+	Pyro: "Piro",
+	Reptile: "Reptil",
+	Rock: "Roca",
+	"Sea Serpent": "Serpiente marina",
+	Spellcaster: "Lanzador de conjuros",
+	Thunder: "Trueno",
+	Warrior: "Guerrero",
+	"Winged Beast": "Bestia alada",
+	Wyrm: "Wyrm",
+	Zombie: "Zombi",
+};
+
 export function CardMakerMonsterOptions(props: {
 	draft: YugiohCardDraft;
 	isPendulum: boolean;
@@ -38,12 +99,12 @@ export function CardMakerMonsterOptions(props: {
 
 	return (
 		<fieldset className="space-y-4 rounded-md border p-3 sm:p-4">
-			<legend className="px-1 text-sm font-medium">Monster Options</legend>
+			<legend className="px-1 text-sm font-medium">Opciones de monstruo</legend>
 
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-attribute">
-						Attribute
+						Atributo
 					</label>
 					<Select
 						value={draft.attribute}
@@ -52,13 +113,13 @@ export function CardMakerMonsterOptions(props: {
 						}
 					>
 						<SelectTrigger id="cm-attribute" className="w-full">
-							<SelectValue placeholder="Select an attribute" />
+							<SelectValue placeholder="Selecciona un atributo" />
 						</SelectTrigger>
 						<SelectContent>
 							{YUGIOH_ATTRIBUTES.map((a) => (
 								<SelectItem key={a.title} value={a.title}>
 									<img className="size-4" src={a.img} alt={a.title} />
-									{a.title}
+									{ATTRIBUTE_LABELS[a.title] ?? a.title}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -67,7 +128,7 @@ export function CardMakerMonsterOptions(props: {
 
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-monster-type">
-						Monster Type
+						Tipo de monstruo
 					</label>
 					<Select
 						value={draft.monsterType}
@@ -76,12 +137,12 @@ export function CardMakerMonsterOptions(props: {
 						}
 					>
 						<SelectTrigger id="cm-monster-type" className="w-full">
-							<SelectValue placeholder="Select a type" />
+							<SelectValue placeholder="Selecciona un tipo" />
 						</SelectTrigger>
 						<SelectContent>
 							{YUGIOH_MONSTER_TYPES.map((t) => (
 								<SelectItem key={t} value={t}>
-									{t}
+									{MONSTER_TYPE_LABELS[t] ?? t}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -90,7 +151,7 @@ export function CardMakerMonsterOptions(props: {
 
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-sub-type">
-						Type
+						Clase
 					</label>
 					<Select
 						value={draft.subType}
@@ -99,13 +160,13 @@ export function CardMakerMonsterOptions(props: {
 						}
 					>
 						<SelectTrigger id="cm-sub-type" className="w-full">
-							<SelectValue placeholder="Select an attribute" />
+							<SelectValue placeholder="Selecciona una clase" />
 						</SelectTrigger>
 						<SelectContent>
 							{getMonsterTypesForProfile(draft.iconProfile).map((a) => (
 								<SelectItem key={a.title} value={a.title}>
 									<img className="size-4" src={a.img} alt={a.title} />
-									{a.title}
+									{SUBTYPE_LABELS[a.title] ?? a.title}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -115,7 +176,7 @@ export function CardMakerMonsterOptions(props: {
 				<div className="space-y-3 min-w-0 self-end">
 					<div className="flex items-center justify-between rounded-md border px-3 py-2">
 						<label className="text-sm font-medium" htmlFor="cm-is-tuner">
-							Is Tuner?
+							¿Es Cantante?
 						</label>
 						<Switch
 							id="cm-is-tuner"
@@ -130,7 +191,7 @@ export function CardMakerMonsterOptions(props: {
 					{isPendulum ? (
 						<div className="space-y-2">
 							<label className="text-sm font-medium" htmlFor="cm-scale">
-								Pendulum Scale
+								Escala Péndulo
 							</label>
 							<Input
 								id="cm-scale"
@@ -156,7 +217,7 @@ export function CardMakerMonsterOptions(props: {
 				{!isLink ? (
 					<div className="space-y-2 min-w-0">
 						<label className="text-sm font-medium" htmlFor="cm-level">
-							Stars (Level)
+							Estrellas (Nivel)
 						</label>
 						<Input
 							id="cm-level"

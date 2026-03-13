@@ -77,7 +77,7 @@ function RankImage(props: RankImageProps) {
 				<img
 					key={a.marker}
 					src={arrowRed}
-					alt={`${a.marker} link marker`}
+					alt={`Marcador de enlace: ${a.marker}`}
 					className={`${a.className} w-8 h-5 object-contain`}
 				/>
 			))}

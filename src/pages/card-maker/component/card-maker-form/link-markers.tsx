@@ -15,6 +15,17 @@ const LINK_MARKERS: LinkMarker[] = [
 	"Bottom-right",
 ];
 
+const LINK_MARKER_LABELS: Record<LinkMarker, string> = {
+	"Top-left": "Arriba-izquierda",
+	Top: "Arriba",
+	"Top-right": "Arriba-derecha",
+	Left: "Izquierda",
+	Right: "Derecha",
+	"Bottom-left": "Abajo-izquierda",
+	Bottom: "Abajo",
+	"Bottom-right": "Abajo-derecha",
+};
+
 export function CardMakerLinkMarkers(props: {
 	draft: YugiohCardDraft;
 	setDraftField: SetDraftField;
@@ -30,11 +41,11 @@ export function CardMakerLinkMarkers(props: {
 
 	return (
 		<fieldset className="space-y-4 rounded-md border p-3 sm:p-4">
-			<legend className="px-1 text-sm font-medium">Link Markers</legend>
+			<legend className="px-1 text-sm font-medium">Marcadores de enlace</legend>
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-link-rating">
-						Link Rating
+						Clasificación de Enlace
 					</label>
 					<Input
 						id="cm-link-rating"
@@ -53,7 +64,7 @@ export function CardMakerLinkMarkers(props: {
 			</div>
 			<div className="space-y-2 min-w-0 flex items-center gap-2">
 				<label htmlFor="rating-desc" className="m-0">
-					Has Arrows on description?
+					¿Mostrar flechas en la descripción?
 				</label>
 				<Switch
 					id="rating-desc"
@@ -72,7 +83,7 @@ export function CardMakerLinkMarkers(props: {
 								checked={checked}
 								onCheckedChange={(v: boolean) => toggleLinkMarker(marker, v)}
 							/>
-							<span className="text-sm">{marker}</span>
+							<span className="text-sm">{LINK_MARKER_LABELS[marker]}</span>
 						</div>
 					);
 				})}

@@ -13,8 +13,34 @@ import {
 	TRAP_TYPES,
 	YUGIOH_CARD_TYPES,
 } from "@/lib/constants";
-import type { YugiohCardDraft, YugiohCardType, YugiohSpellType, YugiohTrapType } from "@/lib/types";
+import type {
+	YugiohCardDraft,
+	YugiohCardType,
+	YugiohSpellType,
+	YugiohTrapType,
+} from "@/lib/types";
 import type { SetDraftField } from "./types";
+
+const CARD_TYPE_LABELS: Record<YugiohCardType, string> = {
+	Monster: "Monstruo",
+	Spell: "Magia",
+	Trap: "Trampa",
+	Field: "Campo",
+};
+
+const SPELL_TYPE_LABELS: Record<YugiohSpellType, string> = {
+	Normal: "Normal",
+	Continuous: "Continua",
+	Equip: "Equipo",
+	"Quick-Play": "Juego rápido",
+	Ritual: "Ritual",
+};
+
+const TRAP_TYPE_LABELS: Record<YugiohTrapType, string> = {
+	Normal: "Normal",
+	Continuous: "Continua",
+	Counter: "Contraefecto",
+};
 
 export function CardMakerBasicFields(props: {
 	draft: YugiohCardDraft;
@@ -29,7 +55,7 @@ export function CardMakerBasicFields(props: {
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-name">
-						Name
+						Nombre
 					</label>
 					<Input
 						id="cm-name"
@@ -42,7 +68,7 @@ export function CardMakerBasicFields(props: {
 
 				<div className="space-y-2 min-w-0">
 					<label className="text-sm font-medium" htmlFor="cm-card-type">
-						Card Type
+						Tipo de carta
 					</label>
 					<Select
 						value={draft.cardType}
@@ -51,12 +77,12 @@ export function CardMakerBasicFields(props: {
 						}
 					>
 						<SelectTrigger id="cm-card-type" className="w-full">
-							<SelectValue placeholder="Type" />
+							<SelectValue placeholder="Tipo" />
 						</SelectTrigger>
 						<SelectContent>
 							{YUGIOH_CARD_TYPES.map((t) => (
 								<SelectItem key={t} value={t}>
-									{t}
+									{CARD_TYPE_LABELS[t] ?? t}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -66,7 +92,7 @@ export function CardMakerBasicFields(props: {
 				{!isFieldSpell && !isMonster ? (
 					<div className="space-y-2 min-w-0 md:col-span-2">
 						<label className="text-sm font-medium" htmlFor="cm-spell-trap-type">
-							Spell/Trap Type
+							Tipo de Magia/Trampa
 						</label>
 						<Select
 							value={
@@ -80,20 +106,28 @@ export function CardMakerBasicFields(props: {
 							}
 						>
 							<SelectTrigger id="cm-spell-trap-type" className="w-full">
-								<SelectValue placeholder="Select Spell/Trap Type" />
+								<SelectValue placeholder="Selecciona tipo de Magia/Trampa" />
 							</SelectTrigger>
 							<SelectContent>
 								{draft.cardType === "Spell"
 									? SPELL_TYPES.map((t) => (
 											<SelectItem key={t} value={t}>
-												<img src={SPELL_ICONS[t]} alt={t} className="size-4" />
-												{t}
+												<img
+													src={SPELL_ICONS[t]}
+													alt={SPELL_TYPE_LABELS[t] ?? t}
+													className="size-4"
+												/>
+												{SPELL_TYPE_LABELS[t] ?? t}
 											</SelectItem>
 										))
 									: TRAP_TYPES.map((t) => (
 											<SelectItem key={t} value={t}>
-												<img src={TRAP_ICONS[t]} alt={t} className="size-4" />
-												{t}
+												<img
+													src={TRAP_ICONS[t]}
+													alt={TRAP_TYPE_LABELS[t] ?? t}
+													className="size-4"
+												/>
+												{TRAP_TYPE_LABELS[t] ?? t}
 											</SelectItem>
 										))}
 							</SelectContent>

@@ -33,24 +33,24 @@ function PendulumStats(props: PendulumStatsProps) {
 	return (
 		<div className="absolute -left-5 -bottom-9 z-3 w-105 flex justify-between">
 			<div className="relative w-12">
-				<img src={greenGem} alt="Green Gem" className="w-full" />
+				<img src={greenGem} alt="Gema verde" className="w-full" />
 				<p className="size-full absolute top-0 left-0 flex justify-center items-center">
-					{scale > 9 && <img src={scale1} alt="Scale 1" className="h-6" />}
+					{scale > 9 && <img src={scale1} alt="Escala 1" className="h-6" />}
 					<img
 						src={getScaleCombination(scale > 9 ? scale - 10 : scale)}
 						className="h-6"
-						alt="scale num"
+						alt="número de escala"
 					/>
 				</p>
 			</div>
 			<div className="relative w-12">
-				<img src={yellowGem} alt="Yellow Gem" className="w-full" />
+				<img src={yellowGem} alt="Gema amarilla" className="w-full" />
 				<p className="size-full absolute top-0 left-0 flex justify-center items-center">
-					{scale > 9 && <img src={scale1} alt="Scale 1" className="h-6" />}
+					{scale > 9 && <img src={scale1} alt="Escala 1" className="h-6" />}
 					<img
 						src={getScaleCombination(scale > 9 ? scale - 10 : scale)}
 						className="h-6"
-						alt="scale num"
+						alt="número de escala"
 					/>
 				</p>
 			</div>

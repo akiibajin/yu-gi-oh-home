@@ -59,7 +59,7 @@ function RankCircle(props: RankCircleProps) {
 		<div className="relative z-2 flex items-center justify-center bg-transparent size-12 overflow-visible">
 			<img
 				src={imgCircle}
-				alt={`Rank option ${option}`}
+				alt={`Opción de rango ${option}`}
 				className="size-full absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
 			/>
 			<p className="text-white leading-8.5 relative mt-px size-9 rounded-full text-center text-shadow-outline font-extrabold text-4xl">
@@ -69,7 +69,7 @@ function RankCircle(props: RankCircleProps) {
 				<img
 					key={a.marker}
 					src={active.has(a.marker) ? arrowRed : arrowBlack}
-					alt={`${a.marker} link marker`}
+					alt={`Marcador de enlace: ${a.marker}`}
 					className={`${a.className} w-4`}
 				/>
 			))}

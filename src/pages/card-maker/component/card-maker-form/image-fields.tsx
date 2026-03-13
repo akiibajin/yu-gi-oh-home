@@ -20,7 +20,7 @@ export function CardMakerImageFields(props: {
 	return (
 		<div className="space-y-3 rounded-md border p-3 sm:p-4">
 			<label className="text-sm font-medium" htmlFor="cm-image">
-				Card Image
+				Imagen de la carta
 			</label>
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center *:min-w-0">
 				<Input
@@ -41,38 +41,33 @@ export function CardMakerImageFields(props: {
 						onClick={() => onImageUpload(null)}
 						disabled={!draft.img}
 					>
-						Clear
+						Limpiar
 					</Button>
 					<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-2">
-						<span>Image format</span>
+						<span>Formato de imagen</span>
 						<Select
 							value={draft.objectFit}
 							onValueChange={(value: string) =>
 								setDraftField(
 									"objectFit",
-									value as
-										| "cover"
-										| "contain"
-										| "fill"
-										| "none"
-										| "scale-down",
+									value as "cover" | "contain" | "fill" | "none" | "scale-down",
 								)
 							}
 						>
 							<SelectTrigger className="h-8 w-full">
-								<SelectValue placeholder="Object Fit" />
+								<SelectValue placeholder="Ajuste" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="contain">Contain</SelectItem>
-								<SelectItem value="cover">Cover</SelectItem>
-								<SelectItem value="fill">Fill</SelectItem>
-								<SelectItem value="scale-down">Scale-down</SelectItem>
-								<SelectItem value="none">None</SelectItem>
+								<SelectItem value="contain">Contener</SelectItem>
+								<SelectItem value="cover">Cubrir</SelectItem>
+								<SelectItem value="fill">Rellenar</SelectItem>
+								<SelectItem value="scale-down">Reducir</SelectItem>
+								<SelectItem value="none">Ninguno</SelectItem>
 							</SelectContent>
 						</Select>
 					</label>
 					<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-3">
-						<span>Rotation (deg)</span>
+						<span>Rotación (°)</span>
 						<Input
 							type="number"
 							inputMode="numeric"
@@ -92,10 +87,10 @@ export function CardMakerImageFields(props: {
 			</div>
 			{draft.img ? (
 				<div className="text-xs text-muted-foreground">
-					Selected:{" "}
+					Seleccionado:{" "}
 					{typeof draft.img === "object" && "name" in draft.img
 						? (draft.img as File).name
-						: "image"}
+						: "imagen"}
 				</div>
 			) : null}
 		</div>

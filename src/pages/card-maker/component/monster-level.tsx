@@ -28,7 +28,7 @@ function MonsterLevel(props: MonsterLevelProps) {
 		<div className="relative grid place-items-center size-14">
 			<img
 				src={isTuner ? tunerStar : isXyz ? rank : star}
-				alt="level"
+				alt="nivel"
 				className="size-14 absolute"
 			/>
 			<p

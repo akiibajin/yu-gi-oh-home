@@ -47,7 +47,7 @@ function NumberCardLabel(props: NumberCardLabelProps) {
 						key={`${digit}-${index}`}
 						src={src}
 						className="h-12"
-						alt={`digit ${digit}`}
+						alt={`dígito ${digit}`}
 					/>
 				);
 			})}
