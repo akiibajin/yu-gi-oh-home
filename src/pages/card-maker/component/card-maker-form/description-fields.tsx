@@ -7,12 +7,20 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import type {
+	YugiohDescriptionTextColor,
+	YugiohDescriptionTextSize,
+} from "@/lib/types";
 
 export function CardMakerDescriptionFields(props: {
 	showDescription: boolean;
 	onShowDescriptionChange: (checked: boolean) => void;
 	descriptionImageOpacity: number | undefined;
 	onDescriptionImageOpacityChange: (value: number | undefined) => void;
+	descriptionTextColor?: YugiohDescriptionTextColor;
+	onDescriptionTextColorChange?: (value: YugiohDescriptionTextColor) => void;
+	descriptionTextSize?: YugiohDescriptionTextSize;
+	onDescriptionTextSizeChange?: (value: YugiohDescriptionTextSize) => void;
 	label: string;
 	value: string;
 	onInput: (value: string) => void;
@@ -23,6 +31,10 @@ export function CardMakerDescriptionFields(props: {
 		onShowDescriptionChange,
 		descriptionImageOpacity,
 		onDescriptionImageOpacityChange,
+		descriptionTextColor,
+		onDescriptionTextColorChange,
+		descriptionTextSize,
+		onDescriptionTextSizeChange,
 		label,
 		value,
 		onInput,
@@ -74,6 +86,67 @@ export function CardMakerDescriptionFields(props: {
 					</SelectContent>
 				</Select>
 			</div>
+			{descriptionTextColor &&
+			onDescriptionTextColorChange &&
+			descriptionTextSize &&
+			onDescriptionTextSizeChange ? (
+				<div className="grid gap-4 sm:grid-cols-2">
+					<div className="space-y-2 min-w-0">
+						<label
+							className="text-sm font-medium"
+							htmlFor="cm-description-text-color"
+						>
+							Color del texto
+						</label>
+						<Select
+							value={descriptionTextColor}
+							onValueChange={(value: string) =>
+								onDescriptionTextColorChange(
+									value as YugiohDescriptionTextColor,
+								)
+							}
+						>
+							<SelectTrigger
+								id="cm-description-text-color"
+								className="h-8 w-full"
+							>
+								<SelectValue placeholder="Color" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="auto">Automático</SelectItem>
+								<SelectItem value="black">Negro</SelectItem>
+								<SelectItem value="white">Blanco</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="space-y-2 min-w-0">
+						<label
+							className="text-sm font-medium"
+							htmlFor="cm-description-text-size"
+						>
+							Tamaño del texto
+						</label>
+						<Select
+							value={descriptionTextSize}
+							onValueChange={(value: string) =>
+								onDescriptionTextSizeChange(value as YugiohDescriptionTextSize)
+							}
+						>
+							<SelectTrigger
+								id="cm-description-text-size"
+								className="h-8 w-full"
+							>
+								<SelectValue placeholder="Tamaño" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="small">Pequeño</SelectItem>
+								<SelectItem value="normal">Normal</SelectItem>
+								<SelectItem value="big">Grande</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+				</div>
+			) : null}
 			<label className="text-sm font-medium" htmlFor="cm-description">
 				{label}
 			</label>

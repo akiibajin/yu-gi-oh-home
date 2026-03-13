@@ -41,11 +41,7 @@ export default function JoinLobby() {
 		setError("");
 
 		try {
-			const result = await joinLobby(
-				lobbyCode.trim(),
-				selectedAvatar,
-				selectedAvatar,
-			);
+			const result = await joinLobby(lobbyCode.trim(), selectedAvatar);
 
 			if (result) {
 				const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;

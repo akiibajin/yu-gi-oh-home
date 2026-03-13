@@ -78,6 +78,10 @@ export type YugiohDescriptionStatsBoxColor =
 	| "Trap"
 	| "Spell";
 
+export type YugiohDescriptionTextColor = "auto" | "black" | "white";
+
+export type YugiohDescriptionTextSize = "small" | "normal" | "big";
+
 export type YugiohCardType = "Monster" | "Spell" | "Trap" | "Field";
 
 export type YugiohRarity =
@@ -108,6 +112,10 @@ export interface YugiohCardDraft {
 	showDescription?: boolean;
 	pendulumDescription?: string;
 	description: string;
+	/** Used for Spell/Trap/Field cards in the maker UI. */
+	descriptionTextColor?: YugiohDescriptionTextColor;
+	/** Used for Spell/Trap/Field cards in the maker UI. */
+	descriptionTextSize?: YugiohDescriptionTextSize;
 	attribute: YugiohCardAttribute;
 	monsterType?: YugiohMonsterType;
 	subType?: MonsterType;

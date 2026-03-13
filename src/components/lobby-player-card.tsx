@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { playLifePointsChangeSfx } from "@/lib/sfx";
 import type { LobbyPlayer } from "@/lib/lobby";
 import { useEffect, useRef } from "preact/hooks";
-import { PLAYERS_IMAGES } from "@/lib/avatars";
+import { getSafeAvatarImages } from "@/lib/avatars";
 
 interface LobbyPlayerCardProps {
 	player: LobbyPlayer;
@@ -37,14 +37,16 @@ export function LobbyPlayerCard({
 		}
 		prevLifePointsRef.current = player.life_points;
 	}, [player.life_points]);
-	const playerImage =
-		PLAYERS_IMAGES[player.player_name as keyof typeof PLAYERS_IMAGES];
+
+	// The guest flow stores the avatar name as `player_name`. For backwards
+	// compatibility (or old lobbies), we also try `avatar_url`.
+	const avatar = getSafeAvatarImages(player.player_name || player.avatar_url);
 	const currentPlayerImage =
 		clamped > 2000
-			? playerImage.standing
+			? avatar.standing
 			: isEmergency
-				? playerImage.risk
-				: playerImage.lost;
+				? (avatar.risk ?? avatar.standing)
+				: (avatar.lost ?? avatar.risk ?? avatar.standing);
 	return (
 		<Card
 			className={`bg-transparent h-fit max-w-95 gap-0 ${
@@ -55,7 +57,7 @@ export function LobbyPlayerCard({
 				<div className="flex justify-between gap-2">
 					<CardTitle className="min-w-0 flex-col truncate flex items-center p-0 gap-2">
 						<img
-							src={currentPlayerImage ?? playerImage.standing}
+							src={currentPlayerImage}
 							alt={player.player_name}
 							className={`size-45 object-cover ${
 								isEmergency ? "emergency-animation" : ""

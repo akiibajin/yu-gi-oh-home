@@ -252,3 +252,62 @@ export const PLAYERS_IMAGES = {
 		lost: pegasusLost,
 	},
 };
+
+export type AvatarImages = {
+	standing: string;
+	risk?: string;
+	lost?: string;
+};
+
+const normalize_avatar_key = (input: string) =>
+	input.trim().toLowerCase().replace(/\s+/g, " ");
+
+const build_normalized_map = <T extends Record<string, unknown>>(obj: T) => {
+	const out: Record<string, keyof T> = {};
+	for (const key of Object.keys(obj) as Array<keyof T>) {
+		out[normalize_avatar_key(String(key))] = key;
+	}
+	return out;
+};
+
+const NORMALIZED_PLAYERS_IMAGES_KEYS = build_normalized_map(PLAYERS_IMAGES);
+const NORMALIZED_TAG_IMAGES_KEYS = build_normalized_map(TAG_IMAGES);
+
+export function getAvatarImages(
+	avatarName: string | null | undefined,
+): AvatarImages | null {
+	const raw = (avatarName ?? "").trim();
+	if (!raw) return null;
+
+	const normalized = normalize_avatar_key(raw);
+
+	const playerKey = NORMALIZED_PLAYERS_IMAGES_KEYS[normalized];
+	if (playerKey) {
+		const v = PLAYERS_IMAGES[playerKey] as unknown as AvatarImages;
+		return v;
+	}
+
+	const tagKey = NORMALIZED_TAG_IMAGES_KEYS[normalized];
+	if (tagKey) {
+		const v = TAG_IMAGES[tagKey] as unknown as AvatarImages;
+		return v;
+	}
+
+	return null;
+}
+
+export function getSafeAvatarImages(
+	avatarName: string | null | undefined,
+): AvatarImages {
+	const resolved = getAvatarImages(avatarName);
+	if (resolved?.standing) return resolved;
+
+	const firstKey = Object.keys(
+		PLAYERS_IMAGES,
+	)[0] as keyof typeof PLAYERS_IMAGES;
+	return (
+		(PLAYERS_IMAGES[firstKey] as unknown as AvatarImages) ?? {
+			standing: "",
+		}
+	);
+}

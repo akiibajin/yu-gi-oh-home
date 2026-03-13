@@ -2,7 +2,6 @@ import { useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
-import { Input } from "@/components/ui/warcraftcn/input";
 import {
 	Card,
 	CardContent,
@@ -11,29 +10,21 @@ import {
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
 import { createLobby } from "@/lib/lobby";
-import { AvatarSelector } from "@/components/avatar-selector";
 import { CrownIcon } from "lucide-react";
-import { PLAYERS_IMAGES } from "@/lib/avatars";
+
+const HOST_DISPLAY_NAME = "Host";
 
 export default function CreateLobby() {
 	const { route } = useLocation();
-	const [selectedAvatar, setSelectedAvatar] = useState(
-		Object.keys(PLAYERS_IMAGES)[0],
-	);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
 	const handleCreateLobby = async () => {
-		if (!selectedAvatar) {
-			setError("Selecciona un avatar");
-			return;
-		}
-
 		setLoading(true);
 		setError("");
 
 		try {
-			const result = await createLobby(selectedAvatar, selectedAvatar);
+			const result = await createLobby(HOST_DISPLAY_NAME);
 
 			if (result) {
 				// Navigate to host display with lobby data
@@ -69,28 +60,6 @@ export default function CreateLobby() {
 						</CardDescription>
 					</CardHeader>
 					<div className="space-y-5 mt-6">
-						<div className="space-y-2">
-							<label
-								className="text-sm font-medium text-amber-100"
-								for="hostName"
-							>
-								Tu nombre
-							</label>
-							<Input
-								id="hostName"
-								type="text"
-								placeholder="Ingresa tu nombre"
-								value={selectedAvatar}
-								readOnly
-								disabled={loading}
-							/>
-						</div>
-
-						<AvatarSelector
-							selectedAvatar={selectedAvatar}
-							onSelectAvatar={setSelectedAvatar}
-						/>
-
 						{error && (
 							<div className="p-3 bg-red-950/30 border border-red-900/50 rounded-lg">
 								<p className="text-sm text-red-200">{error}</p>
@@ -99,7 +68,7 @@ export default function CreateLobby() {
 
 						<Button
 							onClick={handleCreateLobby}
-							disabled={loading || !selectedAvatar}
+							disabled={loading}
 							className="w-full"
 						>
 							{loading ? "Creando..." : "Crear sala"}

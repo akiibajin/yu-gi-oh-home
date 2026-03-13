@@ -178,8 +178,8 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 							<div className="flex items-center gap-2">
 								<UsersIcon className="w-5 h-5 text-amber-400" />
 								<Badge variant="secondary" size="sm">
-									{players.length}{" "}
-									{players.length !== 1 ? "Jugadores" : "Jugador"}
+									{playersWithoutHost.length}{" "}
+									{playersWithoutHost.length !== 1 ? "Jugadores" : "Jugador"}
 								</Badge>
 							</div>
 						</div>

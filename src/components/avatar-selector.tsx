@@ -57,9 +57,9 @@ export function AvatarSelector({
 						key={avatar.name}
 						type="button"
 						onClick={() => onSelectAvatar(avatar.name)}
-						aria-pressed={selectedAvatar === avatar.image}
+						aria-pressed={selectedAvatar === avatar.name}
 						className={`relative w-full min-w-0 rounded-lg border-2 p-1.5 transition-transform active:scale-[0.98] sm:p-2 ${
-							selectedAvatar === avatar.image
+							selectedAvatar === avatar.name
 								? "border-primary bg-accent/40"
 								: "border-border hover:border-muted-foreground/60"
 						}`}
@@ -72,7 +72,7 @@ export function AvatarSelector({
 						<div className="mt-1 hidden md:block truncate text-center text-[11px] font-medium sm:text-xs">
 							{avatar.name}
 						</div>
-						{selectedAvatar === avatar.image && (
+						{selectedAvatar === avatar.name && (
 							<div className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground sm:h-5 sm:w-5 sm:text-xs">
 								✓
 							</div>

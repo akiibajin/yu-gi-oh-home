@@ -19,15 +19,11 @@ export function CardPreview() {
 	const displayName = draft.name.trim() || "(Carta sin nombre)";
 	const isMonster = draft.cardType === "Monster";
 	const isXyz = isMonster && draft.monsterType?.includes("Xyz");
-	const isFusion = isMonster && draft.monsterType?.includes("Fusion");
 	const isSynchro = isMonster && draft.monsterType?.includes("Synchro");
-	const isEffect = isMonster && draft.monsterType?.includes("Effect");
-	const isNormal = isMonster && draft.monsterType?.includes("Normal");
 	const isLink = isMonster && draft.monsterType?.includes("Link");
-	const isSpell = draft.cardType === "Spell";
-	const isField = draft.cardType === "Field";
-	const isTrap = draft.cardType === "Trap";
 	const isPendulum = isMonster && draft.monsterType?.includes("Pendulum");
+	const isXyzOrLink = Boolean(isXyz || isLink);
+	const isFusion = isMonster && draft.monsterType?.includes("Fusion");
 	const isNumber = isXyz && draft.name.toLowerCase().includes("number");
 	const descriptionImageOpacity =
 		draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
@@ -38,10 +34,22 @@ export function CardPreview() {
 		const parsed = Number.parseInt(match[1], 10);
 		return Number.isFinite(parsed) ? parsed : null;
 	}, [draft.name, isNumber]);
-	const isRitual = isMonster && draft.monsterType?.includes("Ritual");
 	const isVoidDescriptionStatsBox = draft.descriptionStatsBoxColor === "void";
 	const showDescription = draft.showDescription ?? true;
 	const monsterDescription = draft.description.trim();
+	const descriptionTextColor = draft.descriptionTextColor ?? "auto";
+	const descriptionTextSize = draft.descriptionTextSize ?? "normal";
+	const descriptionTextSizeClass =
+		descriptionTextSize === "small"
+			? "text-sm"
+			: descriptionTextSize === "big"
+				? "text-lg"
+				: "text-base";
+	const descriptionTextColorClass = isXyzOrLink
+		? "text-white!"
+		: descriptionTextColor === "white"
+			? "text-white!"
+			: "text-black!";
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
 	const displayNameContainerRef = useRef<HTMLDivElement | null>(null);
 	const displayNameRef = useRef<HTMLParagraphElement | null>(null);
@@ -205,7 +213,7 @@ export function CardPreview() {
 		<div
 			className={cn(
 				"min-h-65 overflow-x-auto bg-black space-y-3 card-maker-preview",
-				isLink && "**:text-white!",
+				// Avoid global text color overrides; apply targeted rules instead.
 			)}
 		>
 			<div
@@ -266,7 +274,7 @@ export function CardPreview() {
 							<span
 								className={cn(
 									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
-									(isFusion || isRitual || isXyz) && "text-white!",
+									(isXyzOrLink || isFusion) && "text-white!",
 								)}
 							>
 								{draft.stats.atk}
@@ -281,7 +289,7 @@ export function CardPreview() {
 							<span
 								className={cn(
 									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
-									(isFusion || isRitual || isXyz) && "text-white!",
+									(isXyzOrLink || isFusion) && "text-white!",
 									isLink && "opacity-0",
 								)}
 							>
@@ -316,7 +324,9 @@ export function CardPreview() {
 						) : null}
 						<p
 							className={cn(
-								"text-base relative z-2 tracking-tighter leading-3.5 text-black! max-w-[95%] size-full whitespace-pre-line",
+								"relative z-2 tracking-tighter leading-3.5 max-w-[95%] size-full whitespace-pre-line",
+								descriptionTextSizeClass,
+								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
 							)}
 						>
@@ -350,8 +360,9 @@ export function CardPreview() {
 						) : null}
 						<p
 							className={cn(
-								"text-base relative z-2 tracking-tighter leading-3.5 text-black max-w-[95%] size-full whitespace-pre-line",
-								(isFusion || isXyz) && "text-white!",
+								"relative z-2 tracking-tighter leading-3.5 max-w-[95%] size-full whitespace-pre-line",
+								descriptionTextSizeClass,
+								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
 							)}
 						>
@@ -373,15 +384,8 @@ export function CardPreview() {
 							id="card-name"
 							className={cn(
 								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-black w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",
-								(isFusion ||
-									isEffect ||
-									isRitual ||
-									isXyz ||
-									isNormal ||
-									isSpell ||
-									isField ||
-									isTrap) &&
-									"text-white!",
+								// Rule: Synchro names are black.
+								isSynchro && "text-black!",
 							)}
 							ref={displayNameRef}
 						>

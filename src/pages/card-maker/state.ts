@@ -9,6 +9,8 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 		showDescription: true,
 		pendulumDescription: "",
 		description: "",
+		descriptionTextColor: "auto",
+		descriptionTextSize: "normal",
 		attribute: "DARK",
 		monsterType: "Effect",
 		descriptionStatsBoxColor: "auto",

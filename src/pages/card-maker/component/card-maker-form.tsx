@@ -138,6 +138,14 @@ export function CardMakerForm() {
 					onDescriptionImageOpacityChange={(value) =>
 						setDraftField("descriptionImageOpacity", value)
 					}
+					descriptionTextColor={draft.descriptionTextColor ?? "auto"}
+					onDescriptionTextColorChange={(value) =>
+						setDraftField("descriptionTextColor", value)
+					}
+					descriptionTextSize={draft.descriptionTextSize ?? "normal"}
+					onDescriptionTextSizeChange={(value) =>
+						setDraftField("descriptionTextSize", value)
+					}
 					label={isPendulum ? "Efecto de monstruo" : "Descripción"}
 					value={draft.description}
 					onInput={onMonsterEffectInput}
