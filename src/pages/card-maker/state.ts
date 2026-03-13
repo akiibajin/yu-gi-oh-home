@@ -5,11 +5,13 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 	return {
 		name: "",
 		cardType: "Monster",
+		iconProfile: "light",
 		showDescription: true,
 		pendulumDescription: "",
 		description: "",
 		attribute: "DARK",
 		monsterType: "Effect",
+		descriptionStatsBoxColor: "auto",
 		scale: 0,
 		stats: {
 			level: 4,
@@ -17,6 +19,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 			def: 0,
 		},
 		img: null,
+		imgRotationDeg: 0,
 	};
 }
 

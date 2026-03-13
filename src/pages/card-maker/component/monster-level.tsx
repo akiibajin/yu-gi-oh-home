@@ -1,36 +1,41 @@
-import type { LinkMarker } from "@/lib/types";
-import RankImage from "./rank-image";
 import rank from "@/assets/images/card-templates/rank.webp";
 import star from "@/assets/images/card-templates/star.webp";
+import tunerStar from "@/assets/images/card-templates/tuner-star.webp";
 import { cn } from "@/lib/utils";
+import RankCircle from "./rank-circle";
+import type { LinkMarker } from "@/lib/types";
 
 interface MonsterLevelProps {
 	level: number;
-	link: {
-		markers?: LinkMarker[];
-		number?: number;
-	};
 	isTuner?: boolean;
 	isXyz?: boolean;
 	isLink?: boolean;
+	linkRating?: number;
+	linkMarkers?: LinkMarker[];
 }
 function MonsterLevel(props: MonsterLevelProps) {
-	const { level, link, isXyz, isLink } = props;
-	if (isLink && link?.markers) {
+	const { level, isXyz, isLink, isTuner, linkMarkers, linkRating } = props;
+	if (isLink) {
 		return (
-			<RankImage
-				linkMarkers={link?.markers}
-				linkRating={link?.number ?? 0}
+			<RankCircle
+				linkMarkers={linkMarkers ?? []}
+				linkRating={linkRating ?? 0}
 				option="A"
 			/>
 		);
 	}
 	return (
-		<div className="relative w-12">
-			<img src={isXyz ? rank : star} alt="level" className="size-12" />
+		<div className="relative grid place-items-center size-14">
+			<img
+				src={isTuner ? tunerStar : isXyz ? rank : star}
+				alt="nivel"
+				className="size-14 absolute"
+			/>
 			<p
 				className={cn(
-					"absolute text-shadow-outline text-4xl left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+					"relative text-black mt-1 text-4xl tracking-tighter",
+					isXyz && "text-black!",
+					level >= 10 && "-tracking-[0.2em] mr-2",
 				)}
 			>
 				{level}

@@ -18,23 +18,22 @@ import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export default function JoinLobby() {
 	const { route } = useLocation();
-	const [playerName, setPlayerName] = useState("");
 	const [lobbyCode, setLobbyCode] = useState("");
 	const [selectedAvatar, setSelectedAvatar] = useState(
-		Object.values(PLAYERS_IMAGES)[0],
+		Object.keys(PLAYERS_IMAGES)[0],
 	);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [showScanner, setShowScanner] = useState(false);
 
 	const handleJoinLobby = async () => {
-		if (!playerName.trim()) {
-			setError("Please enter your name");
+		if (!selectedAvatar.trim()) {
+			setError("Selecciona un avatar");
 			return;
 		}
 
 		if (!lobbyCode.trim()) {
-			setError("Please enter a lobby code");
+			setError("Ingresa un código de sala");
 			return;
 		}
 
@@ -44,7 +43,7 @@ export default function JoinLobby() {
 		try {
 			const result = await joinLobby(
 				lobbyCode.trim(),
-				playerName.trim(),
+				selectedAvatar,
 				selectedAvatar,
 			);
 
@@ -54,12 +53,12 @@ export default function JoinLobby() {
 				route(url);
 			} else {
 				setError(
-					"Lobby not found or is no longer active. Please check the code.",
+					"No se encontró la sala o ya no está activa. Verifica el código.",
 				);
 			}
 		} catch (err) {
 			console.error("Error joining lobby:", err);
-			setError("An error occurred. Please try again.");
+			setError("Ocurrió un error. Inténtalo de nuevo.");
 		} finally {
 			setLoading(false);
 		}
@@ -69,21 +68,21 @@ export default function JoinLobby() {
 		setLobbyCode(scannedCode.toUpperCase());
 		setShowScanner(false);
 	};
-
+	console.log("Selected avatar:", selectedAvatar);
 	return (
-		<div className="flex items-center justify-center min-h-screen p-4">
-			<Card className="w-full max-w-md">
+		<div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
+			<Card className="w-full">
 				<CardContent className="p-6 md:p-8">
 					<CardHeader className="px-0 pt-0">
 						<div className="flex items-center gap-3 mb-2">
 							<UsersIcon className="w-6 h-6 text-amber-400" />
-							<CardTitle>Join a Lobby</CardTitle>
+							<CardTitle>Unirse a una sala</CardTitle>
 							<Badge variant="secondary" size="sm">
-								Guest
+								Invitado
 							</Badge>
 						</div>
 						<CardDescription className="px-0">
-							Enter the lobby code to join an existing session
+							Ingresa el código de la sala para unirte a una sesión existente
 						</CardDescription>
 					</CardHeader>
 					<div className="space-y-5 mt-6">
@@ -92,16 +91,15 @@ export default function JoinLobby() {
 								className="text-sm font-medium text-amber-100"
 								for="playerName"
 							>
-								Your Name
+								Tu nombre
 							</label>
 							<Input
 								id="playerName"
 								type="text"
-								placeholder="Enter your name"
-								value={playerName}
-								onInput={(e) =>
-									setPlayerName((e.target as HTMLInputElement).value)
-								}
+								className="w-full"
+								placeholder="Ingresa tu nombre"
+								value={selectedAvatar}
+								readOnly
 								disabled={loading}
 							/>
 						</div>
@@ -111,13 +109,13 @@ export default function JoinLobby() {
 								className="text-sm font-medium text-amber-100"
 								for="lobbyCode"
 							>
-								Lobby Code
+								Código de sala
 							</label>
 							<div className="flex gap-2">
 								<Input
 									id="lobbyCode"
 									type="text"
-									placeholder="Enter 6-character code"
+									placeholder="Ingresa el código de 6 caracteres"
 									value={lobbyCode}
 									onInput={(e) => {
 										const value = (e.target as HTMLInputElement).value;
@@ -156,19 +154,19 @@ export default function JoinLobby() {
 
 						<Button
 							onClick={handleJoinLobby}
-							disabled={loading || !playerName.trim() || !lobbyCode.trim()}
+							disabled={loading || !selectedAvatar.trim() || !lobbyCode.trim()}
 							className="w-full"
 						>
-							{loading ? "Joining..." : "Join Lobby"}
+							{loading ? "Uniéndose..." : "Unirse a la sala"}
 						</Button>
 
 						<Button
 							onClick={() => {
 								route("/lobby/create");
 							}}
-							className="w-full"
+							className="w-full text-[10px]"
 						>
-							Create New Lobby Instead
+							Crear una sala nueva
 						</Button>
 					</div>
 				</CardContent>

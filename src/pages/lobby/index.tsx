@@ -36,12 +36,12 @@ export default function LobbyIndex() {
 	}, []);
 
 	const handleCloseLobby = async (lobbyId: string) => {
-		const confirmed = confirm("Close this lobby for everyone?");
+		const confirmed = confirm("¿Cerrar esta sala para todos?");
 		if (!confirmed) return;
 
 		const ok = await closeLobby(lobbyId);
 		if (!ok) {
-			setError("Failed to close lobby. Please try again.");
+			setError("No se pudo cerrar la sala. Inténtalo de nuevo.");
 			return;
 		}
 
@@ -52,7 +52,7 @@ export default function LobbyIndex() {
 		// Get the host player for this lobby
 		const hostPlayer = await getHostPlayer(lobby.id);
 		if (!hostPlayer) {
-			setError("Could not find host player for this lobby.");
+			setError("No se pudo encontrar al anfitrión de esta sala.");
 			return;
 		}
 
@@ -69,7 +69,7 @@ export default function LobbyIndex() {
 						<div className="flex items-center justify-between gap-4 flex-wrap">
 							<div className="flex items-center gap-3">
 								<ShieldIcon className="w-6 h-6 text-amber-400" />
-								<CardTitle>Active Lobbies</CardTitle>
+								<CardTitle>Salas activas</CardTitle>
 								{!loading && lobbies.length > 0 && (
 									<Badge size="sm">{lobbies.length}</Badge>
 								)}
@@ -78,7 +78,7 @@ export default function LobbyIndex() {
 								<RefreshCwIcon
 									className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
 								/>
-								Refresh
+								Actualizar
 							</Button>
 						</div>
 					</CardHeader>
@@ -101,9 +101,11 @@ export default function LobbyIndex() {
 						{!loading && lobbies.length === 0 && (
 							<div className="text-center py-12 px-4 bg-black/20 rounded-lg border border-amber-900/20">
 								<UsersIcon className="w-12 h-12 mx-auto mb-3 text-amber-700/50" />
-								<p className="text-muted-foreground">No active lobbies found</p>
+								<p className="text-muted-foreground">
+									No se encontraron salas activas
+								</p>
 								<p className="text-sm text-muted-foreground/70 mt-1">
-									Create or join a new lobby to get started
+									Crea o únete a una sala para empezar
 								</p>
 							</div>
 						)}
@@ -115,10 +117,10 @@ export default function LobbyIndex() {
 								<div className="space-y-2 flex-1">
 									<div className="flex items-center gap-2">
 										<Badge variant="default" size="sm">
-											Active
+											Activa
 										</Badge>
 										<span className="text-sm text-amber-200/70">
-											Lobby Code
+											Código de sala
 										</span>
 									</div>
 									<div className="text-2xl md:text-3xl font-bold tracking-widest text-amber-100">
@@ -126,7 +128,7 @@ export default function LobbyIndex() {
 									</div>
 									<div className="text-xs text-muted-foreground flex items-center gap-2">
 										<span>
-											Created {new Date(lobby.created_at).toLocaleString()}
+											Creada {new Date(lobby.created_at).toLocaleString()}
 										</span>
 									</div>
 								</div>
@@ -137,14 +139,14 @@ export default function LobbyIndex() {
 										onClick={() => handleEnterAsHost(lobby)}
 									>
 										<CrownIcon className="w-4 h-4 mr-2" />
-										Enter as Host
+										Entrar como anfitrión
 									</Button>
 									<Button
 										variant="frame"
 										className="w-full"
 										onClick={() => handleCloseLobby(lobby.id)}
 									>
-										Shut Down Lobby
+										Cerrar sala
 									</Button>
 								</div>
 							</div>

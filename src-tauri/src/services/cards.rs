@@ -14,8 +14,8 @@ pub struct YugiohCard {
 	pub is_tuner: Option<bool>,
 
 	pub level: i32,
-	pub atk: i32,
-	pub def: i32,
+	pub atk: String,
+	pub def: String,
 	pub scale: i32,
 
 	pub link_rating: Option<i32>,
@@ -41,8 +41,8 @@ pub struct StoreYugiohCardRequest {
 	pub is_tuner: Option<bool>,
 
 	pub level: i32,
-	pub atk: i32,
-	pub def: i32,
+	pub atk: String,
+	pub def: String,
 	pub scale: i32,
 
 	pub link_rating: Option<i32>,
@@ -116,8 +116,8 @@ pub async fn store_yugioh_card(
 	.bind(&req.sub_type)
 	.bind(req.is_tuner)
 	.bind(req.level)
-	.bind(req.atk)
-	.bind(req.def)
+	.bind(&req.atk)
+	.bind(&req.def)
 	.bind(req.scale)
 	.bind(req.link_rating)
 	.bind(&req.link_markers)

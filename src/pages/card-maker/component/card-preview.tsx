@@ -4,22 +4,42 @@ import {
 	TRAP_ICONS,
 	YUGIOH_ATTRIBUTES,
 } from "@/lib/constants";
-import getTypeCardBg from "@/lib/get-type-card-bg";
+import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
+import getTypeCardBg, { BOX_TEXTURES } from "@/lib/get-type-card-bg";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { cn } from "@/lib/utils";
-import redGem from "@/assets/images/card-templates/2026yuaaa.webp";
-import blueGem from "@/assets/images/card-templates/2026yuaaaa.webp";
-import borderCard from "@/assets/images/card-templates/border-card.webp";
 import MonsterLevel from "./monster-level";
+import RankImage from "./rank-image";
+import PendulumStats from "./pendulum-stats";
+import NumberCardLabel from "./numberCardLabel";
 
 export function CardPreview() {
 	const draft = cardDraftSignal.value;
-	const displayName = draft.name.trim() || "(Unnamed card)";
+	const displayName = draft.name.trim() || "(Carta sin nombre)";
 	const isMonster = draft.cardType === "Monster";
-	const isXyz = draft.monsterType?.includes("Xyz");
-	const isLink = draft.monsterType?.includes("Link");
-	const isPendulum = draft.monsterType?.includes("Pendulum");
+	const isXyz = isMonster && draft.monsterType?.includes("Xyz");
+	const isFusion = isMonster && draft.monsterType?.includes("Fusion");
+	const isSynchro = isMonster && draft.monsterType?.includes("Synchro");
+	const isEffect = isMonster && draft.monsterType?.includes("Effect");
+	const isNormal = isMonster && draft.monsterType?.includes("Normal");
+	const isLink = isMonster && draft.monsterType?.includes("Link");
+	const isSpell = draft.cardType === "Spell";
+	const isField = draft.cardType === "Field";
+	const isTrap = draft.cardType === "Trap";
+	const isPendulum = isMonster && draft.monsterType?.includes("Pendulum");
+	const isNumber = isXyz && draft.name.toLowerCase().includes("number");
+	const descriptionImageOpacity =
+		draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
+	const numberLabelValue = useMemo(() => {
+		if (!isNumber) return null;
+		const match = draft.name.match(/\bnumber\s*(\d+)/i);
+		if (!match) return null;
+		const parsed = Number.parseInt(match[1], 10);
+		return Number.isFinite(parsed) ? parsed : null;
+	}, [draft.name, isNumber]);
+	const isRitual = isMonster && draft.monsterType?.includes("Ritual");
+	const isVoidDescriptionStatsBox = draft.descriptionStatsBoxColor === "void";
 	const showDescription = draft.showDescription ?? true;
 	const monsterDescription = draft.description.trim();
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
@@ -30,7 +50,11 @@ export function CardPreview() {
 		letterSpacingPx: number;
 	} | null>(null);
 
-	const typeCardImg = getTypeCardBg(draft.monsterType ?? null, draft.cardType);
+	const typeCardImg = getTypeCardBg(
+		draft.monsterType ?? null,
+		draft.cardType,
+		draft.descriptionStatsBoxColor,
+	);
 	const iconImg = useMemo(() => {
 		if (draft.cardType === "Spell") {
 			return SPELL_ICONS[draft.spellType as keyof typeof SPELL_ICONS];
@@ -44,10 +68,20 @@ export function CardPreview() {
 		return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)
 			?.img;
 	}, [draft]);
+	const monsterTypeIcon = isMonster
+		? getMonsterTypeIcon(
+				draft.attribute === "DIVINE" ? "dark" : draft.iconProfile,
+				draft.subType,
+			)
+		: "";
 	const iconFallback = SPELL_ICONS.Normal;
 	useEffect(() => {
 		if (!draft.img) {
 			setImgUrl(null);
+			return;
+		}
+		if (typeof draft.img === "string") {
+			setImgUrl(draft.img);
 			return;
 		}
 		let cancelled = false;
@@ -84,7 +118,7 @@ export function CardPreview() {
 
 		if (!baseDisplayNameStyleRef.current) {
 			baseDisplayNameStyleRef.current = {
-				fontSizePx: Number.isFinite(computedFontSize) ? computedFontSize : 24,
+				fontSizePx: Number.isFinite(computedFontSize) ? computedFontSize : 18,
 				letterSpacingPx: Number.isFinite(computedLetterSpacing)
 					? computedLetterSpacing
 					: 0,
@@ -168,24 +202,40 @@ export function CardPreview() {
 	}, [displayName]);
 
 	return (
-		<div className="min-h-65 overflow-x-auto space-y-3 card-maker-preview">
+		<div
+			className={cn(
+				"min-h-65 overflow-x-auto bg-black space-y-3 card-maker-preview",
+				isLink && "**:text-white!",
+			)}
+		>
 			<div
-				className="relative px-5 flex flex-col gap-2 pb-6 size-full justify-end items-end w-105 h-154"
+				className={cn(
+					"relative px-5 flex flex-col gap-2 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
+				)}
 				id="card-preview"
 			>
 				<img
-					src={borderCard}
+					src={typeCardImg.border}
 					alt={draft.name}
 					className="absolute inset-0 size-full z-1"
 				/>
+				{isLink && !draft.linkMarkersOnDescription && (
+					<RankImage
+						linkMarkers={draft.linkMarkers ?? []}
+						linkRating={draft.linkRating ?? 0}
+						option="A"
+					/>
+				)}
 				{imgUrl && (
-					<div className="absolute size-[calc(100%-1.30rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+					<div className="absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.4rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
 						<img
 							src={imgUrl}
 							alt={draft.name}
 							className="size-full object-fill"
 							style={{
 								objectFit: draft.objectFit ?? "cover",
+								transform: `rotate(${draft.imgRotationDeg ?? 0}deg)`,
+								transformOrigin: "center",
 							}}
 						/>
 					</div>
@@ -193,128 +243,159 @@ export function CardPreview() {
 				{isMonster && (
 					<div
 						className={cn(
-							"absolute top-1 left-0 w-full flex",
-							isLink ? "justify-center" : "justify-around",
+							"absolute top-3.25 left-0 w-full flex h-12",
+							isLink ? "justify-start" : "justify-between",
 						)}
 					>
-						<div className="relative w-30 flex items-center justify-center">
-							{isPendulum && (
-								<div className="absolute flex items-center justify-center -right-8 z-1">
-									<img src={blueGem} alt="blue-gem" className="size-12" />
-									<p className="absolute text-3xl text-white text-shadow-outline">
-										{draft.scale}
-									</p>
-								</div>
-							)}
-							<img
-								className="min-w-30 opacity-50 absolute"
-								src={typeCardImg.stats ?? ""}
-								alt="atk"
-							/>
-							<p className="relative mb-2 text-5xl text-white text-shadow-outline">
-								{draft.stats.atk}
-							</p>
-						</div>
-						{!isLink && (
-							<div className="relative w-30 flex items-center justify-center">
-								{isPendulum && (
-									<div className="absolute flex items-center justify-center -left-8 z-1">
-										<img src={redGem} alt="red-gem" className="size-12" />
-										<p className="absolute top-1/2 left-1/2 text-3xl leading-6 transform -translate-x-1/2 -translate-y-1/2 text-white text-shadow-outline">
-											{draft.scale}
-										</p>
-									</div>
-								)}
-								<img
-									className="min-w-30 opacity-50 absolute rotate-y-180"
-									src={typeCardImg.stats ?? ""}
-									alt="def"
+						<img
+							className="w-full opacity-70 absolute"
+							src={typeCardImg.stats ?? ""}
+							alt="ATK"
+						/>
+						<div className="relative z-2 w-1/2 flex items-center justify-start">
+							{isMonster && (
+								<MonsterLevel
+									level={draft.stats.level}
+									isXyz={isXyz}
+									isTuner={draft.isTuner}
+									linkRating={draft.linkRating}
+									linkMarkers={draft.linkMarkers}
+									isLink={isLink}
 								/>
-								<p className="relative mb-2 text-5xl text-white text-shadow-outline">
-									{draft.stats.def}
-								</p>
+							)}
+							<span
+								className={cn(
+									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									(isFusion || isRitual || isXyz) && "text-white!",
+								)}
+							>
+								{draft.stats.atk}
+							</span>
+						</div>
+						<div
+							className={cn(
+								"relative flex items-center mr-0.5",
+								isLink ? "justify-end w-full" : "justify-between",
+							)}
+						>
+							<span
+								className={cn(
+									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									(isFusion || isRitual || isXyz) && "text-white!",
+									isLink && "opacity-0",
+								)}
+							>
+								{draft.stats.def ?? 0}
+							</span>
+							<div className="size-14 relative z-2 rounded-full border-4 border-black">
+								<img
+									src={iconImg ? iconImg : iconFallback}
+									className={cn("size-full")}
+									alt={`Icono de ${draft.cardType}`}
+								/>
+								{monsterTypeIcon ? (
+									<img
+										src={monsterTypeIcon}
+										alt={`Icono de ${draft.subType}`}
+										className="size-[95%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+									/>
+								) : null}
 							</div>
-						)}
+						</div>
+					</div>
+				)}
+				{showDescription && isPendulum && (
+					<div className="relative mb-3 z-2 w-full flex justify-center pb-1">
+						{!isVoidDescriptionStatsBox ? (
+							<img
+								src={BOX_TEXTURES.Spell.description}
+								alt="descripción"
+								className="absolute size-full object-fill"
+								style={{ opacity: descriptionImageOpacity }}
+							/>
+						) : null}
+						<p
+							className={cn(
+								"text-base relative z-2 tracking-tighter leading-3.5 text-black! max-w-[95%] size-full whitespace-pre-line",
+								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
+							)}
+						>
+							{draft.pendulumDescription}
+						</p>
+						<PendulumStats scale={draft.scale ?? 0} />
 					</div>
 				)}
 				{showDescription ? (
-					<div className="relative z-2 max-h-full w-full flex pb-1.5 flex-col justify-start items-center">
-						<img
-							src={typeCardImg.description}
-							alt="description"
-							className="absolute size-full opacity-50 object-fill"
-						/>
+					<div
+						className={cn(
+							"relative py-px z-2 max-h-full w-full flex pb-1.5 flex-col justify-start items-center",
+							isLink && "mb-2",
+						)}
+					>
+						{isLink && draft.linkMarkersOnDescription && (
+							<RankImage
+								linkMarkers={draft.linkMarkers ?? []}
+								linkRating={draft.linkRating ?? 0}
+								option="B"
+							/>
+						)}
+						{isNumber && <NumberCardLabel value={numberLabelValue} />}
+						{!isVoidDescriptionStatsBox ? (
+							<img
+								src={typeCardImg.description}
+								alt="descripción"
+								className="absolute size-full object-fill"
+								style={{ opacity: descriptionImageOpacity }}
+							/>
+						) : null}
 						<p
 							className={cn(
-								"text-lg text-shadow-outline relative z-2 font-medium",
-								isXyz && !isPendulum && "text-white",
+								"text-base relative z-2 tracking-tighter leading-3.5 text-black max-w-[95%] size-full whitespace-pre-line",
+								(isFusion || isXyz) && "text-white!",
+								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
 							)}
 						>
-							[
-							{isMonster
-								? draft.subType
-									? `${draft.subType}|`
-									: ""
-								: draft.cardType}
-							{isMonster
-								? draft.isTuner
-									? `${draft.monsterType} | Tuner`
-									: draft.monsterType
-								: draft.cardType === "Spell"
-									? draft.spellType
-										? ` | ${draft.spellType}`
-										: ""
-									: draft.cardType === "Trap"
-										? draft.trapType
-											? ` | ${draft.trapType}`
-											: ""
-										: ""}
-							]
-						</p>
-
-						<p
-							className={cn(
-								"text-sm text-shadow-outline relative z-2 tracking-tight leading-2.5 max-w-11/12 size-full whitespace-pre-line",
-							)}
-						>
-							{isPendulum &&
-								`Pendulum Effect: \n${draft.pendulumDescription}\n Monster Effect:\n`}
 							{monsterDescription}
 						</p>
 					</div>
 				) : null}
-				<div className="relative flex items-center overflow-visible h-8 w-full">
-					{isMonster && (
-						<MonsterLevel
-							level={draft.stats.level}
-							link={{ markers: draft.linkMarkers, number: draft.linkRating }}
-							isXyz={isXyz}
-							isTuner={draft.isTuner}
-							isLink={isLink}
-						/>
+				<div
+					className={cn(
+						"relative flex items-end overflow-visible h-5 w-full",
+						!isMonster && "h-10",
 					)}
+				>
 					<div
-						className="relative flex-1 w-full items-center"
+						className="relative flex-1 w-full items-center h-8"
 						ref={displayNameContainerRef}
 					>
-						<img
-							src={typeCardImg.title}
-							alt="title"
-							className="absolute w-full opacity-70 h-8"
-						/>
 						<p
-							className="relative text-3xl text-shadow-outline w-full leading-7 max-w-[90%] ml-4 z-2 whitespace-nowrap"
+							id="card-name"
+							className={cn(
+								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-black w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",
+								(isFusion ||
+									isEffect ||
+									isRitual ||
+									isXyz ||
+									isNormal ||
+									isSpell ||
+									isField ||
+									isTrap) &&
+									"text-white!",
+							)}
 							ref={displayNameRef}
 						>
 							{displayName}
 						</p>
 					</div>
+				</div>
+				{!isMonster && (
 					<img
 						src={iconImg ? iconImg : iconFallback}
-						className={cn("size-12", !isMonster && "size-12 right-3.75")}
-						alt={`${draft.cardType} icon`}
+						alt={`Icono de ${draft.cardType}`}
+						className="size-14 absolute right-4 z-2 top-4"
 					/>
-				</div>
+				)}
 			</div>
 		</div>
 	);

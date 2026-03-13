@@ -17,16 +17,15 @@ import { PLAYERS_IMAGES } from "@/lib/avatars";
 
 export default function CreateLobby() {
 	const { route } = useLocation();
-	const [hostName, setHostName] = useState("");
 	const [selectedAvatar, setSelectedAvatar] = useState(
-		Object.values(PLAYERS_IMAGES)[0],
+		Object.keys(PLAYERS_IMAGES)[0],
 	);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
 	const handleCreateLobby = async () => {
-		if (!hostName.trim()) {
-			setError("Please enter your name");
+		if (!selectedAvatar) {
+			setError("Selecciona un avatar");
 			return;
 		}
 
@@ -34,7 +33,7 @@ export default function CreateLobby() {
 		setError("");
 
 		try {
-			const result = await createLobby(hostName.trim(), selectedAvatar);
+			const result = await createLobby(selectedAvatar, selectedAvatar);
 
 			if (result) {
 				// Navigate to host display with lobby data
@@ -43,11 +42,11 @@ export default function CreateLobby() {
 
 				route(url);
 			} else {
-				setError("Failed to create lobby. Please try again.");
+				setError("No se pudo crear la sala. Inténtalo de nuevo.");
 			}
 		} catch (err) {
 			console.error("Error creating lobby:", err);
-			setError("An error occurred. Please try again.");
+			setError("Ocurrió un error. Inténtalo de nuevo.");
 		} finally {
 			setLoading(false);
 		}
@@ -60,13 +59,13 @@ export default function CreateLobby() {
 					<CardHeader className="px-0 pt-0">
 						<div className="flex items-center gap-3 mb-2">
 							<CrownIcon className="w-6 h-6 text-amber-400" />
-							<CardTitle>Create a Lobby</CardTitle>
+							<CardTitle>Crear una sala</CardTitle>
 							<Badge variant="default" size="sm">
-								Host
+								Anfitrión
 							</Badge>
 						</div>
 						<CardDescription className="px-0">
-							Start a new lobby and invite others to join
+							Crea una sala nueva e invita a otros a unirse
 						</CardDescription>
 					</CardHeader>
 					<div className="space-y-5 mt-6">
@@ -75,21 +74,14 @@ export default function CreateLobby() {
 								className="text-sm font-medium text-amber-100"
 								for="hostName"
 							>
-								Your Name
+								Tu nombre
 							</label>
 							<Input
 								id="hostName"
 								type="text"
-								placeholder="Enter your name"
-								value={hostName}
-								onInput={(e) =>
-									setHostName((e.target as HTMLInputElement).value)
-								}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										void handleCreateLobby();
-									}
-								}}
+								placeholder="Ingresa tu nombre"
+								value={selectedAvatar}
+								readOnly
 								disabled={loading}
 							/>
 						</div>
@@ -107,10 +99,10 @@ export default function CreateLobby() {
 
 						<Button
 							onClick={handleCreateLobby}
-							disabled={loading || !hostName.trim()}
+							disabled={loading || !selectedAvatar}
 							className="w-full"
 						>
-							{loading ? "Creating..." : "Create Lobby"}
+							{loading ? "Creando..." : "Crear sala"}
 						</Button>
 
 						<Button
@@ -120,7 +112,7 @@ export default function CreateLobby() {
 							}}
 							className="w-full"
 						>
-							Join Existing Lobby Instead
+							Unirse a una sala existente
 						</Button>
 					</div>
 				</CardContent>

@@ -69,7 +69,7 @@ function PlayerLifePointsCard({
 				<div className="flex items-center justify-between gap-2">
 					<CardTitle className="min-w-0 truncate">
 						<img
-							src={playerImage}
+							src={playerImage.standing}
 							alt={player.name}
 							className={cn(
 								"object-contain",

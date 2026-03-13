@@ -25,13 +25,13 @@ export function SelectNumPlayers() {
 	return (
 		<Card className="w-full max-w-lg">
 			<CardHeader>
-				<CardTitle>Select number of players</CardTitle>
+				<CardTitle>Selecciona el número de jugadores</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
 					{PRESET_PLAYER_COUNTS.map((n) => (
 						<Button key={n} onClick={() => route(`/calc/${n}/setup`)}>
-							{n} player{n === 1 ? "" : "s"}
+							{n} {n === 1 ? "jugador" : "jugadores"}
 						</Button>
 					))}
 				</div>
@@ -42,7 +42,7 @@ export function SelectNumPlayers() {
 							type="number"
 							min={1}
 							inputMode="numeric"
-							placeholder="Custom players"
+							placeholder="Jugadores personalizados"
 							value={custom}
 							onInput={(event) => setCustom(event.currentTarget.value)}
 							onKeyDown={(event) => {
@@ -60,7 +60,7 @@ export function SelectNumPlayers() {
 							route(`/calc/${parsedCustom}/setup`);
 						}}
 					>
-						Go
+						Ir
 					</Button>
 				</div>
 			</CardContent>

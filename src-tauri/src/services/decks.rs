@@ -19,8 +19,8 @@ pub struct YugiohCard {
 	pub is_tuner: Option<bool>,
 
 	pub level: i32,
-	pub atk: i32,
-	pub def: i32,
+	pub atk: String,
+	pub def: String,
 	pub scale: i32,
 
 	pub link_rating: Option<i32>,
