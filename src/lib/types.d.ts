@@ -23,19 +23,22 @@ export type YugiohMonsterType =
 	| "Pendulum Synchro"
 	| "Pendulum Xyz"
 	| "Pendulum Ritual"
-	| "Trap";
+	| "Trap"
+	| "Token";
 export type MonsterType =
 	| "Aqua"
 	| "Beast"
-	| "Beast Warrior"
+	| "Beast-Warrior"
 	| "Creator God"
 	| "Cyberse"
+	| "Cyborg"
 	| "Dinosaur"
 	| "Divine-Beast"
 	| "Dragon"
 	| "Fairy"
 	| "Fiend"
 	| "Fish"
+	| "Galaxy"
 	| "Insect"
 	| "Illusion"
 	| "Machine"
@@ -52,6 +55,8 @@ export type MonsterType =
 	| "Wyrm"
 	| "Zombie";
 
+export type MonsterTypeIconProfile = "light" | "dark";
+
 export type YugiohSpellType =
 	| "Normal"
 	| "Continuous"
@@ -59,6 +64,19 @@ export type YugiohSpellType =
 	| "Quick-Play"
 	| "Ritual";
 export type YugiohTrapType = "Normal" | "Continuous" | "Counter";
+
+export type YugiohDescriptionStatsBoxColor =
+	| "auto"
+	| "void"
+	| "Normal"
+	| "Effect"
+	| "Ritual"
+	| "Fusion"
+	| "Synchro"
+	| "Xyz"
+	| "Link"
+	| "Trap"
+	| "Spell";
 
 export type YugiohCardType = "Monster" | "Spell" | "Trap" | "Field";
 
@@ -79,13 +97,14 @@ export type LinkMarker =
 	| "Top-right";
 export interface YugiohMonsterStats {
 	level: number; // stars
-	atk: number;
-	def: number;
+	atk: number | string;
+	def: number | string;
 }
 
 export interface YugiohCardDraft {
 	name: string;
 	cardType: YugiohCardType;
+	iconProfile?: MonsterTypeIconProfile;
 	showDescription?: boolean;
 	pendulumDescription?: string;
 	description: string;
@@ -98,9 +117,13 @@ export interface YugiohCardDraft {
 	linkMarkers?: LinkMarker[];
 	stats: YugiohMonsterStats;
 	spellType?: YugiohSpellType;
+	linkMarkersOnDescription?: boolean;
 	trapType?: YugiohTrapType;
-	img: Blob | null;
+	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
+	img: Blob | string | null;
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
+	imgRotationDeg?: number;
+	descriptionImageOpacity?: number;
 }
 
 export interface YugiohCardDB {
@@ -119,8 +142,8 @@ export interface YugiohCardDB {
 	img_url: string;
 	spell_type: YugiohSpellType | null;
 	trap_type: YugiohTrapType | null;
-	atk: number | null;
-	def: number | null;
+	atk: string | null;
+	def: string | null;
 	level: number | null;
 }
 
@@ -134,4 +157,4 @@ export interface YugiohBackground {
 	img_url: string;
 }
 
-export {}; // ensure this is treated as a module
+export {};

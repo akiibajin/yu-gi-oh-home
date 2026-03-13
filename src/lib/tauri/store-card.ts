@@ -15,8 +15,8 @@ export type StoreYugiohCardRequest = {
 	sub_type?: string | null;
 	is_tuner?: boolean | null;
 	level: number;
-	atk: number;
-	def: number;
+	atk: string;
+	def: string;
 	spell_type?: string | null;
 	trap_type?: string | null;
 	img_url?: string | null;
@@ -26,6 +26,11 @@ export type StoreYugiohCardRequest = {
 export type StoreYugiohCardResponse = {
 	id: string;
 	imgUrl?: string | null;
+};
+
+const toTextStat = (value: number | string): string => {
+	const s = String(value).trim();
+	return s ? s : "0";
 };
 
 function createId() {
@@ -101,12 +106,14 @@ export async function storeYugiohCardDraft(
 
 	const id = createId();
 	let imgUrl: string | null = null;
-	if (draft.img) {
+	if (draft.img && typeof draft.img !== "string") {
 		const alreadyWebp = await isWebpBlob(draft.img);
 		const blobToUpload = alreadyWebp
 			? draft.img
 			: await convertBlobToWebp(draft.img, 90);
 		imgUrl = await uploadCardImage(blobToUpload, id);
+	} else {
+		imgUrl = typeof draft.img === "string" ? draft.img : null;
 	}
 
 	const payload: StoreYugiohCardRequest = {
@@ -119,8 +126,8 @@ export async function storeYugiohCardDraft(
 		sub_type: draft.subType ?? null,
 		is_tuner: draft.isTuner ?? null,
 		level: draft.stats.level,
-		atk: draft.stats.atk,
-		def: draft.stats.def,
+		atk: toTextStat(draft.stats.atk),
+		def: toTextStat(draft.stats.def),
 		spell_type: draft.spellType ?? null,
 		trap_type: draft.trapType ?? null,
 		img_url: imgUrl,
@@ -136,7 +143,7 @@ export async function storeYugiohCardDraft(
 export async function assignYugiohCardToUser(opts: {
 	cardId: string;
 	userName: string;
-}): Promise<void | undefined> {
+}): Promise<void> {
 	if (!canInvokeTauri()) return undefined;
 	await invoke<void>("assign_yugioh_card_to_user", {
 		cardId: opts.cardId,

@@ -41,7 +41,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 	const hostPlayer = players.find((player) => player.is_host);
 
 	const handleCloseLobby = async () => {
-		if (confirm("Are you sure you want to close this lobby?")) {
+		if (confirm("¿Seguro que quieres cerrar esta sala?")) {
 			await closeLobby(lobbyId);
 			console.log("Closing lobby and navigating to home");
 			route("/");
@@ -123,7 +123,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
 					<Skeleton className="w-64 h-32 mx-auto" />
-					<p className="text-lg text-amber-100">Loading lobby...</p>
+					<p className="text-lg text-amber-100">Cargando sala...</p>
 				</div>
 			</div>
 		);
@@ -133,8 +133,8 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 		return (
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
-					<p className="text-lg text-red-400">Lobby not found</p>
-					<Button onClick={() => route("/lobby")}>Back to Lobbies</Button>
+					<p className="text-lg text-red-400">Sala no encontrada</p>
+					<Button onClick={() => route("/lobby")}>Volver a salas</Button>
 				</div>
 			</div>
 		);
@@ -148,13 +148,13 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 						<div className="flex items-center justify-between flex-wrap gap-4">
 							<div className="flex items-center gap-3">
 								<CrownIcon className="w-6 h-6 text-amber-400" />
-								<CardTitle>Lobby Host</CardTitle>
+								<CardTitle>Anfitrión de la sala</CardTitle>
 								<Badge variant="default" size="sm">
-									Active
+									Activa
 								</Badge>
 							</div>
 							<Button variant="frame" onClick={handleCloseLobby}>
-								Close Lobby
+								Cerrar sala
 							</Button>
 						</div>
 					</CardHeader>
@@ -163,7 +163,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 							<div className="flex items-center gap-2">
 								<QrCodeIcon className="w-5 h-5 text-amber-400" />
 								<span className="text-sm text-amber-200/70">
-									Share this code with players:
+									Comparte este código con los jugadores:
 								</span>
 							</div>
 							<div className="flex items-center gap-3 flex-wrap">
@@ -172,13 +172,14 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 								</div>
 								<Button variant="frame" onClick={copyLobbyCode}>
 									<CopyIcon className="w-4 h-4 mr-2" />
-									Copy
+									Copiar
 								</Button>
 							</div>
 							<div className="flex items-center gap-2">
 								<UsersIcon className="w-5 h-5 text-amber-400" />
 								<Badge variant="secondary" size="sm">
-									{players.length} {players.length !== 1 ? "Players" : "Player"}
+									{players.length}{" "}
+									{players.length !== 1 ? "Jugadores" : "Jugador"}
 								</Badge>
 							</div>
 						</div>
@@ -186,7 +187,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 							<div className="bg-white p-5 rounded-lg shadow-lg">
 								<QRCode value={code} size={140} />
 								<div className="text-xs text-center text-gray-700 font-medium mt-3">
-									Scan to join
+									Escanea para unirte
 								</div>
 							</div>
 						)}
@@ -226,10 +227,10 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 						<div className="text-center space-y-3">
 							<UsersIcon className="w-16 h-16 mx-auto text-amber-700/50" />
 							<p className="text-muted-foreground">
-								Waiting for players to join...
+								Esperando a que se unan los jugadores...
 							</p>
 							<p className="text-sm text-muted-foreground/70">
-								Share the lobby code above
+								Comparte el código de la sala de arriba
 							</p>
 						</div>
 					</CardContent>

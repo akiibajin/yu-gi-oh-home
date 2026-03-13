@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import { useLocation, useRoute } from "preact-iso";
 import { Button } from "@/components/ui/warcraftcn/button";
-import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
 	Card,
@@ -23,14 +22,8 @@ import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
 import { Timer } from "@/components/timer";
 import { MatchTracker } from "@/components/match-tracker";
 import { DiceRoller } from "@/components/dice-roller";
-import { DuelHistoryViewer } from "@/components/duel-history-viewer";
-import {
-	HeartIcon,
-	UsersIcon,
-	RefreshCwIcon,
-	TrophyIcon,
-	XCircleIcon,
-} from "lucide-react";
+import { RefreshCwIcon, TrophyIcon, XCircleIcon } from "lucide-react";
+import halveIcon from "@/assets/images/Halve.webp";
 
 export default function GuestControl() {
 	const { route, query } = useLocation();
@@ -197,34 +190,131 @@ export default function GuestControl() {
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
 					<Skeleton className="w-64 h-64 mx-auto" />
-					<p className="text-lg text-amber-100">Loading player data...</p>
+					<p className="text-lg text-amber-100">
+						Cargando datos del jugador...
+					</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="p-4 md:p-6 space-y-6 max-w-2xl mx-auto">
+		<div className="md:p-6 space-y-6 max-w-2xl mx-auto pb-[env(safe-area-inset-bottom)]">
 			<Card>
-				<CardContent className="p-6 md:p-8">
-					<CardHeader className="px-0 pt-0 pb-4">
-						<div className="flex items-center gap-3 mb-2">
-							<UsersIcon className="w-6 h-6 text-amber-400" />
-							<CardTitle>Welcome, {player.player_name}!</CardTitle>
-							<Badge variant="secondary" size="sm">
-								Guest
-							</Badge>
+				<CardContent className="px-0 py-4 md:p-8">
+					<CardHeader className="px-0 pt-0 pb-6">
+						<div className="flex items-center gap-3">
+							<CardTitle>Tus Puntos de Vida</CardTitle>
 						</div>
 					</CardHeader>
-					<div className="flex items-center gap-2">
-						<Badge size="sm">
-							{allPlayers.length}{" "}
-							{allPlayers.length !== 1 ? "Players" : "Player"} in lobby
-						</Badge>
+					<div className="space-y-6">
+						<div className="text-center p-8 bg-black/20 rounded-lg border-2 border-amber-900/30">
+							<div className="text-5xl md:text-8xl font-bold text-amber-100 [text-shadow:0_0_20px_rgba(251,191,36,0.5)]">
+								{player.life_points}
+							</div>
+						</div>
+						<div className="space-y-3">
+							<div className="grid grid-cols-3 gap-3">
+								<Button
+									variant="frame"
+									onClick={() => updateLifePoints(-2000)}
+									className="md:text-lg h-16"
+								>
+									-2k
+								</Button>
+								<Button
+									variant="frame"
+									onClick={() => updateLifePoints(-1000)}
+									className="md:text-lg h-16"
+								>
+									-1k
+								</Button>
+								<Button
+									variant="frame"
+									onClick={() => updateLifePoints(-500)}
+									className="md:text-lg h-16"
+								>
+									-500
+								</Button>
+							</div>
+
+							<div className="grid grid-cols-3 gap-3">
+								<Button
+									variant="frame"
+									onClick={() => updateLifePoints(-100)}
+									className="md:text-lg h-16"
+								>
+									-100
+								</Button>
+								<Button
+									variant="frame"
+									onClick={() => updateLifePoints(-50)}
+									className="md:text-lg h-16"
+								>
+									-50
+								</Button>
+								<Button
+									variant="frame"
+									onClick={() =>
+										setLifePoints(Math.floor(player.life_points / 2))
+									}
+									className="md:text-lg h-16"
+								>
+									<img src={halveIcon} alt="Mitad" className="w-5 h-5" />
+								</Button>
+							</div>
+
+							<div className="grid grid-cols-3 gap-3">
+								<Button
+									variant="default"
+									onClick={() => updateLifePoints(50)}
+									className="md:text-lg h-16"
+								>
+									+50
+								</Button>
+								<Button
+									variant="default"
+									onClick={() => updateLifePoints(100)}
+									className="md:text-lg h-16"
+								>
+									+100
+								</Button>
+								<Button
+									variant="default"
+									onClick={() => updateLifePoints(500)}
+									className="md:text-lg h-16"
+								>
+									+500
+								</Button>
+							</div>
+
+							<div className="grid grid-cols-2 gap-3">
+								<Button
+									variant="default"
+									onClick={() => updateLifePoints(1000)}
+									className="md:text-lg h-16"
+								>
+									+1k
+								</Button>
+								<Button
+									variant="default"
+									onClick={() => updateLifePoints(2000)}
+									className="md:text-lg h-16"
+								>
+									+2k
+								</Button>
+							</div>
+							<Button
+								variant="frame"
+								onClick={() => setLifePoints(8000)}
+								className="w-full h-14"
+							>
+								<RefreshCwIcon className="w-5 h-5 mr-2" />
+							</Button>
+						</div>
 					</div>
 				</CardContent>
 			</Card>
-
 			<div className="grid grid-cols-1 gap-6">
 				<Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
 				<MatchTracker
@@ -241,11 +331,13 @@ export default function GuestControl() {
 						<CardHeader className="px-0 pt-0 pb-4">
 							<div className="flex items-center gap-3">
 								<TrophyIcon className="w-5 h-5 text-amber-400" />
-								<CardTitle className="text-lg">Report Game Result</CardTitle>
+								<CardTitle className="text-lg">
+									Reportar resultado del duelo
+								</CardTitle>
 							</div>
 						</CardHeader>
 						<p className="text-sm text-amber-200/70 mb-4">
-							Report who won this game:
+							Indica quién ganó este duelo:
 						</p>
 						<div className="grid grid-cols-2 gap-3">
 							<Button
@@ -254,7 +346,7 @@ export default function GuestControl() {
 								className="h-16 flex flex-col gap-1"
 							>
 								<TrophyIcon className="w-5 h-5" />
-								<span>I Won</span>
+								<span>Gané</span>
 							</Button>
 							<Button
 								variant="frame"
@@ -262,7 +354,7 @@ export default function GuestControl() {
 								className="h-16 flex flex-col gap-1"
 							>
 								<XCircleIcon className="w-5 h-5" />
-								<span>I Lost</span>
+								<span>Perdí</span>
 							</Button>
 						</div>
 					</CardContent>
@@ -274,124 +366,6 @@ export default function GuestControl() {
 				playerId={player.id}
 				playerName={player.player_name}
 			/>
-			<DuelHistoryViewer lobbyId={lobbyId} />
-			<Card>
-				<CardContent className="p-6 md:p-8">
-					<CardHeader className="px-0 pt-0 pb-6">
-						<div className="flex items-center gap-3">
-							<HeartIcon className="w-6 h-6 text-red-400 fill-red-400" />
-							<CardTitle>Your Life Points</CardTitle>
-						</div>
-					</CardHeader>
-					<div className="space-y-6">
-						<div className="text-center p-8 bg-black/20 rounded-lg border-2 border-amber-900/30">
-							<div className="text-7xl md:text-8xl font-bold text-amber-100 [text-shadow:0_0_20px_rgba(251,191,36,0.5)]">
-								{player.life_points}
-							</div>
-						</div>
-						<div className="space-y-3">
-							<div className="grid grid-cols-3 gap-3">
-								<Button
-									variant="frame"
-									onClick={() => updateLifePoints(-2000)}
-									className="text-lg h-16"
-								>
-									-2000
-								</Button>
-								<Button
-									variant="frame"
-									onClick={() => updateLifePoints(-1000)}
-									className="text-lg h-16"
-								>
-									-1000
-								</Button>
-								<Button
-									variant="frame"
-									onClick={() => updateLifePoints(-500)}
-									className="text-lg h-16"
-								>
-									-500
-								</Button>
-							</div>
-
-							<div className="grid grid-cols-3 gap-3">
-								<Button
-									variant="frame"
-									onClick={() => updateLifePoints(-100)}
-									className="text-lg h-16"
-								>
-									-100
-								</Button>
-								<Button
-									variant="frame"
-									onClick={() => updateLifePoints(-50)}
-									className="text-lg h-16"
-								>
-									-50
-								</Button>
-								<Button
-									variant="frame"
-									onClick={() =>
-										setLifePoints(Math.floor(player.life_points / 2))
-									}
-									className="text-lg h-16"
-								>
-									Halve
-								</Button>
-							</div>
-
-							<div className="grid grid-cols-3 gap-3">
-								<Button
-									variant="default"
-									onClick={() => updateLifePoints(50)}
-									className="text-lg h-16"
-								>
-									+50
-								</Button>
-								<Button
-									variant="default"
-									onClick={() => updateLifePoints(100)}
-									className="text-lg h-16"
-								>
-									+100
-								</Button>
-								<Button
-									variant="default"
-									onClick={() => updateLifePoints(500)}
-									className="text-lg h-16"
-								>
-									+500
-								</Button>
-							</div>
-
-							<div className="grid grid-cols-2 gap-3">
-								<Button
-									variant="default"
-									onClick={() => updateLifePoints(1000)}
-									className="text-lg h-16"
-								>
-									+1000
-								</Button>
-								<Button
-									variant="default"
-									onClick={() => updateLifePoints(2000)}
-									className="text-lg h-16"
-								>
-									+2000
-								</Button>
-							</div>
-							<Button
-								variant="frame"
-								onClick={() => setLifePoints(8000)}
-								className="w-full h-14"
-							>
-								<RefreshCwIcon className="w-5 h-5 mr-2" />
-								Reset to 8000
-							</Button>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
 		</div>
 	);
 }

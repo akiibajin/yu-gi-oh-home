@@ -1,12 +1,24 @@
 use anyhow::{anyhow, Context};
 
 /// Store a WebP image into the public shared storage under:
-/// `/Documents/yu-gi-oh-home/`.
+/// `/Documents/yu-gi-oh-home/` (optionally within a subfolder).
 ///
 /// On Android 10+ (scoped storage), this uses MediaStore with `RELATIVE_PATH`,
 /// which does not require broad storage permissions.
 #[cfg(target_os = "android")]
-pub fn store_webp_in_public_documents(display_name: &str, bytes: &[u8]) -> anyhow::Result<String> {
+pub fn store_webp_in_public_documents(
+	display_name: &str,
+	bytes: &[u8],
+) -> anyhow::Result<String> {
+	store_webp_in_public_documents_with_folder(display_name, bytes, None)
+}
+
+#[cfg(target_os = "android")]
+pub fn store_webp_in_public_documents_with_folder(
+	display_name: &str,
+	bytes: &[u8],
+	folder: Option<&str>,
+) -> anyhow::Result<String> {
 	if bytes.is_empty() {
 		return Err(anyhow!("image bytes are empty"));
 	}
@@ -69,8 +81,12 @@ pub fn store_webp_in_public_documents(display_name: &str, bytes: &[u8]) -> anyho
 	let j_mime: JString = env
 		.new_string("image/webp")
 		.context("failed to create mime type string")?;
+	let rel_path = match folder.map(str::trim).filter(|v| !v.is_empty()) {
+		Some(folder_name) => format!("Documents/yu-gi-oh-home/{folder_name}"),
+		None => "Documents/yu-gi-oh-home".to_string(),
+	};
 	let j_rel_path: JString = env
-		.new_string("Documents/yu-gi-oh-home")
+		.new_string(rel_path)
 		.context("failed to create relative path string")?;
 
 	// values.put(DISPLAY_NAME, display_name)
