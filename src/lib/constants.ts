@@ -52,7 +52,6 @@ export const NAV_ITEMS: NavItem[] = [
 	{ title: "Home", href: "/" },
 	{ title: "Calculator", href: "/calc" },
 	{ title: "Card Maker", href: "/card-maker" },
-	{ title: "Fields BG", href: "/fields-bg" },
 ];
 
 export const ROYAL_LP = 8000;

@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { YugiohCardDraft, YugiohMonsterStats } from "@/lib/types";
 import { splitPendulumDescription } from "@/lib/split-pendulum-description";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
-// import { storeYugiohCardDraft } from "@/lib/tauri/store-card";
 import { useState } from "preact/hooks";
 import { exportPreview } from "@/lib/export-card";
 
@@ -23,7 +22,6 @@ export function CardMakerForm() {
 		isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
 	const isLink = isMonster && (draft.monsterType?.includes("Link") ?? false);
 	const [saveStatus, setSaveStatus] = useState<string>("");
-	// const [saving, setSaving] = useState(false);
 	const [exporting, setExporting] = useState(false);
 	const setDraftField: SetDraftField = <K extends keyof YugiohCardDraft>(
 		key: K,
@@ -73,29 +71,6 @@ export function CardMakerForm() {
 	const handleImageUpload = (file: File | null) => {
 		setDraftField("img", file);
 	};
-
-	// const saveToDb = async () => {
-	// 	if (!draft.name.trim()) {
-	// 		setSaveStatus("Add a name before saving.");
-	// 		return;
-	// 	}
-
-	// 	setSaving(true);
-	// 	setSaveStatus("Saving...");
-	// 	try {
-	// 		// user is optional; omit for now
-	// 		const res = await storeYugiohCardDraft(draft);
-	// 		if (!res) {
-	// 			setSaveStatus("Save only works in Tauri (not web mode).");
-	// 			return;
-	// 		}
-	// 		setSaveStatus(`Saved (id: ${res.id}).`);
-	// 	} catch (err) {
-	// 		setSaveStatus(err instanceof Error ? err.message : "Failed to save.");
-	// 	} finally {
-	// 		setSaving(false);
-	// 	}
-	// };
 
 	const onExport = async () => {
 		setExporting(true);

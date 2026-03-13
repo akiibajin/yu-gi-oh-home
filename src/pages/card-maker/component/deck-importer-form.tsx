@@ -24,11 +24,11 @@ import {
 import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import { exportPreview } from "@/lib/export-card";
 import { loadDeckCardsFromYdkFile } from "@/lib/tauri/decks";
+import { downloadImageBlob } from "@/lib/tauri/download-image";
 import type {
 	YugiohCardDraft,
 	YugiohDescriptionStatsBoxColor,
 } from "@/lib/types";
-import normalizeCard from "@/lib/normalize-card";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 
 interface DeckImporterFormProps {
@@ -132,11 +132,11 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 	const fetchCardImageBlob = async (url: string | null | undefined) => {
 		const u = (url ?? "").trim();
 		if (!u) return null;
-		const res = await fetch(u);
-		if (!res.ok) {
-			throw new Error(`No se pudo descargar la imagen (${res.status})`);
+		const blob = await downloadImageBlob(u);
+		if (!blob) {
+			throw new Error("No se pudo descargar la imagen (Tauri no disponible)");
 		}
-		return await res.blob();
+		return blob;
 	};
 
 	const waitForPreviewReady = async (expectsCardArt: boolean) => {
@@ -168,6 +168,13 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		const currentDraft = cardDraftSignal.value;
 		setSelectedCardKey(cardKey);
 		persistSelectedCardKey(cardKey);
+
+		let img: Blob | string | null = null;
+		try {
+			img = (await fetchCardImageBlob(card.imgUrl)) ?? null;
+		} catch {
+			img = card.imgUrl;
+		}
 		cardDraftSignal.value = {
 			name: card.name,
 			cardType: card.cardType,
@@ -190,7 +197,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			objectFit: currentDraft.objectFit,
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
-			img: card.imgUrl,
+			img,
 		};
 	};
 
@@ -309,10 +316,10 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 				uniqueIds,
 				sample,
 			});
-			const normalized = res.cards.map(normalizeCard);
-			setCards(normalized);
+			const exportables = res.cards;
+			setCards(exportables);
 			if (selectedCardKey) {
-				const hasSelectedCard = normalized.some(
+				const hasSelectedCard = exportables.some(
 					(card) => getCardKey(card) === selectedCardKey,
 				);
 				if (!hasSelectedCard) {
@@ -322,9 +329,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			}
 
 			setStatus(
-				`Cargadas ${normalized.length} cartas. Iniciando exportación...`,
+				`Cargadas ${exportables.length} cartas. Iniciando exportación...`,
 			);
-			await exportCardsSequentially(normalized, deckFolderName);
+			await exportCardsSequentially(exportables, deckFolderName);
 		} catch (err) {
 			setStatus(
 				err instanceof Error ? err.message : "No se pudo cargar el mazo.",

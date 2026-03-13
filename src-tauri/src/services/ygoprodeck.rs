@@ -1,4 +1,5 @@
 use anyhow::Context;
+use std::time::Duration;
 
 const YGOPRODECK_CARDINFO_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
@@ -42,6 +43,9 @@ pub async fn fetch_cardinfo(
 		.await
 		.context("ygoprodeck request failed")?;
 
+	// Throttle requests to avoid rate limits.
+	tokio::time::sleep(Duration::from_millis(500)).await;
+
 	let status = resp.status();
 	let body = resp
 		.text()
@@ -81,6 +85,9 @@ pub async fn fetch_cardinfo_by_ids(ids: &[u64]) -> anyhow::Result<serde_json::Va
 		.send()
 		.await
 		.context("ygoprodeck request failed")?;
+
+	// Throttle requests to avoid rate limits.
+	tokio::time::sleep(Duration::from_millis(500)).await;
 
 	let status = resp.status();
 	let body = resp

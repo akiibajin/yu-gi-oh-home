@@ -4,7 +4,6 @@ import CalcHome from "@/pages/calc/home";
 import Calc from "@/pages/calc";
 import CalcSetup from "@/pages/calc/setup";
 import CardMaker from "@/pages/card-maker";
-import FieldsBg from "@/pages/fields-bg";
 import CreateLobby from "@/pages/lobby/create";
 import JoinLobby from "@/pages/lobby/join";
 import HostDisplay from "@/pages/lobby/host-display";
@@ -28,7 +27,6 @@ function Routes() {
 				/>,
 				<Route key="calc" path="/calc/:num" component={Calc} />,
 				<Route key="card-maker" path="/card-maker" component={CardMaker} />,
-				<Route key="fields-bg" path="/fields-bg" component={FieldsBg} />,
 				<Route key="lobby-home" path="/lobby" component={LobbyIndex} />,
 				<Route
 					key="lobby-create"

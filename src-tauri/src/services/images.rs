@@ -1,4 +1,5 @@
 use anyhow::Context;
+use reqwest::Url;
 
 pub struct WebpOptions {
 	/// WebP quality from 0..=100 (higher is better quality / larger files).
@@ -14,4 +15,29 @@ pub fn convert_to_webp(input: &[u8], opts: WebpOptions) -> anyhow::Result<Vec<u8
 	let encoded = webp::Encoder::from_rgba(rgba.as_raw(), width, height)
 		.encode(quality);
 	Ok(encoded.to_vec())
+}
+
+pub async fn download_bytes(url: &str) -> anyhow::Result<Vec<u8>> {
+	let raw = url.trim();
+	if raw.is_empty() {
+		return Err(anyhow::anyhow!("url is empty"));
+	}
+
+	let parsed = Url::parse(raw).context("invalid url")?;
+	match parsed.scheme() {
+		"https" | "http" => {}
+		_ => return Err(anyhow::anyhow!("unsupported url scheme")),
+	}
+
+	let client = reqwest::Client::new();
+	let resp = client
+		.get(parsed)
+		.send()
+		.await
+		.context("request failed")?
+		.error_for_status()
+		.context("request returned error status")?;
+
+	let bytes = resp.bytes().await.context("failed to read response bytes")?;
+	Ok(bytes.to_vec())
 }

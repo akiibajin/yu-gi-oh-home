@@ -152,9 +152,4 @@ export type YugiohCardWithImgUrl = Omit<YugiohCardDraft, "img"> & {
 	imgUrl: string;
 };
 
-export interface YugiohBackground {
-	name: string;
-	img_url: string;
-}
-
 export {};

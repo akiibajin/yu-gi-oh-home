@@ -1,10 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { YugiohCardDB } from "../types";
+import type { YugiohCardWithImgUrl } from "../types";
 import { canInvokeTauri } from "./can-invoke-tauri";
 
 export type LoadDeckCardsResponse = {
 	ids: string[];
-	cards: YugiohCardDB[];
+	cards: YugiohCardWithImgUrl[];
+	not_found?: string;
 };
 
 export async function loadDeckCardsFromYdkFile(

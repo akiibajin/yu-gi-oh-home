@@ -30,12 +30,6 @@ image = { version = "0.25", default-features = false, features = [
     "webp",
 ] }
 webp = "0.3"
-sqlx = { version = "0.7", default-features = false, features = [
-    "runtime-tokio-rustls",
-    "postgres",
-    "migrate",
-    "macros",
-] }
 reqwest = { version = "0.12", default-features = false, features = [
     "json",
     "rustls-tls-webpki-roots",

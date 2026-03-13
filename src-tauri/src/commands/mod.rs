@@ -1,9 +1,5 @@
-pub mod db;
-pub mod cards;
 pub mod decks;
 pub mod card_maker_images;
 pub mod images;
 pub mod greet;
-pub mod supabase;
 pub mod ygoprodeck;
-pub mod background;

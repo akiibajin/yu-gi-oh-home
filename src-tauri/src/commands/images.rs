@@ -13,6 +13,11 @@ pub struct ConvertToWebpResponse {
 	pub mime: &'static str,
 }
 
+#[derive(serde::Deserialize)]
+pub struct DownloadImageBytesRequest {
+	pub url: String,
+}
+
 #[tauri::command]
 pub async fn convert_image_to_webp(req: ConvertToWebpRequest) -> Result<ConvertToWebpResponse, String> {
 	let quality = req.quality.unwrap_or(90);
@@ -28,4 +33,11 @@ pub async fn convert_image_to_webp(req: ConvertToWebpRequest) -> Result<ConvertT
 		bytes,
 		mime: "image/webp",
 	})
+}
+
+#[tauri::command]
+pub async fn download_image_bytes(req: DownloadImageBytesRequest) -> Result<Vec<u8>, String> {
+	services::images::download_bytes(&req.url)
+		.await
+		.map_err(|e| format!("{e:#}"))
 }
