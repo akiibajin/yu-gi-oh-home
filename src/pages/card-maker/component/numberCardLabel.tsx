@@ -1,13 +1,21 @@
-import number0 from "@/assets/images/card-templates/number-0.webp";
-import number1 from "@/assets/images/card-templates/number-1.webp";
-import number2 from "@/assets/images/card-templates/number-2.webp";
-import number3 from "@/assets/images/card-templates/number-3.webp";
-import number4 from "@/assets/images/card-templates/number-4.webp";
-import number5 from "@/assets/images/card-templates/number-5.webp";
-import number6 from "@/assets/images/card-templates/number-6.webp";
-import number7 from "@/assets/images/card-templates/number-7.webp";
-import number8 from "@/assets/images/card-templates/number-8.webp";
-import number9 from "@/assets/images/card-templates/number-9.webp";
+const CARD_TEMPLATES_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplateUrl = (fileName: string) =>
+	`${CARD_TEMPLATES_BASE_URL}${fileName}`;
+
+const digitImages = {
+	0: cardTemplateUrl("number-0.webp"),
+	1: cardTemplateUrl("number-1.webp"),
+	2: cardTemplateUrl("number-2.webp"),
+	3: cardTemplateUrl("number-3.webp"),
+	4: cardTemplateUrl("number-4.webp"),
+	5: cardTemplateUrl("number-5.webp"),
+	6: cardTemplateUrl("number-6.webp"),
+	7: cardTemplateUrl("number-7.webp"),
+	8: cardTemplateUrl("number-8.webp"),
+	9: cardTemplateUrl("number-9.webp"),
+} as const;
 interface NumberCardLabelProps {
 	value?: number | null;
 }
@@ -22,19 +30,6 @@ function NumberCardLabel(props: NumberCardLabelProps) {
 	if (!/^\d+$/.test(digitsString)) return null;
 	const digits = digitsString.split("");
 	if (digits.length === 0) return null;
-
-	const digitImages = {
-		0: number0,
-		1: number1,
-		2: number2,
-		3: number3,
-		4: number4,
-		5: number5,
-		6: number6,
-		7: number7,
-		8: number8,
-		9: number9,
-	} as const;
 
 	return (
 		<div className="absolute z-3 -top-9 right-0 flex">

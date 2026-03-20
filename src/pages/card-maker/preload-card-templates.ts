@@ -4,41 +4,40 @@ const CARD_TEMPLATES_BASE_URL =
 const cardTemplateUrl = (fileName: string) =>
 	`${CARD_TEMPLATES_BASE_URL}${fileName}`;
 
-// Local (bundled) card-maker-only template assets.
-import number0 from "@/assets/images/card-templates/number-0.webp";
-import number1 from "@/assets/images/card-templates/number-1.webp";
-import number2 from "@/assets/images/card-templates/number-2.webp";
-import number3 from "@/assets/images/card-templates/number-3.webp";
-import number4 from "@/assets/images/card-templates/number-4.webp";
-import number5 from "@/assets/images/card-templates/number-5.webp";
-import number6 from "@/assets/images/card-templates/number-6.webp";
-import number7 from "@/assets/images/card-templates/number-7.webp";
-import number8 from "@/assets/images/card-templates/number-8.webp";
-import number9 from "@/assets/images/card-templates/number-9.webp";
+const number0 = cardTemplateUrl("number-0.webp");
+const number1 = cardTemplateUrl("number-1.webp");
+const number2 = cardTemplateUrl("number-2.webp");
+const number3 = cardTemplateUrl("number-3.webp");
+const number4 = cardTemplateUrl("number-4.webp");
+const number5 = cardTemplateUrl("number-5.webp");
+const number6 = cardTemplateUrl("number-6.webp");
+const number7 = cardTemplateUrl("number-7.webp");
+const number8 = cardTemplateUrl("number-8.webp");
+const number9 = cardTemplateUrl("number-9.webp");
 
-import greenGem from "@/assets/images/card-templates/green-gem.webp";
-import yellowGem from "@/assets/images/card-templates/yellow-gem.webp";
+const greenGem = cardTemplateUrl("green-gem.webp");
+const yellowGem = cardTemplateUrl("yellow-gem.webp");
 
-import scale0 from "@/assets/images/card-templates/scale-0.webp";
-import scale1 from "@/assets/images/card-templates/scale-1.webp";
-import scale2 from "@/assets/images/card-templates/scale-2.webp";
-import scale3 from "@/assets/images/card-templates/scale-3.webp";
-import scale4 from "@/assets/images/card-templates/scale-4.webp";
-import scale5 from "@/assets/images/card-templates/scale-5.webp";
-import scale6 from "@/assets/images/card-templates/scale-6.webp";
-import scale7 from "@/assets/images/card-templates/scale-7.webp";
-import scale8 from "@/assets/images/card-templates/scale-8.webp";
-import scale9 from "@/assets/images/card-templates/scale-9.webp";
+const scale0 = cardTemplateUrl("scale-0.webp");
+const scale1 = cardTemplateUrl("scale-1.webp");
+const scale2 = cardTemplateUrl("scale-2.webp");
+const scale3 = cardTemplateUrl("scale-3.webp");
+const scale4 = cardTemplateUrl("scale-4.webp");
+const scale5 = cardTemplateUrl("scale-5.webp");
+const scale6 = cardTemplateUrl("scale-6.webp");
+const scale7 = cardTemplateUrl("scale-7.webp");
+const scale8 = cardTemplateUrl("scale-8.webp");
+const scale9 = cardTemplateUrl("scale-9.webp");
 
-import rank from "@/assets/images/card-templates/rank.webp";
-import star from "@/assets/images/card-templates/star.webp";
-import tunerStar from "@/assets/images/card-templates/tuner-star.webp";
+const rank = cardTemplateUrl("rank.webp");
+const star = cardTemplateUrl("star.webp");
+const tunerStar = cardTemplateUrl("tuner-star.webp");
 
-import cristal3 from "@/assets/images/card-templates/cristal-3.webp";
-import cristal4 from "@/assets/images/card-templates/cristal-4.webp";
-import cristal5 from "@/assets/images/card-templates/cristal 5.webp";
-import cristal6 from "@/assets/images/card-templates/cristal 6.webp";
-import cristal7 from "@/assets/images/card-templates/cristal 7.webp";
+const cristal3 = cardTemplateUrl("cristal-3.webp");
+const cristal4 = cardTemplateUrl("cristal-4.webp");
+const cristal5 = cardTemplateUrl("cristal 5.webp");
+const cristal6 = cardTemplateUrl("cristal 6.webp");
+const cristal7 = cardTemplateUrl("cristal 7.webp");
 
 const REMOTE_TEMPLATE_FILE_NAMES = [
 	// Card textures

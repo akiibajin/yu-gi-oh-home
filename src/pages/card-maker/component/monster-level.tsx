@@ -1,10 +1,16 @@
-import rank from "@/assets/images/card-templates/rank.webp";
-import star from "@/assets/images/card-templates/star.webp";
-import tunerStar from "@/assets/images/card-templates/tuner-star.webp";
 import { cn } from "@/lib/utils";
 import RankCircle from "./rank-circle";
 import type { LinkMarker } from "@/lib/types";
 
+const CARD_TEMPLATE_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
+
+const rank = cardTemplate("rank.webp");
+const star = cardTemplate("star.webp");
+const tunerStar = cardTemplate("tuner-star.webp");
 interface MonsterLevelProps {
 	level: number;
 	isTuner?: boolean;

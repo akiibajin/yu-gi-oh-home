@@ -1,9 +1,16 @@
 import type { LinkMarker } from "@/lib/types";
-import optionA from "@/assets/images/card-templates/cristal 5.webp";
-import optionB from "@/assets/images/card-templates/cristal 6.webp";
-import optionC from "@/assets/images/card-templates/cristal 7.webp";
-import arrowRed from "@/assets/images/card-templates/cristal-3.webp";
-import arrowBlack from "@/assets/images/card-templates/cristal-4.webp";
+
+const CARD_TEMPLATE_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
+
+const optionA = cardTemplate("cristal 5.webp");
+const optionB = cardTemplate("cristal 6.webp");
+const optionC = cardTemplate("cristal 7.webp");
+const arrowRed = cardTemplate("cristal-3.webp");
+const arrowBlack = cardTemplate("cristal-4.webp");
 
 interface RankCircleProps {
 	linkMarkers: LinkMarker[];

@@ -1,6 +1,13 @@
 import type { LinkMarker } from "@/lib/types";
-import arrowRed from "@/assets/images/card-templates/cristal-3.webp";
 import { cn } from "@/lib/utils";
+
+const CARD_TEMPLATE_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
+
+const arrowRed = cardTemplate("cristal-3.webp");
 
 interface RankImageProps {
 	linkMarkers: LinkMarker[];

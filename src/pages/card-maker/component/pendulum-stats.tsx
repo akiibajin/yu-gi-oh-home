@@ -1,15 +1,21 @@
-import greenGem from "@/assets/images/card-templates/green-gem.webp";
-import yellowGem from "@/assets/images/card-templates/yellow-gem.webp";
-import scale0 from "@/assets/images/card-templates/scale-0.webp";
-import scale1 from "@/assets/images/card-templates/scale-1.webp";
-import scale2 from "@/assets/images/card-templates/scale-2.webp";
-import scale3 from "@/assets/images/card-templates/scale-3.webp";
-import scale4 from "@/assets/images/card-templates/scale-4.webp";
-import scale5 from "@/assets/images/card-templates/scale-5.webp";
-import scale6 from "@/assets/images/card-templates/scale-6.webp";
-import scale7 from "@/assets/images/card-templates/scale-7.webp";
-import scale8 from "@/assets/images/card-templates/scale-8.webp";
-import scale9 from "@/assets/images/card-templates/scale-9.webp";
+const CARD_TEMPLATE_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
+
+const greenGem = cardTemplate("green-gem.webp");
+const yellowGem = cardTemplate("yellow-gem.webp");
+const scale0 = cardTemplate("scale-0.webp");
+const scale1 = cardTemplate("scale-1.webp");
+const scale2 = cardTemplate("scale-2.webp");
+const scale3 = cardTemplate("scale-3.webp");
+const scale4 = cardTemplate("scale-4.webp");
+const scale5 = cardTemplate("scale-5.webp");
+const scale6 = cardTemplate("scale-6.webp");
+const scale7 = cardTemplate("scale-7.webp");
+const scale8 = cardTemplate("scale-8.webp");
+const scale9 = cardTemplate("scale-9.webp");
 interface PendulumStatsProps {
 	scale: number;
 }
