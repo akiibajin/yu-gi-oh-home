@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Html5Qrcode } from "html5-qrcode";
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
 	Card,
@@ -15,13 +14,15 @@ interface QRScannerProps {
 }
 
 export function QRScanner({ onScan, onClose }: QRScannerProps) {
-	const scannerRef = useRef<Html5Qrcode | null>(null);
+	type Html5QrcodeType = import("html5-qrcode").Html5Qrcode;
+	const scannerRef = useRef<Html5QrcodeType | null>(null);
 	const [isScanning, setIsScanning] = useState(false);
 	const [error, setError] = useState("");
 
 	useEffect(() => {
 		const startScanner = async () => {
 			try {
+				const { Html5Qrcode } = await import("html5-qrcode");
 				const scanner = new Html5Qrcode("qr-reader");
 				scannerRef.current = scanner;
 

@@ -12,12 +12,17 @@ import {
 } from "@/components/ui/warcraftcn/card";
 import { getLobbyByCode, getLobbyPlayers, joinLobby } from "@/lib/lobby";
 import { AvatarSelector } from "@/components/avatar-selector";
-import { QRScanner } from "@/components/qr-scanner";
+import lazy from "preact-iso/lazy";
 import { QrCodeIcon, UsersIcon } from "lucide-react";
 import { getSafeAvatarImages, PLAYERS_IMAGES } from "@/lib/avatars";
 import type { LobbyPlayer } from "@/lib/lobby";
 
+const QRScanner = lazy(() =>
+	import("@/components/qr-scanner").then((m) => m.QRScanner),
+);
+
 export default function JoinLobby() {
+	const isDev = import.meta.env.DEV;
 	const { route } = useLocation();
 	const [lobbyCode, setLobbyCode] = useState("");
 	const [selectedAvatar, setSelectedAvatar] = useState(
@@ -85,7 +90,7 @@ export default function JoinLobby() {
 
 			if (result) {
 				const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;
-				console.log("Navigating to:", url);
+				if (isDev) console.log("Navigating to:", url);
 				route(url);
 			} else {
 				setError(
@@ -133,7 +138,7 @@ export default function JoinLobby() {
 		setLobbyCode(scannedCode.toUpperCase());
 		setShowScanner(false);
 	};
-	console.log("Selected avatar:", selectedAvatar);
+	if (isDev) console.log("Selected avatar:", selectedAvatar);
 	return (
 		<div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
 			<Card className="w-full">

@@ -1,46 +1,47 @@
-import dark from "../assets/images/card-templates/dark.webp";
-import light from "../assets/images/card-templates/light.webp";
-import earth from "../assets/images/card-templates/earth.webp";
-import water from "../assets/images/card-templates/water.webp";
-import fire from "../assets/images/card-templates/fire.webp";
-import wind from "../assets/images/card-templates/wind.webp";
-import divine from "../assets/images/card-templates/divine.webp";
-import aqua from "../assets/images/light/Aqua.webp";
-import beast from "../assets/images/light/Beast.webp";
-import beastWarrior from "../assets/images/light/Beast-warrior.webp";
-import creatorGod from "../assets/images/light/Creator.webp";
-import cyberse from "../assets/images/light/Cyberse.webp";
-import dinosaur from "../assets/images/light/Dinosaur.webp";
-import divineBeast from "../assets/images/light/Divine.webp";
-import dragon from "../assets/images/light/Dragon.webp";
-import fairy from "../assets/images/light/Fairy.webp";
-import fiend from "../assets/images/light/Fiend.webp";
-import fish from "../assets/images/light/Fish.webp";
-import insect from "../assets/images/light/Insect.webp";
-import illusion from "../assets/images/light/Illusion.webp";
-import machine from "../assets/images/light/Machine.webp";
-import plant from "../assets/images/light/Plant.webp";
-import psychic from "../assets/images/light/Psy.webp";
-import pyro from "../assets/images/light/Pyro.webp";
-import reptile from "../assets/images/light/Reptile.webp";
-import rock from "../assets/images/light/Rock.webp";
-import seaSerpent from "../assets/images/light/Sea-serpent.webp";
-import spellcaster from "../assets/images/light/Spellcaster.webp";
-import thunder from "../assets/images/light/Thunder.webp";
-import warrior from "../assets/images/light/Warrior.webp";
-import wingedBeast from "../assets/images/light/Winged-beast.webp";
-import wyrm from "../assets/images/light/Wyrm.webp";
-import zombie from "../assets/images/light/Zombie.webp";
-import cyborg from "@/assets/images/light/Ciborg.webp";
-import galaxy from "@/assets/images/light/Galaxy.webp";
-import normalSpellIcon from "../assets/images/card-templates/normal.webp";
-import continuousSpellIcon from "../assets/images/card-templates/continuos.webp";
-import equipSpellIcon from "../assets/images/card-templates/equip.webp";
-import quickPlaySpellIcon from "../assets/images/card-templates/quick-spell.webp";
-import ritualSpellIcon from "../assets/images/card-templates/ritual.webp";
-import fieldSpellIcon from "@/assets/images/card-templates/field.webp";
-import counter from "../assets/images/card-templates/counter.webp";
 import type { MonsterType } from "./types";
+
+const CARD_TEMPLATE_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
+
+const MONSTER_TYPE_ICON_LIGHT_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/light/";
+
+const MONSTER_TYPE_ICON_FILE: Record<MonsterType, string> = {
+	Aqua: "Aqua.webp",
+	Beast: "Beast.webp",
+	"Beast-Warrior": "Beast-warrior.webp",
+	"Creator God": "Creator.webp",
+	Cyberse: "Cyberse.webp",
+	Cyborg: "Ciborg.webp",
+	Dinosaur: "Dinosaur.webp",
+	"Divine-Beast": "Divine.webp",
+	Dragon: "Dragon.webp",
+	Fairy: "Fairy.webp",
+	Fiend: "Fiend.webp",
+	Fish: "Fish.webp",
+	Galaxy: "Galaxy.webp",
+	Insect: "Insect.webp",
+	Illusion: "Illusion.webp",
+	Machine: "Machine.webp",
+	Plant: "Plant.webp",
+	Psychic: "Psy.webp",
+	Pyro: "Pyro.webp",
+	Reptile: "Reptile.webp",
+	Rock: "Rock.webp",
+	"Sea Serpent": "Sea-serpent.webp",
+	Spellcaster: "Spellcaster.webp",
+	Thunder: "Thunder.webp",
+	Warrior: "Warrior.webp",
+	"Winged Beast": "Winged-beast.webp",
+	Wyrm: "Wyrm.webp",
+	Zombie: "Zombie.webp",
+};
+
+const monsterTypeIcon = (type: MonsterType) =>
+	`${MONSTER_TYPE_ICON_LIGHT_BASE_URL}${MONSTER_TYPE_ICON_FILE[type]}`;
 
 export type NavItem = {
 	title: string;
@@ -61,56 +62,56 @@ export const YUGIOH_MAX_STARS = 13;
 export const YUGIOH_MAX_STAT = 99999;
 
 export const YUGIOH_ATTRIBUTES = [
-	{ title: "DARK", img: dark },
-	{ title: "LIGHT", img: light },
-	{ title: "EARTH", img: earth },
-	{ title: "WATER", img: water },
-	{ title: "FIRE", img: fire },
-	{ title: "WIND", img: wind },
-	{ title: "DIVINE", img: divine },
+	{ title: "DARK", img: cardTemplate("dark.webp") },
+	{ title: "LIGHT", img: cardTemplate("light.webp") },
+	{ title: "EARTH", img: cardTemplate("earth.webp") },
+	{ title: "WATER", img: cardTemplate("water.webp") },
+	{ title: "FIRE", img: cardTemplate("fire.webp") },
+	{ title: "WIND", img: cardTemplate("wind.webp") },
+	{ title: "DIVINE", img: cardTemplate("divine.webp") },
 ] as const;
 export const SPELL_ICONS = {
-	Normal: normalSpellIcon,
-	Continuous: continuousSpellIcon,
-	Equip: equipSpellIcon,
-	"Quick-Play": quickPlaySpellIcon,
-	Ritual: ritualSpellIcon,
+	Normal: cardTemplate("normal.webp"),
+	Continuous: cardTemplate("continuos.webp"),
+	Equip: cardTemplate("equip.webp"),
+	"Quick-Play": cardTemplate("quick-spell.webp"),
+	Ritual: cardTemplate("Ritual.webp"),
 };
-export const FIELD_SPELL_ICON = fieldSpellIcon;
+export const FIELD_SPELL_ICON = cardTemplate("field.webp");
 export const TRAP_ICONS = {
-	Counter: counter,
-	Normal: normalSpellIcon,
-	Continuous: continuousSpellIcon,
+	Counter: cardTemplate("Counter.webp"),
+	Normal: cardTemplate("normal.webp"),
+	Continuous: cardTemplate("continuos.webp"),
 };
 export const MONSTER_TYPES: { title: MonsterType; img: string }[] = [
-	{ title: "Aqua", img: aqua },
-	{ title: "Beast", img: beast },
-	{ title: "Beast-Warrior", img: beastWarrior },
-	{ title: "Creator God", img: creatorGod },
-	{ title: "Cyberse", img: cyberse },
-	{ title: "Cyborg", img: cyborg },
-	{ title: "Dinosaur", img: dinosaur },
-	{ title: "Divine-Beast", img: divineBeast },
-	{ title: "Dragon", img: dragon },
-	{ title: "Fairy", img: fairy },
-	{ title: "Fiend", img: fiend },
-	{ title: "Fish", img: fish },
-	{ title: "Galaxy", img: galaxy },
-	{ title: "Insect", img: insect },
-	{ title: "Illusion", img: illusion },
-	{ title: "Machine", img: machine },
-	{ title: "Plant", img: plant },
-	{ title: "Psychic", img: psychic },
-	{ title: "Pyro", img: pyro },
-	{ title: "Reptile", img: reptile },
-	{ title: "Rock", img: rock },
-	{ title: "Sea Serpent", img: seaSerpent },
-	{ title: "Spellcaster", img: spellcaster },
-	{ title: "Thunder", img: thunder },
-	{ title: "Warrior", img: warrior },
-	{ title: "Winged Beast", img: wingedBeast },
-	{ title: "Wyrm", img: wyrm },
-	{ title: "Zombie", img: zombie },
+	{ title: "Aqua", img: monsterTypeIcon("Aqua") },
+	{ title: "Beast", img: monsterTypeIcon("Beast") },
+	{ title: "Beast-Warrior", img: monsterTypeIcon("Beast-Warrior") },
+	{ title: "Creator God", img: monsterTypeIcon("Creator God") },
+	{ title: "Cyberse", img: monsterTypeIcon("Cyberse") },
+	{ title: "Cyborg", img: monsterTypeIcon("Cyborg") },
+	{ title: "Dinosaur", img: monsterTypeIcon("Dinosaur") },
+	{ title: "Divine-Beast", img: monsterTypeIcon("Divine-Beast") },
+	{ title: "Dragon", img: monsterTypeIcon("Dragon") },
+	{ title: "Fairy", img: monsterTypeIcon("Fairy") },
+	{ title: "Fiend", img: monsterTypeIcon("Fiend") },
+	{ title: "Fish", img: monsterTypeIcon("Fish") },
+	{ title: "Galaxy", img: monsterTypeIcon("Galaxy") },
+	{ title: "Insect", img: monsterTypeIcon("Insect") },
+	{ title: "Illusion", img: monsterTypeIcon("Illusion") },
+	{ title: "Machine", img: monsterTypeIcon("Machine") },
+	{ title: "Plant", img: monsterTypeIcon("Plant") },
+	{ title: "Psychic", img: monsterTypeIcon("Psychic") },
+	{ title: "Pyro", img: monsterTypeIcon("Pyro") },
+	{ title: "Reptile", img: monsterTypeIcon("Reptile") },
+	{ title: "Rock", img: monsterTypeIcon("Rock") },
+	{ title: "Sea Serpent", img: monsterTypeIcon("Sea Serpent") },
+	{ title: "Spellcaster", img: monsterTypeIcon("Spellcaster") },
+	{ title: "Thunder", img: monsterTypeIcon("Thunder") },
+	{ title: "Warrior", img: monsterTypeIcon("Warrior") },
+	{ title: "Winged Beast", img: monsterTypeIcon("Winged Beast") },
+	{ title: "Wyrm", img: monsterTypeIcon("Wyrm") },
+	{ title: "Zombie", img: monsterTypeIcon("Zombie") },
 ] as const;
 
 export const YUGIOH_MONSTER_TYPES = [

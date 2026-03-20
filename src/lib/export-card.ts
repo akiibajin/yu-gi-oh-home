@@ -1,4 +1,3 @@
-import { toCanvas } from "html-to-image";
 import type { YugiohCardDraft } from "./types";
 import { storeCardMakerWebpById } from "./tauri/card-maker-images";
 
@@ -6,6 +5,7 @@ export const exportPreview = async (
 	draft: YugiohCardDraft,
 	opts?: { id?: string; folderName?: string },
 ) => {
+	const { toCanvas } = await import("html-to-image");
 	const node = document.getElementById("card-preview");
 	if (!node) {
 		throw new Error("Could not find #card-preview.");

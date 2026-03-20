@@ -1,46 +1,63 @@
-const normalDescription = "/assets/images/normal-description.webp";
-import normalBorder from "@/assets/images/card-templates/normal-border.webp";
-import normalStats from "@/assets/images/card-templates/stats-normal.webp";
-import effectBorder from "@/assets/images/card-templates/effect-border.webp";
-const effectDescription = "/assets/images/effect-description.webp";
-import effectStats from "@/assets/images/card-templates/stats-effect.webp";
-import ritualBorder from "@/assets/images/card-templates/ritual-border.webp";
-const ritualDescription = "/assets/images/ritual-description.webp";
-import ritualStats from "@/assets/images/card-templates/stats-ritual.webp";
-import fusionBorder from "@/assets/images/card-templates/fusion-border.webp";
-const fusionDescription = "/assets/images/fusion-description.webp";
-import fusionStats from "@/assets/images/card-templates/stats-fusion.webp";
-import synchroBorder from "@/assets/images/card-templates/synchro-border.webp";
-const synchroDescription = "/assets/images/synchro-description.webp";
-import synchroStats from "@/assets/images/card-templates/stats-synchro.webp";
-import xyzBorder from "@/assets/images/card-templates/xyz-border.webp";
-const xyzDescription = "/assets/images/xyz-description.webp";
-import xyzStats from "@/assets/images/card-templates/stats-xyz.webp";
-import linkBorder from "@/assets/images/card-templates/link-border.webp";
-const linkDescription = "/assets/images/link-description.webp";
-import linkStats from "@/assets/images/card-templates/stats-link.webp";
-import spellBorder from "@/assets/images/card-templates/spell-border.webp";
-const spellDescription = "/assets/images/spell-description.webp";
-const trapDescription = "/assets/images/trap-description.webp";
-import trapBorder from "@/assets/images/card-templates/trap-border.webp";
-import trapStats from "@/assets/images/card-templates/stats-trap.webp";
-import fieldBorder from "@/assets/images/card-templates/field-border.webp";
-const fieldDescription = "/assets/images/field-description.webp";
-
 import type {
 	YugiohCardType,
 	YugiohDescriptionStatsBoxColor,
 	YugiohMonsterType,
 } from "./types";
-import tokenBorder from "@/assets/images/card-templates/token-border.webp";
-import tokenStats from "@/assets/images/card-templates/stats-token.webp";
-const tokenDescription = "/assets/images/token-description.webp";
-import pendulumEffectBorder from "@/assets/images/card-templates/effect-pendulum-border.webp";
-import pendulumNormalBorder from "@/assets/images/card-templates/normal-pendulum-border.webp";
-import fusionPendulumBorder from "@/assets/images/card-templates/fusion-pendulum-border.webp";
-import syncrhoPendulumBorder from "@/assets/images/card-templates/synchro-pendulum-border.webp";
-import xyzPendulumBorder from "@/assets/images/card-templates/xyz-pendulum-border.webp";
-import ritualPendulumBorder from "@/assets/images/card-templates/ritual-pendulum-border.webp";
+
+const CARD_TEMPLATES_BASE_URL =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+
+const cardTemplate = (fileName: string) =>
+	`${CARD_TEMPLATES_BASE_URL}${fileName}`;
+
+const normalDescription = cardTemplate("normal-description.webp");
+const normalBorder = cardTemplate("normal-border.webp");
+const normalStats = cardTemplate("stats-normal.webp");
+
+const effectDescription = cardTemplate("effect-description.webp");
+const effectBorder = cardTemplate("effect-border.webp");
+const effectStats = cardTemplate("stats-effect.webp");
+
+const ritualDescription = cardTemplate("ritual-description.webp");
+const ritualBorder = cardTemplate("ritual-border.webp");
+const ritualStats = cardTemplate("stats-ritual.webp");
+
+const fusionDescription = cardTemplate("fusion-description.webp");
+const fusionBorder = cardTemplate("fusion-border.webp");
+const fusionStats = cardTemplate("stats-fusion.webp");
+
+const synchroDescription = cardTemplate("synchro-description.webp");
+const synchroBorder = cardTemplate("synchro-border.webp");
+const synchroStats = cardTemplate("stats-synchro.webp");
+
+const xyzDescription = cardTemplate("xyz-description.webp");
+const xyzBorder = cardTemplate("xyz-border.webp");
+const xyzStats = cardTemplate("stats-xyz.webp");
+
+const linkDescription = cardTemplate("link-description.webp");
+const linkBorder = cardTemplate("link-border.webp");
+const linkStats = cardTemplate("stats-link.webp");
+
+const spellDescription = cardTemplate("spell-description.webp");
+const spellBorder = cardTemplate("spell-border.webp");
+
+const trapDescription = cardTemplate("trap-description.webp");
+const trapBorder = cardTemplate("trap-border.webp");
+const trapStats = cardTemplate("stats-trap.webp");
+
+const fieldDescription = cardTemplate("field-description.webp");
+const fieldBorder = cardTemplate("field-border.webp");
+
+const tokenDescription = cardTemplate("token-description.webp");
+const tokenBorder = cardTemplate("token-border.webp");
+const tokenStats = cardTemplate("stats-token.webp");
+
+const pendulumEffectBorder = cardTemplate("effect-pendulum-border.webp");
+const pendulumNormalBorder = cardTemplate("normal-pendulum-border.webp");
+const fusionPendulumBorder = cardTemplate("fusion-pendulum-border.webp");
+const syncrhoPendulumBorder = cardTemplate("synchro-pendulum-border.webp");
+const xyzPendulumBorder = cardTemplate("xyz-pendulum-border.webp");
+const ritualPendulumBorder = cardTemplate("ritual-pendulum-border.webp");
 
 type BoxTextureColor = Exclude<YugiohDescriptionStatsBoxColor, "auto" | "void">;
 

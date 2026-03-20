@@ -15,15 +15,17 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import type { MonsterTypeIconProfile, YugiohCardDraft } from "@/lib/types";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import type { CardMakerFormExportOptions } from "@/pages/card-maker/component/card-maker-form";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { getCardMakerImagesDir } from "@/lib/tauri/card-maker-images";
+import { Skeleton } from "@/components/ui/skeleton";
+import { preloadCardMakerTemplateImages } from "@/pages/card-maker/preload-card-templates";
 
-function CardMaker() {
+function CardMakerView() {
 	const [tab, setTab] = useState<"maker" | "deck">("maker");
 	const [cards, setCards] = useState<
 		(Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[]
@@ -241,4 +243,36 @@ function CardMaker() {
 	);
 }
 
-export default CardMaker;
+export default function CardMaker() {
+	const [isReady, setIsReady] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		void preloadCardMakerTemplateImages().finally(() => {
+			if (cancelled) return;
+			setIsReady(true);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	if (!isReady) {
+		return (
+			<div className="flex w-full flex-col gap-4">
+				<div className="flex w-full flex-col gap-4 md:flex-row">
+					<div className="w-full md:w-105 md:flex-none space-y-4">
+						<Skeleton className="w-full aspect-63/88" />
+						<Skeleton className="w-full h-40" />
+					</div>
+					<div className="min-w-0 flex-1 space-y-4">
+						<Skeleton className="w-64 h-9" />
+						<Skeleton className="w-full h-[60dvh]" />
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	return <CardMakerView />;
+}

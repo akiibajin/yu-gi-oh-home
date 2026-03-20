@@ -10,6 +10,32 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig(async () => ({
 	plugins: [preact(), tailwindcss(), tsconfigPaths()],
 	assetsInclude: ["**/*.mpeg"],
+	build: {
+		reportCompressedSize: true,
+		rollupOptions: {
+			output: {
+				manualChunks(id) {
+					if (!id.includes("node_modules")) return;
+
+					if (id.includes("@supabase/supabase-js")) return "supabase";
+					if (
+						id.includes("@radix-ui/") ||
+						id.includes("radix-ui") ||
+						id.includes("@floating-ui/")
+					)
+						return "radix";
+					if (id.includes("html-to-image")) return "export";
+					if (id.includes("lucide-react")) return "icons";
+					if (id.includes("html5-qrcode")) return "qr";
+					if (id.includes("react-toastify")) return "toast";
+					// Keep Preact in the main vendor chunk to avoid circular chunk dependencies.
+					if (id.includes("@preact/") || id.includes("preact")) return "vendor";
+
+					return "vendor";
+				},
+			},
+		},
+	},
 
 	resolve: {
 		alias: {
