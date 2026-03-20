@@ -41,12 +41,21 @@ interface DeckImporterFormProps {
 			})[]
 		>
 	>;
+	resetNonce?: number;
+	onDeckFileNameChange?: (fileName: string | null) => void;
+	onImportedCardSelected?: (cardKey: string | null) => void;
 }
 export function DeckImporterForm(props: DeckImporterFormProps) {
 	const DECK_SELECTED_CARD_KEY_STORAGE = "card-maker.deck.selected-card-key";
 	const DECK_SCROLL_TOP_STORAGE = "card-maker.deck.cards-scroll-top";
 
-	const { cards, setCards } = props;
+	const {
+		cards,
+		setCards,
+		resetNonce,
+		onDeckFileNameChange,
+		onImportedCardSelected,
+	} = props;
 	const [file, setFile] = useState<File | null>(null);
 	const [running, setRunning] = useState(false);
 	const [status, setStatus] = useState<string>("");
@@ -67,9 +76,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		| undefined
 	>(undefined);
 
-	const getCardKey = (
+	const getImportedCardId = (
 		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
-	) => `${card.id}-${card.name}-${card.imgUrl}`;
+	) => String(card.id);
 
 	const persistSelectedCardKey = (value: string | null) => {
 		if (typeof window === "undefined") return;
@@ -84,6 +93,24 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		if (typeof window === "undefined") return;
 		window.localStorage.setItem(DECK_SCROLL_TOP_STORAGE, String(value));
 	};
+
+	useEffect(() => {
+		if (resetNonce === undefined) return;
+		setFile(null);
+		setRunning(false);
+		setLocked(false);
+		setProgress(undefined);
+		setStatus("");
+		setLastResult(undefined);
+		setSelectedCardKey(null);
+		persistSelectedCardKey(null);
+		if (typeof window !== "undefined") {
+			window.localStorage.removeItem(DECK_SCROLL_TOP_STORAGE);
+		}
+		setCards([]);
+		onDeckFileNameChange?.(null);
+		onImportedCardSelected?.(null);
+	}, [resetNonce]);
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
@@ -163,11 +190,12 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 
 	const selectCardForPreview = async (
 		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
-		cardKey: string,
+		cardId: string,
 	) => {
 		const currentDraft = cardDraftSignal.value;
-		setSelectedCardKey(cardKey);
-		persistSelectedCardKey(cardKey);
+		setSelectedCardKey(cardId);
+		persistSelectedCardKey(cardId);
+		onImportedCardSelected?.(cardId);
 
 		let img: Blob | string | null = null;
 		try {
@@ -182,6 +210,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			showDescription: currentDraft.showDescription ?? true,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
+			descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
+			descriptionTextSize: currentDraft.descriptionTextSize ?? "normal",
 			attribute: card.attribute,
 			monsterType: card.monsterType,
 			subType: card.subType,
@@ -224,6 +254,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					showDescription: currentDraft.showDescription ?? true,
 					pendulumDescription: c.pendulumDescription ?? "",
 					description: c.description,
+					descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
+					descriptionTextSize: currentDraft.descriptionTextSize ?? "normal",
 					attribute: c.attribute,
 					monsterType: c.monsterType,
 					subType: c.subType,
@@ -262,10 +294,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 				}
 
 				await waitForPreviewReady(Boolean(imgBlob));
-				// Use a stable unique id per deck entry to avoid overwriting exports
-				// when card names (or ids) repeat.
+				// Import export goes to: card-maker-ims/<deck>/<cardId>.webp
 				await exportPreview(cardDraftSignal.value, {
-					id: `${c.id}-${i + 1}`,
+					id: getImportedCardId(c),
 					folderName,
 				});
 			} catch (err) {
@@ -289,6 +320,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		}
 		if (running || locked) return;
 
+		const deckFolderName = file.name.replace(/\.ydk$/i, "") || "deck-import";
+
 		setRunning(true);
 		setLocked(true);
 		setProgress(undefined);
@@ -296,7 +329,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		setLastResult(undefined);
 		setCards([]);
 		try {
-			const deckFolderName = file.name.replace(/\.ydk$/i, "") || "deck-import";
 			const res = await loadDeckCardsFromYdkFile(file);
 			if (!res) {
 				setStatus(
@@ -319,9 +351,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			const exportables = res.cards;
 			setCards(exportables);
 			if (selectedCardKey) {
-				const hasSelectedCard = exportables.some(
-					(card) => getCardKey(card) === selectedCardKey,
-				);
+				const hasSelectedCard = exportables.some((card) => {
+					return getImportedCardId(card) === selectedCardKey;
+				});
 				if (!hasSelectedCard) {
 					setSelectedCardKey(null);
 					persistSelectedCardKey(null);
@@ -379,12 +411,14 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 						</label>
 						<div className="flex items-center gap-2">
 							<Input
+								key={resetNonce ?? 0}
 								id="deck-ydk"
 								type="file"
 								accept=".ydk"
 								onChange={(e) => {
 									const f = e.currentTarget.files?.[0] ?? null;
 									setFile(f);
+									onDeckFileNameChange?.(f?.name ?? null);
 									setStatus("");
 									setLastResult(undefined);
 								}}
@@ -394,6 +428,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 								variant="frame"
 								onClick={() => {
 									setFile(null);
+									onDeckFileNameChange?.(null);
 									setStatus("");
 									setLastResult(undefined);
 								}}
@@ -529,22 +564,25 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 							}}
 							className="text-xs flex-1 max-h-[30dvh] overflow-auto flex flex-col gap-4"
 						>
-							{cards.map((c) => (
-								<button
-									key={getCardKey(c)}
-									data-card-key={getCardKey(c)}
-									type="button"
-									onClick={() => void selectCardForPreview(c, getCardKey(c))}
-									className={`flex w-full items-center gap-2 rounded-md border px-2 py-1 text-left transition-colors ${
-										selectedCardKey === getCardKey(c)
-											? "border-primary bg-accent/40"
-											: "border-border hover:border-muted-foreground/60"
-									}`}
-								>
-									<img className="size-8" src={c.imgUrl} alt={c.name} />
-									<span className="truncate">{c.name}</span>
-								</button>
-							))}
+							{cards.map((c) => {
+								const cardId = getImportedCardId(c);
+								return (
+									<button
+										key={cardId}
+										data-card-key={cardId}
+										type="button"
+										onClick={() => void selectCardForPreview(c, cardId)}
+										className={`flex w-full items-center gap-2 rounded-md border px-2 py-1 text-left transition-colors ${
+											selectedCardKey === cardId
+												? "border-primary bg-accent/40"
+												: "border-border hover:border-muted-foreground/60"
+										}`}
+									>
+										<img className="size-8" src={c.imgUrl} alt={c.name} />
+										<span className="truncate">{c.name}</span>
+									</button>
+								);
+							})}
 						</div>
 					) : null}
 				</CardContent>

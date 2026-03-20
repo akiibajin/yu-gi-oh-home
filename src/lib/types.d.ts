@@ -92,13 +92,13 @@ export type YugiohRarity =
 	| "Secret Rare";
 export type LinkMarker =
 	| "Top"
-	| "Bottom-left"
+	| "Bottom-Left"
 	| "Bottom"
-	| "Bottom-right"
+	| "Bottom-Right"
 	| "Left"
 	| "Right"
-	| "Top-left"
-	| "Top-right";
+	| "Top-Left"
+	| "Top-Right";
 export interface YugiohMonsterStats {
 	level: number; // stars
 	atk: number | string;

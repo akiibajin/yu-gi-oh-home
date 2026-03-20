@@ -10,6 +10,8 @@ export type LifePointsCounterProps = {
 	className?: string;
 	isEmergency?: boolean;
 	label?: string;
+	currentPlayerImage?: string;
+	playerName?: string;
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -35,15 +37,19 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
 	};
 }
 
-export function LifePointsCounter({
-	value,
-	max,
-	size = 88,
-	strokeWidth = 14,
-	isEmergency = false,
-	className,
-	label = "Life points",
-}: LifePointsCounterProps) {
+export function LifePointsCounter(props: LifePointsCounterProps) {
+	const {
+		value,
+		max,
+		size = 88,
+		strokeWidth = 14,
+		isEmergency = false,
+		className,
+		label = "Life points",
+		currentPlayerImage,
+		playerName,
+	} = props;
+
 	const safeMax = max > 0 ? max : 1;
 	const clamped = Math.max(0, value);
 	const percent = (clamped / safeMax) * 100;
@@ -95,7 +101,7 @@ export function LifePointsCounter({
 			>
 				<div className="text-center text-white leading-none">
 					<div className="text-3xl md:text-4xl font-bold tabular-nums">
-						{clamped.toLocaleString()}
+						<img src={currentPlayerImage} alt={playerName} />
 					</div>
 				</div>
 				<CircleGaugeIcon size={24} className="text-white" />

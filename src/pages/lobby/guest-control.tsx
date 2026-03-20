@@ -15,6 +15,8 @@ import {
 	subscribeLobby,
 	getLobby,
 	recordGameResult,
+	setPlayerActive,
+	updatePlayerAvatar,
 	type LobbyPlayer,
 	type Lobby,
 } from "@/lib/lobby";
@@ -24,6 +26,7 @@ import { MatchTracker } from "@/components/match-tracker";
 import { DiceRoller } from "@/components/dice-roller";
 import { RefreshCwIcon, TrophyIcon, XCircleIcon } from "lucide-react";
 import halveIcon from "@/assets/images/Halve.webp";
+import { AvatarSelector } from "@/components/avatar-selector";
 
 export default function GuestControl() {
 	const { route, query } = useLocation();
@@ -34,7 +37,34 @@ export default function GuestControl() {
 	const [allPlayers, setAllPlayers] = useState<LobbyPlayer[]>([]);
 	const [lobby, setLobby] = useState<Lobby | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [quitting, setQuitting] = useState(false);
+	const activeGuestPlayers = allPlayers.filter(
+		(p) => !p.is_host && p.active !== false,
+	);
+	const canReportResult = activeGuestPlayers.length > 1;
 	const prevLifePointsRef = useRef<number | null>(null);
+	const presenceQueueRef = useRef<Promise<void>>(Promise.resolve());
+	const queuedActiveRef = useRef<boolean | null>(null);
+	const quittingRef = useRef(false);
+	const queuePresence = (nextActive: boolean, force = false) => {
+		if (!playerId) return Promise.resolve();
+		if (!force && quittingRef.current) return presenceQueueRef.current;
+		if (!force && queuedActiveRef.current === nextActive) {
+			return presenceQueueRef.current;
+		}
+		queuedActiveRef.current = nextActive;
+		presenceQueueRef.current = presenceQueueRef.current
+			.then(async () => {
+				await setPlayerActive(playerId, nextActive);
+			})
+			.catch((e) => {
+				console.error("Error updating player presence:", e);
+			});
+		return presenceQueueRef.current;
+	};
+	const setPresence = (nextActive: boolean) => {
+		void queuePresence(nextActive);
+	};
 
 	const updateLifePoints = async (change: number) => {
 		if (!player) return;
@@ -63,17 +93,21 @@ export default function GuestControl() {
 
 	const recordWin = async (iWon: boolean) => {
 		if (!player || !lobby) return;
+		if (!canReportResult) return;
 
-		const hostPlayer = allPlayers.find((p) => p.is_host);
-		if (!hostPlayer) return;
+		const opponents = activeGuestPlayers
+			.filter((p) => p.id !== player.id)
+			.sort((a, b) => (b.life_points ?? 0) - (a.life_points ?? 0));
+		const opponent = opponents[0];
+		if (!opponent) return;
 
-		const winnerId = iWon ? player.id : hostPlayer.id;
+		const winnerId = iWon ? player.id : opponent.id;
 		const durationSeconds = lobby.timer_seconds ?? 0;
 
 		await recordGameResult(
 			lobbyId,
 			winnerId,
-			hostPlayer.life_points,
+			opponent.life_points,
 			player.life_points,
 			durationSeconds,
 		);
@@ -91,6 +125,21 @@ export default function GuestControl() {
 	const refreshLobby = async () => {
 		const updated = await getLobby(lobbyId);
 		if (updated) setLobby(updated);
+	};
+
+	const quitServer = async () => {
+		if (quittingRef.current) return;
+		const confirmed = confirm("¿Salir de la sala?");
+		if (!confirmed) return;
+
+		setQuitting(true);
+		quittingRef.current = true;
+		try {
+			// Ensure we end in `active=false`, even if another presence update was in-flight.
+			await queuePresence(false, true);
+		} finally {
+			route("/lobby/join");
+		}
 	};
 	useEffect(() => {
 		initDuelSfx();
@@ -128,6 +177,9 @@ export default function GuestControl() {
 				route("/lobby/join");
 				return;
 			}
+
+			// Mark this guest as active as soon as possible.
+			void setPresence(true);
 
 			// Load lobby data
 			const lobbyData = await getLobby(lobbyId);
@@ -169,7 +221,34 @@ export default function GuestControl() {
 
 		void initializePlayer();
 
+		// Presence handlers: important for Android where tabs/apps background frequently.
+		const onVisibilityChange = () => {
+			void setPresence(!document.hidden);
+		};
+		const onPageHide = () => {
+			void setPresence(false);
+		};
+		const onBeforeUnload = () => {
+			void setPresence(false);
+		};
+		if (typeof document !== "undefined") {
+			document.addEventListener("visibilitychange", onVisibilityChange);
+		}
+		if (typeof window !== "undefined") {
+			window.addEventListener("pagehide", onPageHide);
+			window.addEventListener("beforeunload", onBeforeUnload);
+		}
+
 		return () => {
+			// Mark inactive when navigating away from this page.
+			void queuePresence(false, true);
+			if (typeof document !== "undefined") {
+				document.removeEventListener("visibilitychange", onVisibilityChange);
+			}
+			if (typeof window !== "undefined") {
+				window.removeEventListener("pagehide", onPageHide);
+				window.removeEventListener("beforeunload", onBeforeUnload);
+			}
 			if (pollId && typeof window !== "undefined") {
 				window.clearInterval(pollId);
 			}
@@ -185,6 +264,33 @@ export default function GuestControl() {
 			}
 		};
 	}, [lobbyId, playerId]);
+
+	const onChangeAvatar = async (nextAvatarKey: string) => {
+		if (!player) return;
+		const prev = player;
+		// Optimistic update
+		setPlayer({
+			...player,
+			player_name: nextAvatarKey,
+			avatar_url: nextAvatarKey,
+		});
+		setAllPlayers((prevPlayers) =>
+			prevPlayers.map((p) =>
+				p.id === player.id
+					? { ...p, player_name: nextAvatarKey, avatar_url: nextAvatarKey }
+					: p,
+			),
+		);
+
+		const ok = await updatePlayerAvatar(player.id, nextAvatarKey);
+		if (!ok) {
+			// Revert on failure
+			setPlayer(prev);
+			setAllPlayers((prevPlayers) =>
+				prevPlayers.map((p) => (p.id === prev.id ? prev : p)),
+			);
+		}
+	};
 	if (loading || !player || !lobby) {
 		return (
 			<div className="flex items-center justify-center min-h-screen p-4">
@@ -200,6 +306,17 @@ export default function GuestControl() {
 
 	return (
 		<div className="md:p-6 space-y-6 max-w-2xl mx-auto pb-[env(safe-area-inset-bottom)]">
+			<Card>
+				<CardContent className="p-4 md:p-6">
+					<CardHeader className="px-0 pt-0 pb-4">
+						<CardTitle className="text-lg">Cambiar avatar</CardTitle>
+					</CardHeader>
+					<AvatarSelector
+						selectedAvatar={player.player_name}
+						onSelectAvatar={onChangeAvatar}
+					/>
+				</CardContent>
+			</Card>
 			<Card>
 				<CardContent className="px-0 py-4 md:p-8">
 					<CardHeader className="px-0 pt-0 pb-6">
@@ -339,10 +456,16 @@ export default function GuestControl() {
 						<p className="text-sm text-amber-200/70 mb-4">
 							Indica quién ganó este duelo:
 						</p>
+						{!canReportResult ? (
+							<p className="text-sm text-amber-200/70 mb-4">
+								Necesitas al menos 2 jugadores activos para reportar.
+							</p>
+						) : null}
 						<div className="grid grid-cols-2 gap-3">
 							<Button
 								variant="default"
 								onClick={() => recordWin(true)}
+								disabled={!canReportResult}
 								className="h-16 flex flex-col gap-1"
 							>
 								<TrophyIcon className="w-5 h-5" />
@@ -351,6 +474,7 @@ export default function GuestControl() {
 							<Button
 								variant="frame"
 								onClick={() => recordWin(false)}
+								disabled={!canReportResult}
 								className="h-16 flex flex-col gap-1"
 							>
 								<XCircleIcon className="w-5 h-5" />
@@ -366,6 +490,20 @@ export default function GuestControl() {
 				playerId={player.id}
 				playerName={player.player_name}
 			/>
+
+			<Card>
+				<CardContent className="p-4 md:p-6">
+					<Button
+						variant="frame"
+						onClick={quitServer}
+						disabled={quitting}
+						className="w-full"
+					>
+						<XCircleIcon className="w-5 h-5 mr-2" />
+						{quitting ? "Saliendo..." : "Salir de la sala"}
+					</Button>
+				</CardContent>
+			</Card>
 		</div>
 	);
 }

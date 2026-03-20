@@ -5,25 +5,25 @@ import type { SetDraftField } from "./types";
 import { clampInt } from "./utils";
 
 const LINK_MARKERS: LinkMarker[] = [
-	"Top-left",
+	"Top-Left",
 	"Top",
-	"Top-right",
+	"Top-Right",
 	"Left",
 	"Right",
-	"Bottom-left",
+	"Bottom-Left",
 	"Bottom",
-	"Bottom-right",
+	"Bottom-Right",
 ];
 
 const LINK_MARKER_LABELS: Record<LinkMarker, string> = {
-	"Top-left": "Arriba-izquierda",
+	"Top-Left": "Arriba-izquierda",
 	Top: "Arriba",
-	"Top-right": "Arriba-derecha",
+	"Top-Right": "Arriba-derecha",
 	Left: "Izquierda",
 	Right: "Derecha",
-	"Bottom-left": "Abajo-izquierda",
+	"Bottom-Left": "Abajo-izquierda",
 	Bottom: "Abajo",
-	"Bottom-right": "Abajo-derecha",
+	"Bottom-Right": "Abajo-derecha",
 };
 
 export function CardMakerLinkMarkers(props: {

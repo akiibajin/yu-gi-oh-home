@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { useLocation } from "preact-iso";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
@@ -10,11 +10,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
-import { joinLobby } from "@/lib/lobby";
+import { getLobbyByCode, getLobbyPlayers, joinLobby } from "@/lib/lobby";
 import { AvatarSelector } from "@/components/avatar-selector";
 import { QRScanner } from "@/components/qr-scanner";
 import { QrCodeIcon, UsersIcon } from "lucide-react";
-import { PLAYERS_IMAGES } from "@/lib/avatars";
+import { getSafeAvatarImages, PLAYERS_IMAGES } from "@/lib/avatars";
+import type { LobbyPlayer } from "@/lib/lobby";
 
 export default function JoinLobby() {
 	const { route } = useLocation();
@@ -25,6 +26,45 @@ export default function JoinLobby() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [showScanner, setShowScanner] = useState(false);
+	const [inactiveSlots, setInactiveSlots] = useState<LobbyPlayer[]>([]);
+	const [loadingSlots, setLoadingSlots] = useState(false);
+	const [slotsError, setSlotsError] = useState<string>("");
+
+	useEffect(() => {
+		let cancelled = false;
+		const code = lobbyCode.trim().toUpperCase();
+		setSlotsError("");
+		if (code.length !== 6) {
+			setInactiveSlots([]);
+			return;
+		}
+
+		const load = async () => {
+			setLoadingSlots(true);
+			try {
+				const lobby = await getLobbyByCode(code);
+				if (!lobby) {
+					if (!cancelled) setInactiveSlots([]);
+					return;
+				}
+				const players = await getLobbyPlayers(lobby.id);
+				const inactive = players.filter(
+					(p) => !p.is_host && p.active === false,
+				);
+				if (!cancelled) setInactiveSlots(inactive);
+			} catch (e) {
+				console.error(e);
+				if (!cancelled) setSlotsError("No se pudieron cargar los cupos.");
+			} finally {
+				if (!cancelled) setLoadingSlots(false);
+			}
+		};
+		void load();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [lobbyCode]);
 
 	const handleJoinLobby = async () => {
 		if (!selectedAvatar.trim()) {
@@ -54,6 +94,35 @@ export default function JoinLobby() {
 			}
 		} catch (err) {
 			console.error("Error joining lobby:", err);
+			setError("Ocurrió un error. Inténtalo de nuevo.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleReclaimSlot = async (slotPlayerId: string) => {
+		if (!lobbyCode.trim()) {
+			setError("Ingresa un código de sala");
+			return;
+		}
+		setLoading(true);
+		setError("");
+		try {
+			// Reclaim existing inactive slot; does not create a new lobby_players row.
+			const result = await joinLobby(
+				lobbyCode.trim(),
+				selectedAvatar,
+				undefined,
+				slotPlayerId,
+			);
+			if (!result) {
+				setError("No se pudo reingresar. Puede que el jugador ya esté activo.");
+				return;
+			}
+			const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;
+			route(url);
+		} catch (err) {
+			console.error("Error reclaiming slot:", err);
 			setError("Ocurrió un error. Inténtalo de nuevo.");
 		} finally {
 			setLoading(false);
@@ -141,6 +210,45 @@ export default function JoinLobby() {
 							selectedAvatar={selectedAvatar}
 							onSelectAvatar={setSelectedAvatar}
 						/>
+
+						{loadingSlots ? (
+							<div className="text-sm text-amber-200/70">
+								Buscando cupos inactivos...
+							</div>
+						) : null}
+						{slotsError ? (
+							<div className="text-sm text-red-200">{slotsError}</div>
+						) : null}
+						{inactiveSlots.length > 0 ? (
+							<div className="space-y-3 rounded-lg border border-amber-900/30 bg-black/20 p-3">
+								<div className="text-sm text-amber-200/70">
+									Cupos inactivos disponibles (reingresar):
+								</div>
+								<div className="grid grid-cols-1 gap-2">
+									{inactiveSlots.map((p) => {
+										const avatar = getSafeAvatarImages(
+											p.player_name || p.avatar_url,
+										);
+										return (
+											<Button
+												key={p.id}
+												variant="frame"
+												onClick={() => handleReclaimSlot(p.id)}
+												disabled={loading}
+												className="w-full justify-start gap-3"
+											>
+												<img
+													src={avatar.standing}
+													alt={p.player_name}
+													className="h-10 w-10 object-contain"
+												/>
+												<span className="truncate">{p.player_name}</span>
+											</Button>
+										);
+									})}
+								</div>
+							</div>
+						) : null}
 
 						{error && (
 							<div className="p-3 bg-red-950/30 border border-red-900/50 rounded-lg">

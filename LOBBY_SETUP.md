@@ -41,6 +41,21 @@ The components have been updated with defensive code to provide default values i
 
 After applying the migration, restart the app to ensure all components load the new fields.
 
+### Presence (required for inactive slot takeover)
+
+To support guest presence tracking (active/inactive) and allow another device to take over an inactive guest slot, add an `active` column to `lobby_players`.
+
+Run this in the Supabase SQL editor (or your Postgres database):
+
+```sql
+alter table public.lobby_players
+	add column if not exists active boolean not null default true;
+
+-- Optional but recommended for faster lookups.
+create index if not exists lobby_players_lobby_id_active_idx
+	on public.lobby_players (lobby_id, active);
+```
+
 ## New Features
 
 ### 🕐 Timer

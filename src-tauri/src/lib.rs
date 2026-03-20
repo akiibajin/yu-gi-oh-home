@@ -14,6 +14,7 @@ pub fn run() {
 			commands::images::convert_image_to_webp,
 			commands::images::download_image_bytes,
 			commands::card_maker_images::store_card_maker_image,
+			commands::card_maker_images::get_card_maker_images_dir,
 		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

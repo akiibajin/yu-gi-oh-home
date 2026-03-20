@@ -21,7 +21,7 @@ function RankImage(props: RankImageProps) {
 			),
 		},
 		{
-			marker: "Top-right",
+			marker: "Top-Right",
 			className: cn(
 				"absolute rotate-[45deg]",
 				option === "B" ? "-top-2.5 -right-2.5" : "-top-0.75 -right-2.5",
@@ -35,7 +35,7 @@ function RankImage(props: RankImageProps) {
 			),
 		},
 		{
-			marker: "Bottom-right",
+			marker: "Bottom-Right",
 			className: cn(
 				"absolute bottom-[0.45px] -right-0.25 rotate-[135deg]",
 				option === "B" ? "-bottom-2.5 -right-2.5" : "-bottom-0.75 -right-2.5",
@@ -49,7 +49,7 @@ function RankImage(props: RankImageProps) {
 			),
 		},
 		{
-			marker: "Bottom-left",
+			marker: "Bottom-Left",
 			className: cn(
 				"absolute bottom-[0.45px] -left-0.5 -rotate-[135deg]",
 				option === "B" ? "-bottom-2.5 -left-2.5" : "-bottom-0.75 -left-2.5",
@@ -63,7 +63,7 @@ function RankImage(props: RankImageProps) {
 			),
 		},
 		{
-			marker: "Top-left",
+			marker: "Top-Left",
 			className: cn(
 				"absolute -top-0 -left-0.5 -rotate-[45deg]",
 				option === "B" ? "-top-2.5 -left-2.5" : "-top-0.75 -left-2.5",

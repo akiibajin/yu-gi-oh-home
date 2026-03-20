@@ -24,7 +24,7 @@ function RankCircle(props: RankCircleProps) {
 			className: "absolute left-1/2 -translate-x-1/2 -top-[3px] rotate-0",
 		},
 		{
-			marker: "Top-right",
+			marker: "Top-Right",
 			className: "absolute top-0.75 -right-0.25 rotate-[45deg]",
 		},
 		{
@@ -33,7 +33,7 @@ function RankCircle(props: RankCircleProps) {
 				"absolute top-1/2 -translate-y-1/2 -right-[7.5px] rotate-[90deg]",
 		},
 		{
-			marker: "Bottom-right",
+			marker: "Bottom-Right",
 			className: "absolute bottom-0.5 -right-0 rotate-[135deg]",
 		},
 		{
@@ -42,7 +42,7 @@ function RankCircle(props: RankCircleProps) {
 				"absolute left-1/2 -translate-x-1/2 -bottom-1.25 rotate-[180deg]",
 		},
 		{
-			marker: "Bottom-left",
+			marker: "Bottom-Left",
 			className: "absolute bottom-0.5 -left-0 -rotate-[135deg]",
 		},
 		{
@@ -51,7 +51,7 @@ function RankCircle(props: RankCircleProps) {
 				"absolute top-1/2 -translate-y-1/2 -left-[7.5px] -rotate-[90deg]",
 		},
 		{
-			marker: "Top-left",
+			marker: "Top-Left",
 			className: "absolute top-1 -left-0 -rotate-[45deg]",
 		},
 	];

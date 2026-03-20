@@ -51,6 +51,24 @@ pub fn card_maker_images_dir(app: &tauri::AppHandle) -> anyhow::Result<PathBuf> 
 	Ok(dir)
 }
 
+pub fn card_maker_images_target_dir(
+	app: &tauri::AppHandle,
+	folder_name: Option<&str>,
+) -> anyhow::Result<PathBuf> {
+	let mut dir = card_maker_images_dir(app)?;
+	let folder = folder_name
+		.map(str::trim)
+		.filter(|v| !v.is_empty())
+		.map(sanitize_filename_stem)
+		.filter(|v| !v.is_empty());
+
+	if let Some(folder) = folder.as_ref() {
+		dir = dir.join(folder);
+		std::fs::create_dir_all(&dir).context("failed to create deck export folder")?;
+	}
+	Ok(dir)
+}
+
 pub struct StoredCardMakerImage {
 	pub dir: PathBuf,
 	pub filename: String,

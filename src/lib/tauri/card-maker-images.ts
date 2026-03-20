@@ -11,6 +11,16 @@ export type StoreCardMakerImageOptions = {
 	folderName?: string;
 };
 
+export async function getCardMakerImagesDir(opts?: {
+	folderName?: string;
+}): Promise<string | undefined> {
+	if (!canInvokeTauri()) return undefined;
+	const folderName = opts?.folderName?.trim();
+	return invoke<string>("get_card_maker_images_dir", {
+		req: { folderName: folderName || null },
+	});
+}
+
 export async function storeCardMakerWebpById(
 	id: string,
 	input: Blob | ArrayBuffer | Uint8Array,

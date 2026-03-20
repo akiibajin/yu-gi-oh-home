@@ -15,7 +15,18 @@ import { CardMakerMonsterOptions } from "./card-maker-form/monster-options";
 import { CardMakerPendulumEffect } from "./card-maker-form/pendulum-effect";
 import type { SetDraftField } from "./card-maker-form/types";
 
-export function CardMakerForm() {
+export type CardMakerFormExportOptions = {
+	id: string;
+	folderName?: string;
+};
+
+export function CardMakerForm(
+	props: {
+		onReset?: () => void;
+		exportOptions?: CardMakerFormExportOptions | null;
+	} = {},
+) {
+	const { onReset, exportOptions } = props;
 	const draft = cardDraftSignal.value;
 	const isMonster = draft.cardType === "Monster";
 	const isPendulum =
@@ -76,7 +87,7 @@ export function CardMakerForm() {
 		setExporting(true);
 		setSaveStatus("Exportando...");
 		try {
-			const res = await exportPreview(draft);
+			const res = await exportPreview(draft, exportOptions ?? undefined);
 			const shownPath =
 				res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
 			setSaveStatus(`exportado en: ${shownPath}`);
@@ -89,7 +100,6 @@ export function CardMakerForm() {
 			setExporting(false);
 		}
 	};
-	console.log({ draft });
 	return (
 		<Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
 			<CardHeader>
@@ -157,7 +167,7 @@ export function CardMakerForm() {
 				/>
 
 				<CardMakerFormActions
-					onReset={resetCardDraft}
+					onReset={onReset ?? resetCardDraft}
 					onExport={onExport}
 					exporting={exporting}
 					saveStatus={saveStatus}

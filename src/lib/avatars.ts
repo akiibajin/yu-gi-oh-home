@@ -1,81 +1,155 @@
-const hassanJoey = "/assets/images/avatars/hassan - joey.webp";
-const joeyRisk = "/assets/images/avatars/joey - risk.webp";
-const joeyLost = "/assets/images/avatars/joey - lost.webp";
-const hassanJaden = "/assets/images/avatars/hassan - jaden.webp";
-const jadenRisk = "/assets/images/avatars/jaden - risk.webp";
-const jadenLost = "/assets/images/avatars/jaden - lost.webp";
-const hassanZane = "/assets/images/avatars/hassan - zane.webp";
-const hassanZaneRisk = "/assets/images/avatars/hassan - zane - risk.webp";
-const hassanZaneLost = "/assets/images/avatars/hassan - zane - lost.webp";
-const hassanMako = "/assets/images/avatars/hassan - mako.webp";
-const hassanMakoRisk = "/assets/images/avatars/hassan - mako - risk.webp";
-const hassanMakoLost = "/assets/images/avatars/hassan - mako - lost.webp";
-const hectorYusei = "/assets/images/avatars/hector - yusei.webp";
-const yuseiRisk = "/assets/images/avatars/yusei - risk.webp";
-const yuseiLost = "/assets/images/avatars/yusei - lost.webp";
-const hectorNinja = "/assets/images/avatars/hector - ninja.webp";
-const hectorTitan = "/assets/images/avatars/hector - titan.webp";
-const hectorTitanRisk = "/assets/images/avatars/hector - titan - risk.webp";
-const hectorTitanLost = "/assets/images/avatars/hector - titan - lost.webp";
-const hectorYisus = "/assets/images/avatars/hector - yisus.webp";
-const hectorAtikus = "/assets/images/avatars/hector - atikus.webp";
-const atikusRisk = "/assets/images/avatars/atikus - risk.webp";
-const atikusLost = "/assets/images/avatars/atikus - lost.webp";
-const jessDarks = "/assets/images/avatars/jess - darks.webp";
-const jessDarksRisk = "/assets/images/avatars/jess - darks - risk.webp";
-const jessDarksLost = "/assets/images/avatars/jess - darks - lost.webp";
-const jessKaiba = "/assets/images/avatars/jess - kaiba.webp";
-const jessKaibaRisk = "/assets/images/avatars/jess - kaiba - risk.webp";
-const jessKaibaLost = "/assets/images/avatars/jess - kaiba - lost.webp";
-const jessCrowler = "/assets/images/avatars/jess - crowler.webp";
-const crowlerRisk = "/assets/images/avatars/jess - crowler - risk.webp";
-const crowlerLost = "/assets/images/avatars/jess - crowler - lost.webp";
-const jessPegasus = "/assets/images/avatars/jess - pegasus.webp";
-const pegasusRisk = "/assets/images/avatars/pegasus - risk.webp";
-const pegasusLost = "/assets/images/avatars/pegasus - lost.webp";
-const wallysMarik = "/assets/images/avatars/wallys - marik.webp";
-const marikRisk = "/assets/images/avatars/marik - risk.webp";
-const marikLost = "/assets/images/avatars/marik - lost.webp";
-const wallysYuya = "/assets/images/avatars/wallys - yuya.webp";
-const wallysYuyaRisk = "/assets/images/avatars/wallys - yuya - risk.webp";
-const wallysYuyaLost = "/assets/images/avatars/wallys - yuya - lost.webp";
-const wallysChaz = "/assets/images/avatars/wallys - chaz.webp";
-const chazzRisk = "/assets/images/avatars/chazz - risk.webp";
-const chazzLost = "/assets/images/avatars/chazz - lost.webp";
-const wallysJack = "/assets/images/avatars/wallys - jack.webp";
-const jackRisk = "/assets/images/avatars/wallys - jack - risk.webp";
-const jackLost = "/assets/images/avatars/wallys - jack - lost.webp";
-const chautaYugi = "/assets/images/avatars/chauta-yugi.webp";
-const yugiRisk = "/assets/images/avatars/yugi - risk.webp";
-const yugiLost = "/assets/images/avatars/yugi - lost.webp";
-const chautaIshizu = "/assets/images/avatars/chauta-ishizu.webp";
-const chautaIshizuRisk = "/assets/images/avatars/chauta - ishizu - risk.webp";
-const chautaIshizuLost = "/assets/images/avatars/chauta - ishizu - lost.webp";
-const chautaPhoenix = "/assets/images/avatars/chauta-phoenix.webp";
-const phoenixRisk = "/assets/images/avatars/phoenix - risk.webp";
-const phoenixLost = "/assets/images/avatars/phoenix - lost.webp";
-const chautaGladiator = "/assets/images/avatars/chauta-gladiator.webp";
+const hassanJoey =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - joey.webp";
+const joeyRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/joey - risk.webp";
+const joeyLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/joey - lost.webp";
+const hassanJaden =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - jaden.webp";
+const jadenRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jaden - risk.webp";
+const jadenLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jaden - lost.webp";
+const hassanZane =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - zane.webp";
+const hassanZaneRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - zane - risk.webp";
+const hassanZaneLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - zane - lost.webp";
+const hassanMako =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - mako.webp";
+const hassanMakoRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - mako - risk.webp";
+const hassanMakoLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hassan - mako - lost.webp";
+const hectorYusei =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - yusei.webp";
+const yuseiRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yusei - risk.webp";
+const yuseiLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yusei - lost.webp";
+const hectorNinja =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - ninja.webp";
+const hectorTitan =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - titan.webp";
+const hectorTitanRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - titan - risk.webp";
+const hectorTitanLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - titan - lost.webp";
+const hectorYisus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - yisus.webp";
+const hectorAtikus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/hector - atikus.webp";
+const atikusRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/atikus - risk.webp";
+const atikusLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/atikus - lost.webp";
+const jessDarks =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - darks.webp";
+const jessDarksRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - darks - risk.webp";
+const jessDarksLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - darks - lost.webp";
+const jessKaiba =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - kaiba.webp";
+const jessKaibaRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - kaiba - risk.webp";
+const jessKaibaLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - kaiba - lost.webp";
+const jessCrowler =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - crowler.webp";
+const crowlerRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - crowler - risk.webp";
+const crowlerLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - crowler - lost.webp";
+const jessPegasus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/jess - pegasus.webp";
+const pegasusRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/pegasus - risk.webp";
+const pegasusLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/pegasus - lost.webp";
+const wallysMarik =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - marik.webp";
+const marikRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/marik - risk.webp";
+const marikLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/marik - lost.webp";
+const wallysYuya =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - yuya.webp";
+const wallysYuyaRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - yuya - risk.webp";
+const wallysYuyaLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - yuya - lost.webp";
+const wallysChaz =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - chaz.webp";
+const chazzRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chazz - risk.webp";
+const chazzLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chazz - lost.webp";
+const wallysJack =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - jack.webp";
+const jackRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - jack - risk.webp";
+const jackLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/wallys - jack - lost.webp";
+const chautaYugi =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta-yugi.webp";
+const yugiRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yugi - risk.webp";
+const yugiLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yugi - lost.webp";
+const chautaIshizu =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta-ishizu.webp";
+const chautaIshizuRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta - ishizu - risk.webp";
+const chautaIshizuLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta - ishizu - lost.webp";
+const chautaPhoenix =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta-phoenix.webp";
+const phoenixRisk =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/phoenix - risk.webp";
+const phoenixLost =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/phoenix - lost.webp";
+const chautaGladiator =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta-gladiator.webp";
 const chautaGladiatorRisk =
-	"/assets/images/avatars/chauta - gladiator - risk.webp";
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta - gladiator - risk.webp";
 const chautaGladiatorLost =
-	"/assets/images/avatars/chauta - gladiator - lost.webp";
-const joeyYuya = "/assets/images/avatars/joey - yuya.webp";
-const joeyJack = "/assets/images/avatars/joey - jack.webp";
-const zaneKaiba = "/assets/images/avatars/zane-kaiba.webp";
-const yuseiPegasus = "/assets/images/avatars/yusei - pegasus.webp";
-const yugiDarks = "/assets/images/avatars/yugi - darks.webp";
-const atikusMarik = "/assets/images/avatars/atikus-marik.webp";
-const crowlerChazz = "/assets/images/avatars/crowler-chazz.webp";
-const phoenixJaden = "/assets/images/avatars/phoenix-jaden.webp";
-const sartoriusKaiba = "/assets/images/avatars/sartorius - kaiba.webp";
-const gladiatorYisus = "/assets/images/avatars/gladiator - yisus.webp";
-const ishizuYisus = "/assets/images/avatars/ishizu - yisus.webp";
-const ninjaYuya = "/assets/images/avatars/ninja - yuya.webp";
-const makoYisus = "/assets/images/avatars/mako - yisus.webp";
-const joeyYusei = "/assets/images/avatars/joey - yusei.webp";
-const titanYuya = "/assets/images/avatars/titan - yuya.webp";
-const all1 = "/assets/images/avatars/all - 1.webp";
-const all2 = "/assets/images/avatars/all - 2.webp";
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/chauta - gladiator - lost.webp";
+const joeyYuya =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/joey - yuya.webp";
+const joeyJack =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/joey - jack.webp";
+const zaneKaiba =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/zane-kaiba.webp";
+const yuseiPegasus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yusei - pegasus.webp";
+const yugiDarks =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/yugi - darks.webp";
+const atikusMarik =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/atikus-marik.webp";
+const crowlerChazz =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/crowler-chazz.webp";
+const phoenixJaden =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/phoenix-jaden.webp";
+const sartoriusKaiba =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/sartorius - kaiba.webp";
+const gladiatorYisus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/gladiator - yisus.webp";
+const ishizuYisus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/ishizu - yisus.webp";
+const ninjaYuya =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/ninja - yuya.webp";
+const makoYisus =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/mako - yisus.webp";
+const joeyYusei =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/joey - yusei.webp";
+const titanYuya =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/titan - yuya.webp";
+const all1 =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/all - 1.webp";
+const all2 =
+	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/avatars/all - 2.webp";
 
 export const PLAYERS_NAMES = [
 	"Hector",

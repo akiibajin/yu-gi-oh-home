@@ -4,6 +4,14 @@ import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/warcraftcn/dialog";
+import {
 	Card,
 	CardContent,
 	CardHeader,
@@ -15,6 +23,7 @@ import {
 	subscribeLobby,
 	closeLobby,
 	getLobby,
+	setPlayerActive,
 	type LobbyPlayer,
 	type Lobby,
 } from "@/lib/lobby";
@@ -36,15 +45,32 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 	const [players, setPlayers] = useState<LobbyPlayer[]>([]);
 	const [lobby, setLobby] = useState<Lobby | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [quitting, setQuitting] = useState<Record<string, boolean>>({});
+	const [closeDialogOpen, setCloseDialogOpen] = useState(false);
+	const [closingLobby, setClosingLobby] = useState(false);
+	const [kickDialogOpen, setKickDialogOpen] = useState(false);
+	const [kickTarget, setKickTarget] = useState<LobbyPlayer | null>(null);
 
 	const playersWithoutHost = players.filter((player) => !player.is_host);
+	const activeGuests = playersWithoutHost.filter((p) => p.active !== false);
+	const inactiveGuests = playersWithoutHost.filter((p) => p.active === false);
+	const activePlayers = players.filter((p) => p.active !== false);
 	const hostPlayer = players.find((player) => player.is_host);
 
-	const handleCloseLobby = async () => {
-		if (confirm("¿Seguro que quieres cerrar esta sala?")) {
+	const handleCloseLobby = () => {
+		setCloseDialogOpen(true);
+	};
+
+	const confirmCloseLobby = async () => {
+		if (closingLobby) return;
+		setClosingLobby(true);
+		try {
 			await closeLobby(lobbyId);
+			setCloseDialogOpen(false);
 			console.log("Closing lobby and navigating to home");
 			route("/");
+		} finally {
+			setClosingLobby(false);
 		}
 	};
 
@@ -57,6 +83,28 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 	const refreshLobby = async () => {
 		const updated = await getLobby(lobbyId);
 		if (updated) setLobby(updated);
+	};
+
+	const requestKickGuest = (player: LobbyPlayer) => {
+		setKickTarget(player);
+		setKickDialogOpen(true);
+	};
+
+	const confirmKickGuest = async () => {
+		if (!kickTarget) return;
+		if (kickTarget.active === false) return;
+		if (quitting[kickTarget.id]) return;
+		setQuitting((prev) => ({ ...prev, [kickTarget.id]: true }));
+		try {
+			await setPlayerActive(kickTarget.id, false);
+			setKickDialogOpen(false);
+			setKickTarget(null);
+			// Subscription should update the list; this is just a quick fallback.
+			const updatedPlayers = await getLobbyPlayers(lobbyId);
+			setPlayers(updatedPlayers);
+		} finally {
+			setQuitting((prev) => ({ ...prev, [kickTarget.id]: false }));
+		}
 	};
 
 	useEffect(() => {
@@ -142,6 +190,69 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 
 	return (
 		<div className="p-4 md:p-6 space-y-6">
+			<Dialog open={closeDialogOpen} onOpenChange={setCloseDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Cerrar sala</DialogTitle>
+						<DialogDescription>
+							¿Seguro que quieres cerrar esta sala para todos?
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							variant="frame"
+							onClick={() => setCloseDialogOpen(false)}
+							disabled={closingLobby}
+							type="button"
+						>
+							Cancelar
+						</Button>
+						<Button
+							variant="default"
+							onClick={confirmCloseLobby}
+							disabled={closingLobby}
+							type="button"
+						>
+							{closingLobby ? "Cerrando..." : "Cerrar"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog open={kickDialogOpen} onOpenChange={setKickDialogOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Quitar jugador</DialogTitle>
+						<DialogDescription>
+							{kickTarget
+								? `¿Quitar a ${kickTarget.player_name} de la sala?`
+								: "¿Quitar a este jugador de la sala?"}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button
+							variant="frame"
+							onClick={() => {
+								setKickDialogOpen(false);
+								setKickTarget(null);
+							}}
+							disabled={kickTarget ? quitting[kickTarget.id] : false}
+							type="button"
+						>
+							Cancelar
+						</Button>
+						<Button
+							variant="default"
+							onClick={confirmKickGuest}
+							disabled={!kickTarget || quitting[kickTarget.id]}
+							type="button"
+						>
+							{kickTarget && quitting[kickTarget.id] ? "Quitando..." : "Quitar"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
 			<Card>
 				<CardContent className="p-6 md:p-8">
 					<CardHeader className="px-0 pt-0 pb-6">
@@ -178,8 +289,8 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 							<div className="flex items-center gap-2">
 								<UsersIcon className="w-5 h-5 text-amber-400" />
 								<Badge variant="secondary" size="sm">
-									{playersWithoutHost.length}{" "}
-									{playersWithoutHost.length !== 1 ? "Jugadores" : "Jugador"}
+									{activeGuests.length}{" "}
+									{activeGuests.length !== 1 ? "Jugadores" : "Jugador"}
 								</Badge>
 							</div>
 						</div>
@@ -199,7 +310,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 				<Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
 				<MatchTracker
 					lobby={lobby}
-					players={players}
+					players={activePlayers}
 					isHost={true}
 					onUpdate={refreshLobby}
 				/>
@@ -212,16 +323,46 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			/>
 			<DuelHistoryViewer lobbyId={lobbyId} />
 			<div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4">
-				{playersWithoutHost.map((player) => (
+				{activeGuests.map((player) => (
 					<LobbyPlayerCard
 						key={player.id}
 						player={player}
 						maxLifePoints={8000}
+						onQuit={() => requestKickGuest(player)}
+						quitDisabled={quitting[player.id] || player.active === false}
 					/>
 				))}
 			</div>
 
-			{playersWithoutHost.length === 0 && (
+			{inactiveGuests.length > 0 && (
+				<Card>
+					<CardContent className="p-6 md:p-8">
+						<CardHeader className="px-0 pt-0 pb-6">
+							<div className="flex items-center justify-between flex-wrap gap-4">
+								<div className="flex items-center gap-3">
+									<CardTitle>Jugadores inactivos</CardTitle>
+									<Badge variant="secondary" size="sm">
+										{inactiveGuests.length}
+									</Badge>
+								</div>
+							</div>
+						</CardHeader>
+						<div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4 opacity-70">
+							{inactiveGuests.map((player) => (
+								<LobbyPlayerCard
+									key={player.id}
+									player={player}
+									maxLifePoints={8000}
+									onQuit={() => requestKickGuest(player)}
+									quitDisabled={true}
+								/>
+							))}
+						</div>
+					</CardContent>
+				</Card>
+			)}
+
+			{activeGuests.length === 0 && (
 				<Card>
 					<CardContent className="p-12">
 						<div className="text-center space-y-3">

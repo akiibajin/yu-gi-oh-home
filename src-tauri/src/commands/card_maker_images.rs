@@ -7,6 +7,12 @@ pub struct StoreCardMakerImageRequest {
 	pub folder_name: Option<String>,
 }
 
+#[derive(serde::Deserialize)]
+pub struct GetCardMakerImagesDirRequest {
+	#[serde(default, alias = "folderName", alias = "folder_name")]
+	pub folder_name: Option<String>,
+}
+
 #[derive(serde::Serialize)]
 pub struct StoreCardMakerImageResponse {
 	pub dir: String,
@@ -32,4 +38,17 @@ pub async fn store_card_maker_image(
 		filename: stored.filename,
 		path: stored.path.to_string_lossy().to_string(),
 	})
+}
+
+#[tauri::command]
+pub async fn get_card_maker_images_dir(
+	app: tauri::AppHandle,
+	req: GetCardMakerImagesDirRequest,
+) -> Result<String, String> {
+	let dir = services::card_maker_images::card_maker_images_target_dir(
+		&app,
+		req.folder_name.as_deref(),
+	)
+	.map_err(|e| format!("{e:#}"))?;
+	Ok(dir.to_string_lossy().to_string())
 }

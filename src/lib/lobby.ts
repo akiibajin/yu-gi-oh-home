@@ -21,6 +21,8 @@ export interface LobbyPlayer {
 	life_points: number;
 	is_host: boolean;
 	avatar_url: string | null;
+	/** Presence flag; requires DB column `lobby_players.active` (boolean). */
+	active?: boolean | null;
 	created_at: string;
 	updated_at: string;
 	games_won: number;
@@ -114,6 +116,7 @@ export async function createLobby(
 				is_host: true,
 				life_points: 8000,
 				avatar_url: avatarUrl || null,
+				active: true,
 			})
 			.select()
 			.single();
@@ -130,11 +133,35 @@ export async function createLobby(
 	}
 }
 
+// Get lobby by code
+export async function getLobbyByCode(lobbyCode: string): Promise<Lobby | null> {
+	try {
+		const client = await getAdminClient();
+		const { data, error } = await client
+			.from("lobbies")
+			.select()
+			.eq("lobby_code", lobbyCode.toUpperCase())
+			.eq("is_active", true)
+			.single();
+
+		if (error) {
+			console.error("Error fetching lobby by code:", error);
+			return null;
+		}
+
+		return data;
+	} catch (error) {
+		console.error("Error in getLobbyByCode:", error);
+		return null;
+	}
+}
+
 // Join an existing lobby
 export async function joinLobby(
 	lobbyCode: string,
 	playerName: string,
 	avatarUrl?: string,
+	takeOverPlayerId?: string,
 ): Promise<{ lobby: Lobby; player: LobbyPlayer } | null> {
 	try {
 		const client = await getAdminClient();
@@ -152,6 +179,25 @@ export async function joinLobby(
 			return null;
 		}
 
+		if (takeOverPlayerId) {
+			const { data: reclaimed, error: reclaimError } = await client
+				.from("lobby_players")
+				.update({ active: true })
+				.eq("id", takeOverPlayerId)
+				.eq("lobby_id", lobby.id)
+				.eq("is_host", false)
+				.eq("active", false)
+				.select()
+				.single();
+
+			if (reclaimError || !reclaimed) {
+				console.error("Error reclaiming inactive player:", reclaimError);
+				return null;
+			}
+
+			return { lobby, player: reclaimed };
+		}
+
 		// Create player
 		const { data: player, error: playerError } = await client
 			.from("lobby_players")
@@ -161,6 +207,7 @@ export async function joinLobby(
 				is_host: false,
 				life_points: 8000,
 				avatar_url: avatarUrl || null,
+				active: true,
 			})
 			.select()
 			.single();
@@ -174,6 +221,53 @@ export async function joinLobby(
 	} catch (error) {
 		console.error("Error in joinLobby:", error);
 		return null;
+	}
+}
+
+export async function setPlayerActive(
+	playerId: string,
+	active: boolean,
+): Promise<boolean> {
+	try {
+		const client = await getAdminClient();
+		const { error } = await client
+			.from("lobby_players")
+			.update({ active })
+			.eq("id", playerId);
+
+		if (error) {
+			console.error("Error updating player active:", error);
+			return false;
+		}
+
+		return true;
+	} catch (error) {
+		console.error("Error in setPlayerActive:", error);
+		return false;
+	}
+}
+
+export async function updatePlayerAvatar(
+	playerId: string,
+	avatarKey: string,
+): Promise<boolean> {
+	try {
+		const client = await getAdminClient();
+		// Compatibility: the UI historically treats `player_name` as avatar key.
+		const { error } = await client
+			.from("lobby_players")
+			.update({ player_name: avatarKey, avatar_url: avatarKey })
+			.eq("id", playerId);
+
+		if (error) {
+			console.error("Error updating player avatar:", error);
+			return false;
+		}
+
+		return true;
+	} catch (error) {
+		console.error("Error in updatePlayerAvatar:", error);
+		return false;
 	}
 }
 
@@ -498,6 +592,37 @@ export async function updateMatchFormat(
 		return true;
 	} catch (error) {
 		console.error("Error in updateMatchFormat:", error);
+		return false;
+	}
+}
+
+export async function resetMatch(lobbyId: string): Promise<boolean> {
+	try {
+		const client = await getAdminClient();
+
+		const { error: lobbyError } = await client
+			.from("lobbies")
+			.update({ current_game: 1 })
+			.eq("id", lobbyId);
+
+		if (lobbyError) {
+			console.error("Error resetting match (lobby):", lobbyError);
+			return false;
+		}
+
+		const { error: playersError } = await client
+			.from("lobby_players")
+			.update({ games_won: 0 })
+			.eq("lobby_id", lobbyId);
+
+		if (playersError) {
+			console.error("Error resetting match (players):", playersError);
+			return false;
+		}
+
+		return true;
+	} catch (error) {
+		console.error("Error in resetMatch:", error);
 		return false;
 	}
 }
