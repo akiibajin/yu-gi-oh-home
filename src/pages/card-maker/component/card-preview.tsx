@@ -208,7 +208,7 @@ export function CardPreview() {
 			resizeObserver.disconnect();
 		};
 	}, [displayName]);
-    console.log({ cardDraftSignal: cardDraftSignal.value });
+	console.log({ cardDraftSignal: cardDraftSignal.value });
 	return (
 		<div
 			className={cn(
@@ -234,14 +234,22 @@ export function CardPreview() {
 						option="A"
 					/>
 				)}
+				{console.log({ objectFit: draft.objectFit })}
 				{imgUrl && (
-					<div className="absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.4rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+					<div
+						className={cn(
+							"absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.4rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
+							draft.objectFit === "contain" && "bg-black",
+						)}
+					>
 						<img
 							src={imgUrl}
 							alt={draft.name}
 							className="size-full object-fill"
 							style={{
 								objectFit: draft.objectFit ?? "cover",
+								objectPosition:
+									draft.objectFit === "contain" ? "top" : "center",
 								transform: `rotate(${draft.imgRotationDeg ?? 0}deg)`,
 								transformOrigin: "center",
 							}}
@@ -324,7 +332,7 @@ export function CardPreview() {
 						) : null}
 						<p
 							className={cn(
-								"relative z-2 tracking-tighter leading-3.5 max-w-[95%] size-full whitespace-pre-line",
+								"relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
@@ -360,7 +368,7 @@ export function CardPreview() {
 						) : null}
 						<p
 							className={cn(
-								"relative z-2 tracking-tighter leading-[15px]! max-w-[95%] size-full whitespace-pre-line",
+								"relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
@@ -371,10 +379,7 @@ export function CardPreview() {
 					</div>
 				) : null}
 				<div
-					className={cn(
-						"relative flex items-end overflow-visible h-5 w-full",
-						!isMonster && "h-10",
-					)}
+					className={cn("relative flex items-end overflow-visible h-6 w-full")}
 				>
 					<div
 						className="relative flex-1 w-full items-center h-8"
@@ -383,7 +388,7 @@ export function CardPreview() {
 						<p
 							id="card-name"
 							className={cn(
-								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-white w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",								
+								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-white w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",
 								isSynchro && "text-black!",
 							)}
 							ref={displayNameRef}

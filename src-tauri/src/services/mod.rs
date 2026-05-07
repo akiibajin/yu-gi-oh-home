@@ -1,6 +1,7 @@
 pub mod decks;
 pub mod card_maker_images;
 pub mod images;
+pub mod fandom;
 pub mod ygoprodeck;
 
 #[cfg(target_os = "android")]

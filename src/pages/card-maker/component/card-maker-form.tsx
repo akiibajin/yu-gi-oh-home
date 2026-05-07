@@ -131,14 +131,12 @@ export function CardMakerForm(
 						onInput={onPendulumEffectInput}
 					/>
 				) : null}
-				{isMonster ? (
-					<CardMakerMonsterBoxColor
-						value={draft.descriptionStatsBoxColor}
-						onValueChange={(value) =>
-							setDraftField("descriptionStatsBoxColor", value)
-						}
-					/>
-				) : null}
+				<CardMakerMonsterBoxColor
+					value={draft.descriptionStatsBoxColor}
+					onValueChange={(value) =>
+						setDraftField("descriptionStatsBoxColor", value)
+					}
+				/>
 				<CardMakerDescriptionFields
 					showDescription={draft.showDescription ?? true}
 					onShowDescriptionChange={(checked) =>

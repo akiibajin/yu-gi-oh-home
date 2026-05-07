@@ -1,6 +1,7 @@
 use anyhow::Context;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
+use std::time::Duration;
 
 use crate::services;
 
@@ -312,6 +313,10 @@ pub async fn load_deck_cards_from_ydk_contents(
 	};
 
 	let mut by_id: HashMap<u64, ExportableCard> = HashMap::new();
+	let fandom_client = reqwest::Client::builder()
+		.timeout(Duration::from_secs(15))
+		.build()
+		.context("failed to build fandom http client")?;
 
 	for chunk in unique_ids.chunks(10) {
 		let json = services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await?;
@@ -321,7 +326,27 @@ pub async fn load_deck_cards_from_ydk_contents(
 			.ok_or_else(|| anyhow::anyhow!("ygoprodeck response missing 'data' array"))?;
 
 		for card in data {
-			let exportable = ygopro_card_to_exportable(card)?;
+			let mut exportable = ygopro_card_to_exportable(card)?;
+			match services::fandom::fetch_spanish_name_and_lore(&fandom_client, &exportable.name)
+				.await
+			{
+				Ok(Some(es)) => {
+					exportable.name = es.name;
+					exportable.description = es.lore;
+					if exportable.pendulum_description.is_some() {
+						if let Some(pend) = es.pendulum_effect {
+							exportable.pendulum_description = Some(pend);
+						}
+					}
+				}
+				Ok(None) => {}
+				Err(err) => {
+					eprintln!(
+						"Fandom Spanish lookup failed for '{}': {:#}",
+						exportable.name, err
+					);
+				}
+			}
 			if let Ok(id_u64) = exportable.id.parse::<u64>() {
 				by_id.insert(id_u64, exportable);
 			}
