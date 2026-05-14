@@ -227,6 +227,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			objectFit: currentDraft.objectFit,
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
+			overframe: currentDraft.overframe ?? false,
+			overframeImg: null,
 			img,
 		};
 	};
@@ -273,6 +275,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					objectFit: currentDraft.objectFit,
 					imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 					descriptionImageOpacity: currentDraft.descriptionImageOpacity,
+					overframe: currentDraft.overframe ?? false,
+					overframeImg: null,
 					img: null,
 				};
 

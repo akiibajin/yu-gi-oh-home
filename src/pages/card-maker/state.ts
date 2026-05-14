@@ -22,6 +22,10 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 		},
 		img: null,
 		imgRotationDeg: 0,
+		overframe: false,
+		overframeImg: null,
+		overframeObjectFit: "cover",
+		overframeImgRotationDeg: 0,
 	};
 }
 

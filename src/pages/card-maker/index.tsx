@@ -109,6 +109,8 @@ function CardMakerView() {
 			objectFit: currentDraft.objectFit,
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
+			overframe: currentDraft.overframe ?? false,
+			overframeImg: null,
 			img,
 		};
 	};

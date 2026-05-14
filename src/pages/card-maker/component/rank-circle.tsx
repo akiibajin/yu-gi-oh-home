@@ -63,7 +63,7 @@ function RankCircle(props: RankCircleProps) {
 		},
 	];
 	return (
-		<div className="relative z-2 flex items-center justify-center bg-transparent size-12 overflow-visible">
+		<div className="relative z-4 flex items-center justify-center bg-transparent size-12 overflow-visible">
 			<img
 				src={imgCircle}
 				alt={`Opción de rango ${option}`}

@@ -31,15 +31,15 @@ function MonsterLevel(props: MonsterLevelProps) {
 		);
 	}
 	return (
-		<div className="relative grid place-items-center size-14">
+		<div className="relative z-4 grid place-items-center size-14">
 			<img
 				src={isTuner ? tunerStar : isXyz ? rank : star}
 				alt="nivel"
-				className="size-14 absolute"
+				className="size-14 z-4 absolute"
 			/>
 			<p
 				className={cn(
-					"relative text-black mt-1 text-4xl tracking-tighter",
+					"relative z-4 text-black mt-1 text-4xl tracking-tighter",
 					isXyz && "text-black!",
 					level >= 10 && "-tracking-[0.2em] mr-2",
 				)}

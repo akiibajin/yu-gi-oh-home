@@ -133,6 +133,10 @@ export interface YugiohCardDraft {
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 	imgRotationDeg?: number;
 	descriptionImageOpacity?: number;
+	overframe?: boolean;
+	overframeImg: Blob | string | null;
+	overframeObjectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
+	overframeImgRotationDeg?: number;
 }
 
 export interface YugiohCardDB {

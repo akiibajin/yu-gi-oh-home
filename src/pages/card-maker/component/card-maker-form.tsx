@@ -83,6 +83,10 @@ export function CardMakerForm(
 		setDraftField("img", file);
 	};
 
+	const handleOverframeImageUpload = (file: File | null) => {
+		setDraftField("overframeImg", file);
+	};
+
 	const onExport = async () => {
 		setExporting(true);
 		setSaveStatus("Exportando...");
@@ -111,6 +115,7 @@ export function CardMakerForm(
 					draft={draft}
 					setDraftField={setDraftField}
 					onImageUpload={handleImageUpload}
+					onOverframeImageUpload={handleOverframeImageUpload}
 				/>
 				{isMonster ? (
 					<CardMakerMonsterOptions

@@ -35,7 +35,8 @@ export function CardPreview() {
 		return Number.isFinite(parsed) ? parsed : null;
 	}, [draft.name, isNumber]);
 	const isVoidDescriptionStatsBox = draft.descriptionStatsBoxColor === "void";
-	const isVoidInverseDescriptionStatsBox = draft.descriptionStatsBoxColor === "void-inverse";
+	const isVoidInverseDescriptionStatsBox =
+		draft.descriptionStatsBoxColor === "void-inverse";
 	const showDescription = draft.showDescription ?? true;
 	const monsterDescription = draft.description.trim();
 	const descriptionTextColor = draft.descriptionTextColor ?? "auto";
@@ -52,6 +53,7 @@ export function CardPreview() {
 			? "text-white!"
 			: "text-black!";
 	const [imgUrl, setImgUrl] = useState<string | null>(null);
+	const [overframeImgUrl, setOverframeImgUrl] = useState<string | null>(null);
 	const displayNameContainerRef = useRef<HTMLDivElement | null>(null);
 	const displayNameRef = useRef<HTMLParagraphElement | null>(null);
 	const baseDisplayNameStyleRef = useRef<{
@@ -113,6 +115,38 @@ export function CardPreview() {
 			}
 		};
 	}, [draft.img]);
+
+	useEffect(() => {
+		if (!draft.overframeImg) {
+			setOverframeImgUrl(null);
+			return;
+		}
+		if (typeof draft.overframeImg === "string") {
+			setOverframeImgUrl(draft.overframeImg);
+			return;
+		}
+		let cancelled = false;
+		const reader = new FileReader();
+		reader.onload = () => {
+			if (cancelled) return;
+			setOverframeImgUrl(
+				typeof reader.result === "string" ? reader.result : null,
+			);
+		};
+		reader.onerror = () => {
+			if (cancelled) return;
+			setOverframeImgUrl(null);
+		};
+		reader.readAsDataURL(draft.overframeImg);
+		return () => {
+			cancelled = true;
+			try {
+				reader.abort();
+			} catch {
+				// ignore
+			}
+		};
+	}, [draft.overframeImg]);
 
 	useEffect(() => {
 		const containerEl = displayNameContainerRef.current;
@@ -256,6 +290,19 @@ export function CardPreview() {
 						/>
 					</div>
 				)}
+				{overframeImgUrl && (
+					<img
+						src={overframeImgUrl}
+						alt="overframe"
+						className="absolute inset-0 size-full object-fill z-3"
+						style={{
+							objectFit: draft.overframeObjectFit ?? "cover",
+							objectPosition: "center",
+							transform: `rotate(${draft.overframeImgRotationDeg ?? 0}deg)`,
+							transformOrigin: "center",
+						}}
+					/>
+				)}
 				{isMonster && (
 					<div
 						className={cn(
@@ -268,7 +315,7 @@ export function CardPreview() {
 							src={typeCardImg.stats ?? ""}
 							alt="ATK"
 						/>
-						<div className="relative z-2 w-1/2 flex items-center justify-start">
+						<div className="relative w-1/2 flex items-center justify-start">
 							{isMonster && (
 								<MonsterLevel
 									level={draft.stats.level}
@@ -281,8 +328,13 @@ export function CardPreview() {
 							)}
 							<span
 								className={cn(
-									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									"relative z-4 w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
 									(isXyzOrLink || isFusion) && "text-white!",
+									overframeImgUrl
+										? isXyzOrLink || isFusion
+											? "text-shadow-outline"
+											: "text-shadow-outline-inverse"
+										: "",
 								)}
 							>
 								{draft.stats.atk}
@@ -296,14 +348,19 @@ export function CardPreview() {
 						>
 							<span
 								className={cn(
-									"relative w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
+									"relative z-4 w-26 -top-1.5 h-full max-h-9 text-5xl text-black tracking-tighter text-center",
 									(isXyzOrLink || isFusion) && "text-white!",
+									overframeImgUrl
+										? isXyzOrLink || isFusion
+											? "text-shadow-outline"
+											: "text-shadow-outline-inverse"
+										: "",
 									isLink && "opacity-0",
 								)}
 							>
 								{draft.stats.def ?? 0}
 							</span>
-							<div className="size-14 relative z-2 rounded-full border-4 border-black">
+							<div className="size-14 relative z-4 rounded-full border-4 border-black">
 								<img
 									src={iconImg ? iconImg : iconFallback}
 									className={cn("size-full")}
@@ -321,7 +378,7 @@ export function CardPreview() {
 					</div>
 				)}
 				{showDescription && isPendulum && (
-					<div className="relative mb-3 z-2 w-full flex justify-center pb-1">
+					<div className="relative mb-3 z-4 w-full flex justify-center pb-1">
 						{!isVoidDescriptionStatsBox && !isVoidInverseDescriptionStatsBox ? (
 							<img
 								src={BOX_TEXTURES.Spell.description}
@@ -336,7 +393,8 @@ export function CardPreview() {
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
-								isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
+								isVoidInverseDescriptionStatsBox &&
+									"text-black! text-shadow-outline-inverse",
 							)}
 						>
 							{draft.pendulumDescription}
@@ -347,7 +405,7 @@ export function CardPreview() {
 				{showDescription ? (
 					<div
 						className={cn(
-							"relative py-px z-2 max-h-full w-full flex pb-1.5 flex-col justify-start items-center",
+							"relative py-px z-2 max-h-full z-4 w-full flex pb-1.5 flex-col justify-start items-center",
 							isLink && "mb-2",
 						)}
 					>
@@ -363,7 +421,7 @@ export function CardPreview() {
 							<img
 								src={typeCardImg.description}
 								alt="descripción"
-								className="absolute size-full object-fill"
+								className="absolute -z-10 size-full object-fill"
 								style={{ opacity: descriptionImageOpacity }}
 							/>
 						) : null}
@@ -373,7 +431,8 @@ export function CardPreview() {
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
-								isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
+								isVoidInverseDescriptionStatsBox &&
+									"text-black! text-shadow-outline-inverse",
 							)}
 						>
 							{monsterDescription}
@@ -384,7 +443,7 @@ export function CardPreview() {
 					className={cn("relative flex items-end overflow-visible h-6 w-full")}
 				>
 					<div
-						className="relative flex-1 w-full items-center h-8"
+						className="relative z-4 flex-1 w-full items-center h-8"
 						ref={displayNameContainerRef}
 					>
 						<p
@@ -392,6 +451,11 @@ export function CardPreview() {
 							className={cn(
 								"relative top-1/2 left-1/2 text-center -translate-1/2 -translate-y-1/2 text-lg text-white w-full max-w-[80%] z-2 whitespace-nowrap font uppercase",
 								isSynchro && "text-black!",
+								overframeImgUrl
+									? isXyzOrLink || isFusion
+										? "text-shadow-outline"
+										: "text-shadow-outline-inverse"
+									: "",
 							)}
 							ref={displayNameRef}
 						>
