@@ -68,6 +68,7 @@ export type YugiohTrapType = "Normal" | "Continuous" | "Counter";
 export type YugiohDescriptionStatsBoxColor =
 	| "auto"
 	| "void"
+	| "void-inverse"
 	| "Normal"
 	| "Effect"
 	| "Ritual"

@@ -157,6 +157,7 @@ export const TRAP_TYPES = ["Normal", "Continuous", "Counter"] as const;
 export const YUGIOH_DESCRIPTION_STATS_BOX_COLORS = [
 	{ value: "auto", label: "Auto (By card type)" },
 	{ value: "void", label: "Void (Hide description/stats box images)" },
+	{ value: "void-inverse", label: "Void Inverse (Black text, white outline)" },
 	{ value: "Normal", label: "Normal (Orange)" },
 	{ value: "Effect", label: "Effect (Brown)" },
 	{ value: "Ritual", label: "Ritual (Blue)" },

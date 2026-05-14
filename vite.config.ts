@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 
 // process is a Node.js global in the Vite config context
@@ -8,7 +7,7 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-	plugins: [preact(), tailwindcss(), tsconfigPaths()],
+	plugins: [preact(), tailwindcss()],
 	assetsInclude: ["**/*.mpeg"],
 	build: {
 		reportCompressedSize: true,
@@ -38,6 +37,7 @@ export default defineConfig(async () => ({
 	},
 
 	resolve: {
+		tsconfigPaths: true,
 		alias: {
 			react: "preact/compat",
 			"react-dom": "preact/compat",

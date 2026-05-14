@@ -35,6 +35,7 @@ export function CardPreview() {
 		return Number.isFinite(parsed) ? parsed : null;
 	}, [draft.name, isNumber]);
 	const isVoidDescriptionStatsBox = draft.descriptionStatsBoxColor === "void";
+	const isVoidInverseDescriptionStatsBox = draft.descriptionStatsBoxColor === "void-inverse";
 	const showDescription = draft.showDescription ?? true;
 	const monsterDescription = draft.description.trim();
 	const descriptionTextColor = draft.descriptionTextColor ?? "auto";
@@ -208,7 +209,7 @@ export function CardPreview() {
 			resizeObserver.disconnect();
 		};
 	}, [displayName]);
-	console.log({ cardDraftSignal: cardDraftSignal.value });
+
 	return (
 		<div
 			className={cn(
@@ -234,7 +235,6 @@ export function CardPreview() {
 						option="A"
 					/>
 				)}
-				{console.log({ objectFit: draft.objectFit })}
 				{imgUrl && (
 					<div
 						className={cn(
@@ -322,7 +322,7 @@ export function CardPreview() {
 				)}
 				{showDescription && isPendulum && (
 					<div className="relative mb-3 z-2 w-full flex justify-center pb-1">
-						{!isVoidDescriptionStatsBox ? (
+						{!isVoidDescriptionStatsBox && !isVoidInverseDescriptionStatsBox ? (
 							<img
 								src={BOX_TEXTURES.Spell.description}
 								alt="descripción"
@@ -336,6 +336,7 @@ export function CardPreview() {
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
+								isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
 							)}
 						>
 							{draft.pendulumDescription}
@@ -358,7 +359,7 @@ export function CardPreview() {
 							/>
 						)}
 						{isNumber && <NumberCardLabel value={numberLabelValue} />}
-						{!isVoidDescriptionStatsBox ? (
+						{!isVoidDescriptionStatsBox && !isVoidInverseDescriptionStatsBox ? (
 							<img
 								src={typeCardImg.description}
 								alt="descripción"
@@ -372,6 +373,7 @@ export function CardPreview() {
 								descriptionTextSizeClass,
 								descriptionTextColorClass,
 								isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
+								isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
 							)}
 						>
 							{monsterDescription}

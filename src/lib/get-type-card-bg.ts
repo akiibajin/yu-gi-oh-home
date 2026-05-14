@@ -59,7 +59,10 @@ const syncrhoPendulumBorder = cardTemplate("synchro-pendulum-border.webp");
 const xyzPendulumBorder = cardTemplate("xyz-pendulum-border.webp");
 const ritualPendulumBorder = cardTemplate("ritual-pendulum-border.webp");
 
-type BoxTextureColor = Exclude<YugiohDescriptionStatsBoxColor, "auto" | "void">;
+type BoxTextureColor = Exclude<
+	YugiohDescriptionStatsBoxColor,
+	"auto" | "void" | "void-inverse"
+>;
 
 export const BOX_TEXTURES: Record<
 	BoxTextureColor,
@@ -98,7 +101,8 @@ export const BOX_TEXTURES: Record<
 
 const isBoxTextureColor = (
 	value: YugiohDescriptionStatsBoxColor,
-): value is BoxTextureColor => value !== "auto" && value !== "void";
+): value is BoxTextureColor =>
+	value !== "auto" && value !== "void" && value !== "void-inverse";
 
 const getTypeCardBg = (
 	type: YugiohMonsterType | null,

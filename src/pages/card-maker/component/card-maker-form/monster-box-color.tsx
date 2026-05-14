@@ -13,6 +13,7 @@ const BOX_COLOR_LABELS: Partial<
 > = {
 	auto: "Automático (según tipo de carta)",
 	void: "Vacío (oculta imágenes del recuadro)",
+	"void-inverse": "Vacío inverso (letras negras, contorno blanco)",
 	Normal: "Normal (naranja)",
 	Effect: "Efecto (marrón)",
 	Ritual: "Ritual (azul)",
