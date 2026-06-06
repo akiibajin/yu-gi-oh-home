@@ -187,6 +187,19 @@ export function CardMakerImageFields(props: {
 					</div>
 				</div>
 			) : null}
+
+			<div className="flex items-center justify-between gap-2 pt-2">
+				<label className="text-sm font-medium" htmlFor="cm-full-art">
+					Utilizar imagen como full art
+				</label>
+				<Switch
+					id="cm-full-art"
+					checked={draft.fullArt ?? false}
+					onCheckedChange={(checked: boolean) =>
+						setDraftField("fullArt", checked)
+					}
+				/>
+			</div>
 		</div>
 	);
 }

@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
 	Select,
 	SelectContent,
@@ -54,9 +55,18 @@ export function CardMakerBasicFields(props: {
 		<div className="space-y-4 rounded-md border p-3 sm:p-4">
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
-					<label className="text-sm font-medium" htmlFor="cm-name">
-						Nombre
-					</label>
+					<div className="flex items-center justify-between">
+						<label className="text-sm font-medium" htmlFor="cm-name">
+							Nombre
+						</label>
+						<Switch
+							id="cm-show-name"
+							checked={draft.showName ?? true}
+							onCheckedChange={(checked: boolean) =>
+								setDraftField("showName", checked)
+							}
+						/>
+					</div>
 					<Input
 						id="cm-name"
 						className="w-full"
@@ -64,6 +74,18 @@ export function CardMakerBasicFields(props: {
 						onInput={(e) => setDraftField("name", e.currentTarget.value)}
 						placeholder="Dark Magician"
 					/>
+					<div className="flex items-center justify-between">
+						<label className="text-sm font-medium" htmlFor="cm-show-name-box">
+							Mostrar cuadro en el nombre
+						</label>
+						<Switch
+							id="cm-show-name-box"
+							checked={draft.showNameBox ?? false}
+							onCheckedChange={(checked: boolean) =>
+								setDraftField("showNameBox", checked)
+							}
+						/>
+					</div>
 				</div>
 
 				<div className="space-y-2 min-w-0">

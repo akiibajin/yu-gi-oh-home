@@ -18,9 +18,10 @@ const scale8 = cardTemplate("scale-8.webp");
 const scale9 = cardTemplate("scale-9.webp");
 interface PendulumStatsProps {
 	scale: number;
+	className?: string;
 }
 function PendulumStats(props: PendulumStatsProps) {
-	const { scale } = props;
+	const { scale, className } = props;
 	const getScaleCombination = (scale: number) => {
 		const scales = {
 			0: scale0,
@@ -37,7 +38,7 @@ function PendulumStats(props: PendulumStatsProps) {
 		return scales[scale as keyof typeof scales] || scale0;
 	};
 	return (
-		<div className="absolute -left-5 -bottom-9 z-3 w-105 flex justify-between">
+		<div className={`absolute -left-5 -bottom-9 z-3 w-105 flex justify-between ${className ?? ""}`.trim()}>
 			<div className="relative w-12">
 				<img src={greenGem} alt="Gema verde" className="w-full" />
 				<p className="size-full absolute top-0 left-0 flex justify-center items-center">

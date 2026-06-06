@@ -90,6 +90,8 @@ function CardMakerView() {
 			cardType: card.cardType,
 			iconProfile: currentDraft.iconProfile ?? "light",
 			showDescription: currentDraft.showDescription ?? true,
+			showName: currentDraft.showName ?? true,
+			showNameBox: currentDraft.showNameBox ?? false,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
 			descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
@@ -110,6 +112,7 @@ function CardMakerView() {
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 			overframe: currentDraft.overframe ?? false,
+			fullArt: currentDraft.fullArt ?? false,
 			overframeImg: null,
 			img,
 		};

@@ -208,6 +208,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			cardType: card.cardType,
 			iconProfile: currentDraft.iconProfile ?? "light",
 			showDescription: currentDraft.showDescription ?? true,
+			showName: currentDraft.showName ?? true,
+			showNameBox: currentDraft.showNameBox ?? false,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
 			descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
@@ -228,6 +230,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 			overframe: currentDraft.overframe ?? false,
+			fullArt: currentDraft.fullArt ?? false,
 			overframeImg: null,
 			img,
 		};
@@ -254,6 +257,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					cardType: c.cardType,
 					iconProfile: currentDraft.iconProfile ?? "light",
 					showDescription: currentDraft.showDescription ?? true,
+					showName: currentDraft.showName ?? true,
+					showNameBox: currentDraft.showNameBox ?? false,
 					pendulumDescription: c.pendulumDescription ?? "",
 					description: c.description,
 					descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
@@ -276,6 +281,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 					descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 					overframe: currentDraft.overframe ?? false,
+					fullArt: currentDraft.fullArt ?? false,
 					overframeImg: null,
 					img: null,
 				};

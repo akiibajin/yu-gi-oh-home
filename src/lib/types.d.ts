@@ -111,6 +111,8 @@ export interface YugiohCardDraft {
 	cardType: YugiohCardType;
 	iconProfile?: MonsterTypeIconProfile;
 	showDescription?: boolean;
+	showName?: boolean;
+	showNameBox?: boolean;
 	pendulumDescription?: string;
 	description: string;
 	/** Used for Spell/Trap/Field cards in the maker UI. */
@@ -134,6 +136,7 @@ export interface YugiohCardDraft {
 	imgRotationDeg?: number;
 	descriptionImageOpacity?: number;
 	overframe?: boolean;
+	fullArt?: boolean;
 	overframeImg: Blob | string | null;
 	overframeObjectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 	overframeImgRotationDeg?: number;
