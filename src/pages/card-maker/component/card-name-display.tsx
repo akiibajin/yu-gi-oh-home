@@ -73,7 +73,7 @@ export function CardNameDisplay(props: {
               ? nameBgUrl
                 ? ""
                 : "text-black! text-shadow-outline-inverse -top-3.25"
-              : "",
+              : "-top-3",
           )}
           ref={textRef}
         >
