@@ -113,6 +113,7 @@ export interface YugiohCardDraft {
 	showDescription?: boolean;
 	showName?: boolean;
 	showNameBox?: boolean;
+	showStatsBox?: boolean;
 	pendulumDescription?: string;
 	description: string;
 	/** Used for Spell/Trap/Field cards in the maker UI. */

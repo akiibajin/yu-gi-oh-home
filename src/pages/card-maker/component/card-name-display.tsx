@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import { cn } from "@/lib/utils";
+import fitty from "fitty";
 
 export function CardNameDisplay(props: {
   displayName: string;
@@ -17,138 +18,26 @@ export function CardNameDisplay(props: {
     overframeImgUrl,
     isSynchro,
   } = props;
-  const [hasWidthOverflow, setHasWidthOverflow] = useState(false);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const textRef = useRef<HTMLParagraphElement | null>(null);
-  const baseStyleRef = useRef<{
-    fontSizePx: number;
-    letterSpacingPx: number;
-  } | null>(null);
 
   useEffect(() => {
-    const containerEl = containerRef.current;
     const titleEl = textRef.current;
-    if (!containerEl || !titleEl) return;
+    if (!titleEl) return;
 
-    const computedStyle = getComputedStyle(titleEl);
-    const computedFontSize = Number.parseFloat(computedStyle.fontSize);
-    const computedLetterSpacing = Number.parseFloat(
-      computedStyle.letterSpacing,
-    );
+    const baseFontSizePx = 18;
 
-    if (!baseStyleRef.current) {
-      baseStyleRef.current = {
-        fontSizePx: Number.isFinite(computedFontSize) ? computedFontSize : 18,
-        letterSpacingPx: Number.isFinite(computedLetterSpacing)
-          ? computedLetterSpacing
-          : 0,
-      };
-    }
-
-    const { fontSizePx: baseFontSizePx, letterSpacingPx: baseLetterSpacingPx } =
-      baseStyleRef.current;
-
-    const hasWidthOverflow = () => titleEl.scrollWidth > titleEl.clientWidth;
-    const hasHeightOverflow = () => titleEl.scrollHeight > titleEl.clientHeight;
-
-    const setTextStyle = (fontSizePx: number, letterSpacingPx: number) => {
-      titleEl.style.fontSize = `${fontSizePx}px`;
-      titleEl.style.letterSpacing = `${letterSpacingPx}px`;
-    };
-
-    const fitDisplayName = () => {
-      titleEl.style.whiteSpace = "nowrap";
-      setTextStyle(baseFontSizePx, baseLetterSpacingPx);
-
-      let fittedFontSize = baseFontSizePx;
-
-      if (hasWidthOverflow()) {
-        const minFontSizePx = 11;
-        let low = minFontSizePx;
-        let high = baseFontSizePx;
-        let best = minFontSizePx;
-
-        while (high - low > 0.1) {
-          const mid = (low + high) / 2;
-          setTextStyle(mid, baseLetterSpacingPx);
-          if (hasWidthOverflow()) {
-            high = mid;
-          } else {
-            best = mid;
-            low = mid;
-          }
-        }
-
-        fittedFontSize = best;
-        setTextStyle(fittedFontSize, baseLetterSpacingPx);
-      }
-
-      if (hasWidthOverflow()) {
-        titleEl.style.whiteSpace = "";
-        const multiMinFontSizePx = 8;
-        let low = multiMinFontSizePx;
-        let high = fittedFontSize;
-        let best = fittedFontSize;
-
-        while (high - low > 0.5) {
-          const mid = (low + high) / 2;
-          titleEl.style.fontSize = `${mid}px`;
-          if (hasHeightOverflow()) {
-            high = mid;
-          } else {
-            best = mid;
-            low = mid;
-          }
-        }
-
-        titleEl.style.fontSize = `${best}px`;
-        titleEl.style.letterSpacing = `${baseLetterSpacingPx}px`;
-        setHasWidthOverflow(true);
-        return;
-      }
-
-      const fillRatio = titleEl.scrollWidth / Math.max(titleEl.clientWidth, 1);
-      if (fillRatio < 0.92 && displayName.length > 1) {
-        let low = baseLetterSpacingPx;
-        let high = Math.max(baseLetterSpacingPx, 2);
-        let best = baseLetterSpacingPx;
-
-        while (high - low > 0.05) {
-          const mid = (low + high) / 2;
-          setTextStyle(fittedFontSize, mid);
-          if (hasWidthOverflow()) {
-            high = mid;
-          } else {
-            best = mid;
-            low = mid;
-          }
-        }
-
-        setTextStyle(fittedFontSize, best);
-      }
-
-      setHasWidthOverflow(false);
-    };
-
-    let animationFrameId = 0;
-    const scheduleFit = () => {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(fitDisplayName);
-    };
-
-    scheduleFit();
-
-    const resizeObserver = new ResizeObserver(() => {
-      scheduleFit();
+    const instance = fitty(titleEl, {
+      minSize: 11,
+      maxSize: baseFontSizePx,
+      multiLine: true,
     });
-    resizeObserver.observe(containerEl);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
+      instance.unsubscribe();
     };
-  }, [displayName, showName]);
+  }, [displayName, showName, overframeImgUrl, nameBgUrl]);
 
   if (!showName) return null;
 
@@ -170,23 +59,21 @@ export function CardNameDisplay(props: {
       ) : null}
       <div
         className={cn(
-          "relative z-20 flex-1 w-full items-center",
-          showNameBox && nameBgUrl ? "max-w-75 mx-auto h-10" : undefined,
+          "relative z-20 flex flex-1 w-full max-w-80 justify-center items-center",
+          showNameBox && nameBgUrl ? "mx-auto h-10" : undefined,
         )}
         ref={containerRef}
       >
         <p
           id="card-name"
           className={cn(
-            "text-center text-lg w-full z-2 font uppercase mx-auto leading-normal",
+            "text-center text-lg z-2 font uppercase absolute top-0.5 tracking-tighter! mx-auto leading-5 inline-block",
             isSynchro ? "text-black" : "text-white",
             overframeImgUrl
               ? nameBgUrl
-                ? "absolute  top-1.5!"
-                : "text-black! text-shadow-outline-inverse"
-              : "relative max-w-[80%]",
-            overframeImgUrl && nameBgUrl && !hasWidthOverflow && "text-xs!",
-            hasWidthOverflow && "-mb-4.25",
+                ? ""
+                : "text-black! text-shadow-outline-inverse -top-3.25"
+              : "",
           )}
           ref={textRef}
         >

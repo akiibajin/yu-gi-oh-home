@@ -34,12 +34,17 @@ export function CardPreview() {
   const isXyzOrLink = Boolean(isXyz || isLink);
   const isFusion =
     isMonster && (draft.monsterType?.includes("Fusion") ?? false);
-  const isNumber = isXyz && draft.name.toLowerCase().includes("number");
+  const isNumber =
+    isXyz &&
+    (draft.name.toLowerCase().includes("number") ||
+      draft.name.toLowerCase().includes("número"));
   const descriptionImageOpacity =
     draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
   const numberLabelValue = useMemo(() => {
     if (!isNumber) return null;
-    const match = draft.name.match(/\bnumber\s*(\d+)/i);
+    const match =
+      draft.name.match(/\bnumber\s*(\d+)/i) ||
+      draft.name.match(/\bnúmero\s*(\d+)/i);
     if (!match) return null;
     const parsed = Number.parseInt(match[1], 10);
     return Number.isFinite(parsed) ? parsed : null;
@@ -220,11 +225,16 @@ export function CardPreview() {
               isLink ? "justify-start" : "justify-between",
             )}
           >
-            <img
-              className="w-full opacity-70 absolute"
-              src={typeCardImg.stats ?? ""}
-              alt="ATK"
-            />
+            {draft.showStatsBox !== false && (
+              <img
+                className={cn(
+                  "w-full opacity-70 absolute",
+                  resolvedOverframeImgUrl && "z-4 -mt-4 h-15",
+                )}
+                src={typeCardImg.stats ?? ""}
+                alt="ATK"
+              />
+            )}
             <div className="relative w-1/2 flex items-center justify-start">
               {isMonster && (
                 <MonsterLevel
@@ -287,6 +297,12 @@ export function CardPreview() {
             </div>
           </div>
         )}
+        {isNumber && !showDescription && (
+          <NumberCardLabel
+            className={cn("bottom-9 right-2.5")}
+            value={numberLabelValue}
+          />
+        )}
         {isPendulum && (
           <div className="relative mb-3 z-4 w-full flex justify-center pb-1">
             {showDescription ? (
@@ -328,6 +344,12 @@ export function CardPreview() {
               isLink && "mb-2",
             )}
           >
+            {isNumber && (
+              <NumberCardLabel
+                className={cn("-top-9")}
+                value={numberLabelValue}
+              />
+            )}
             {isLink && draft.linkMarkersOnDescription && (
               <RankImage
                 linkMarkers={draft.linkMarkers ?? []}
@@ -357,7 +379,6 @@ export function CardPreview() {
             </p>
           </div>
         ) : null}
-        {isNumber && <NumberCardLabel value={numberLabelValue} />}
         <CardNameDisplay
           displayName={displayName}
           showName={showName}

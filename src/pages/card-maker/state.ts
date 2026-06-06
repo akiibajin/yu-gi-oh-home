@@ -9,6 +9,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 		showDescription: true,
 		showName: true,
 		showNameBox: false,
+		showStatsBox: true,
 		pendulumDescription: "",
 		description: "",
 		descriptionTextColor: "auto",

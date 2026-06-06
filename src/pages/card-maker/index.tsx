@@ -92,6 +92,7 @@ function CardMakerView() {
 			showDescription: currentDraft.showDescription ?? true,
 			showName: currentDraft.showName ?? true,
 			showNameBox: currentDraft.showNameBox ?? false,
+			showStatsBox: currentDraft.showStatsBox ?? true,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
 			descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",

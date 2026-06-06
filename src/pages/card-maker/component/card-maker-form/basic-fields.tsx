@@ -86,6 +86,18 @@ export function CardMakerBasicFields(props: {
 							}
 						/>
 					</div>
+					<div className="flex items-center justify-between">
+						<label className="text-sm font-medium" htmlFor="cm-show-stats-box">
+							Mostar cuadro de stats?
+						</label>
+						<Switch
+							id="cm-show-stats-box"
+							checked={draft.showStatsBox ?? true}
+							onCheckedChange={(checked: boolean) =>
+								setDraftField("showStatsBox", checked)
+							}
+						/>
+					</div>
 				</div>
 
 				<div className="space-y-2 min-w-0">
