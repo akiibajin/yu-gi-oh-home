@@ -7,7 +7,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![
+		.invoke_handler(tauri::generate_handler![
 			commands::greet::greet,
 			commands::ygoprodeck::fetch_ygoprodeck_card,
 			commands::decks::load_deck_cards_from_ydk,
@@ -16,6 +16,8 @@ pub fn run() {
 			commands::images::download_image_bytes,
 			commands::card_maker_images::store_card_maker_image,
 			commands::card_maker_images::get_card_maker_images_dir,
+			commands::updater::check_update,
+			commands::updater::install_update,
 		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

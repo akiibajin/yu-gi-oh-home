@@ -46,7 +46,7 @@ export function CardNameDisplay(props: {
       className={cn(
         "relative flex min-h-8 justify-center",
         showNameBox && nameBgUrl
-          ? "-bottom-2.5 w-105 items-end -mx-5"
+          ? "-bottom-2.5 w-[calc(100%+2.5rem)] items-end"
           : "items-center w-full",
       )}
     >
@@ -54,7 +54,7 @@ export function CardNameDisplay(props: {
         <img
           src={nameBgUrl}
           alt="name background"
-          className="absolute w-105 max-w-105 object-fill z-5"
+          className="absolute w-full max-w-full object-fill z-5"
         />
       ) : null}
       <div

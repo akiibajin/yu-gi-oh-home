@@ -16,7 +16,12 @@ import NumberCardLabel from "./numberCardLabel";
 import { CardNameDisplay } from "./card-name-display";
 import { getNameBg } from "@/lib/get-name-bg";
 
-export function CardPreview() {
+interface CardPreviewProps {
+  size: "large" | "standard";
+}
+
+export function CardPreview(props: CardPreviewProps) {
+  const { size } = props;
   const draft = cardDraftSignal.value;
   const showName: boolean = draft.showName ?? true;
   const showNameBox: boolean = draft.showNameBox ?? false;
@@ -163,12 +168,12 @@ export function CardPreview() {
     <div
       className={cn(
         "min-h-65 overflow-x-auto bg-black space-y-3 card-maker-preview",
-        // Avoid global text color overrides; apply targeted rules instead.
       )}
     >
       <div
         className={cn(
           "relative px-5 flex flex-col gap-2 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
+          size === "large" && "w-[448px] h-[626px]",
         )}
         id="card-preview"
       >

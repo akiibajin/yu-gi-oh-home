@@ -38,7 +38,7 @@ function PendulumStats(props: PendulumStatsProps) {
 		return scales[scale as keyof typeof scales] || scale0;
 	};
 	return (
-		<div className={`absolute -left-5 -bottom-9 z-3 w-105 flex justify-between ${className ?? ""}`.trim()}>
+		<div className={`absolute -left-5 -bottom-9 z-3 w-[calc(100%+2.5rem)] flex justify-between ${className ?? ""}`.trim()}>
 			<div className="relative w-12">
 				<img src={greenGem} alt="Gema verde" className="w-full" />
 				<p className="size-full absolute top-0 left-0 flex justify-center items-center">

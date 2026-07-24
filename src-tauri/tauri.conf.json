@@ -23,7 +23,6 @@
   },
   "bundle": {
     "active": true,
-    "createUpdaterArtifacts": true,
     "targets": "all",
     "icon": [
       "icons/32x32.png",
@@ -31,6 +30,18 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "windows": {
+        "installMode": "passive"
+      },
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEUyMDcyQUJBMzNERjZCNjgKUldSb2E5OHp1aW9INHQwQWQySlBhK2ZaNFM1ZHdBWDczd2dGbERBMW1nOUhQQVJldWg5SnpsUVoK",
+      "endpoints": [
+        "https://github.com/akiibajin/yu-gi-oh-home/releases/latest/download/latest.json"
+      ]
+    }
   }
 }
