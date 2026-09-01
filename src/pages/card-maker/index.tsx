@@ -1,6 +1,7 @@
 import { CardMakerForm } from "@/pages/card-maker/component/card-maker-form";
 import { CardPreviewWrapper } from "@/pages/card-maker/component/card-preview-wrapper";
 import { DeckImporterForm } from "@/pages/card-maker/component/deck-importer-form";
+import { CardSearcherForm } from "@/pages/card-maker/component/card-searcher-form";
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
 	Card,
@@ -26,7 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { preloadCardMakerTemplateImages } from "@/pages/card-maker/preload-card-templates";
 
 function CardMakerView() {
-	const [tab, setTab] = useState<"maker" | "deck">("maker");
+	const [tab, setTab] = useState<"maker" | "deck" | "search">("maker");
 	const [cards, setCards] = useState<
 		(Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[]
 	>([]);
@@ -195,13 +196,20 @@ function CardMakerView() {
 							>
 								Creador de cartas
 							</Button>
-							<Button
-								type="button"
-								variant="frame"
-								onClick={() => setTab("deck")}
-							>
-								Importar mazo
-							</Button>
+						<Button
+							type="button"
+							variant="frame"
+							onClick={() => setTab("deck")}
+						>
+							Importar mazo
+						</Button>
+						<Button
+							type="button"
+							variant="frame"
+							onClick={() => setTab("search")}
+						>
+							Buscar carta
+						</Button>
 						</div>
 
 						<div className="flex items-center gap-2">
@@ -232,6 +240,10 @@ function CardMakerView() {
 							onReset={onResetAll}
 							exportOptions={importedExportOptions}
 						/>
+					) : tab === "search" ? (
+						<div className="min-w-0">
+							<CardSearcherForm />
+						</div>
 					) : (
 						<div className="min-w-0">
 							<DeckImporterForm

@@ -1,7 +1,7 @@
 use anyhow::Context;
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write as _;
 use std::path::Path;
-use std::time::Duration;
 
 use crate::services;
 
@@ -77,8 +77,8 @@ fn normalize_monster_type_from_typeline(card: &serde_json::Value) -> Option<Stri
 		.map(|arr| {
 			arr.iter()
 				.filter_map(|v| v.as_str())
-				.map(|s| s.trim().to_string())
-				.collect::<Vec<String>>()
+				.map(|s| s.trim())
+				.collect::<Vec<&str>>()
 		})
 		.unwrap_or_default();
 
@@ -289,6 +289,7 @@ pub fn parse_ydk_ids(input: &str) -> Vec<u64> {
 }
 
 pub async fn load_deck_cards_from_ydk_contents(
+	client: &reqwest::Client,
 	contents: &str,
 ) -> anyhow::Result<LoadDeckCardsResponse> {
 	let ids_u64 = parse_ydk_ids(contents);
@@ -313,13 +314,9 @@ pub async fn load_deck_cards_from_ydk_contents(
 	};
 
 	let mut by_id: HashMap<u64, ExportableCard> = HashMap::new();
-	let fandom_client = reqwest::Client::builder()
-		.timeout(Duration::from_secs(15))
-		.build()
-		.context("failed to build fandom http client")?;
 
 	for chunk in unique_ids.chunks(10) {
-		let json = services::ygoprodeck::fetch_cardinfo_by_ids(chunk).await?;
+		let json = services::ygoprodeck::fetch_cardinfo_by_ids(client, chunk).await?;
 		let data = json
 			.get("data")
 			.and_then(|v| v.as_array())
@@ -327,7 +324,7 @@ pub async fn load_deck_cards_from_ydk_contents(
 
 		for card in data {
 			let mut exportable = ygopro_card_to_exportable(card)?;
-			match services::fandom::fetch_spanish_name_and_lore(&fandom_client, &exportable.name)
+			match services::fandom::fetch_spanish_name_and_lore(client, &exportable.name)
 				.await
 			{
 				Ok(Some(es)) => {
@@ -353,29 +350,54 @@ pub async fn load_deck_cards_from_ydk_contents(
 		}
 	}
 
-	let mut ordered_cards = Vec::with_capacity(ids_u64.len());
-	let mut not_found = Vec::new();
+	let mut remaining: HashMap<u64, usize> = HashMap::with_capacity(unique_ids.len());
 	for id in &ids_u64 {
-		if let Some(card) = by_id.get(id) {
+		*remaining.entry(*id).or_insert(0) += 1;
+	}
+
+	let mut ordered_cards = Vec::with_capacity(ids_u64.len());
+	let mut not_found = String::new();
+	for id in &ids_u64 {
+		let count = remaining
+			.get_mut(id)
+			.expect("every deck id was counted before the loop");
+		*count -= 1;
+		let last_occurrence = *count == 0;
+
+		if last_occurrence {
+			// Move the card out of the map for its final occurrence instead of cloning.
+			match by_id.remove(id) {
+				Some(card) => ordered_cards.push(card),
+				None => append_id(&mut not_found, *id),
+			}
+		} else if let Some(card) = by_id.get(id) {
 			ordered_cards.push(card.clone());
 		} else {
-			not_found.push(id.to_string());
+			append_id(&mut not_found, *id);
 		}
 	}
 
 	Ok(LoadDeckCardsResponse {
 		ids,
 		cards: ordered_cards,
-		not_found: not_found.join(", "),
+		not_found,
 	})
 }
 
+fn append_id(out: &mut String, id: u64) {
+	if !out.is_empty() {
+		out.push_str(", ");
+	}
+	let _ = write!(out, "{id}");
+}
+
 pub async fn load_deck_cards_from_ydk(
+	client: &reqwest::Client,
 	deck_path: &str,
 ) -> anyhow::Result<LoadDeckCardsResponse> {
 	let path = Path::new(deck_path);
 	let contents = std::fs::read_to_string(path)
 		.with_context(|| format!("failed to read deck file: {}", path.display()))?;
 
-	load_deck_cards_from_ydk_contents(&contents).await
+	load_deck_cards_from_ydk_contents(client, &contents).await
 }

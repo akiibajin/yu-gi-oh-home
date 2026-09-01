@@ -67,13 +67,13 @@ export function CardMakerBasicFields(props: {
 							}
 						/>
 					</div>
-					<Input
-						id="cm-name"
-						className="w-full"
-						value={draft.name}
-						onInput={(e) => setDraftField("name", e.currentTarget.value)}
-						placeholder="Dark Magician"
-					/>
+				<Input
+					id="cm-name"
+					className="w-full"
+					value={draft.name}
+					onInput={(e) => setDraftField("name", e.currentTarget.value)}
+					placeholder="Dark Magician"
+				/>
 					<div className="flex items-center justify-between">
 						<label className="text-sm font-medium" htmlFor="cm-show-name-box">
 							Mostrar cuadro en el nombre

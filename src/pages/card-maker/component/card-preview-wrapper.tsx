@@ -9,10 +9,10 @@ const STORAGE_KEY = "card-maker.card-size";
 
 
 function getStoredSize(): CardSize {
-  if (typeof window === "undefined") return "large";
+  if (typeof window === "undefined") return "standard";
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === "standard" || stored === "large") return stored;
-  return "large";
+  return "standard";
 }
 
 export function CardPreviewWrapper() {

@@ -3,6 +3,7 @@ import { canInvokeTauri } from "./can-invoke-tauri";
 
 export type YgoprodeckCardImage = {
 	image_url?: string;
+	image_url_small?: string;
 	image_url_cropped?: string;
 };
 
@@ -14,6 +15,7 @@ export type YgoprodeckCard = {
 	race?: string;
 	attribute?: string;
 	level?: number;
+	scale?: number;
 	atk?: number | string;
 	def?: number | string;
 	linkval?: number;

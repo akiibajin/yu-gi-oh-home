@@ -17,7 +17,7 @@ pub fn convert_to_webp(input: &[u8], opts: WebpOptions) -> anyhow::Result<Vec<u8
 	Ok(encoded.to_vec())
 }
 
-pub async fn download_bytes(url: &str) -> anyhow::Result<Vec<u8>> {
+pub async fn download_bytes(client: &reqwest::Client, url: &str) -> anyhow::Result<Vec<u8>> {
 	let raw = url.trim();
 	if raw.is_empty() {
 		return Err(anyhow::anyhow!("url is empty"));
@@ -29,7 +29,6 @@ pub async fn download_bytes(url: &str) -> anyhow::Result<Vec<u8>> {
 		_ => return Err(anyhow::anyhow!("unsupported url scheme")),
 	}
 
-	let client = reqwest::Client::new();
 	let resp = client
 		.get(parsed)
 		.send()
@@ -39,5 +38,5 @@ pub async fn download_bytes(url: &str) -> anyhow::Result<Vec<u8>> {
 		.context("request returned error status")?;
 
 	let bytes = resp.bytes().await.context("failed to read response bytes")?;
-	Ok(bytes.to_vec())
+	Ok(bytes.into())
 }

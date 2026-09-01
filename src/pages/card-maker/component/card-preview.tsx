@@ -172,7 +172,7 @@ export function CardPreview(props: CardPreviewProps) {
     >
       <div
         className={cn(
-          "relative px-5 flex flex-col gap-2 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
+          "relative px-5 flex flex-col gap-0.5 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
           size === "large" && "w-[448px] h-[626px]",
         )}
         id="card-preview"
@@ -309,7 +309,7 @@ export function CardPreview(props: CardPreviewProps) {
           />
         )}
         {isPendulum && (
-          <div className="relative mb-3 z-4 w-full flex justify-center pb-1">
+          <div className="relative mb-3 z-4 w-full flex justify-center pb-0.5">
             {showDescription ? (
               <>
                 {!isVoidDescriptionStatsBox &&
@@ -345,8 +345,7 @@ export function CardPreview(props: CardPreviewProps) {
         {showDescription ? (
           <div
             className={cn(
-              "relative py-px max-h-full z-4 w-full flex pb-1.5 flex-col justify-start items-center",
-              isLink && "mb-2",
+              "relative py-px max-h-full z-4 w-full flex pb-0.5 flex-col justify-start items-center",
             )}
           >
             {isNumber && (

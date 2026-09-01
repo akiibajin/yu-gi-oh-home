@@ -18,6 +18,7 @@ fn replace_minus_one_stats_with_question(card: &mut serde_json::Value) {
 
 #[tauri::command]
 pub async fn fetch_ygoprodeck_card(
+	client: tauri::State<'_, reqwest::Client>,
 	user_name: Option<String>,
 	name: Option<String>,
 	fname: Option<String>,
@@ -25,7 +26,8 @@ pub async fn fetch_ygoprodeck_card(
 ) -> Result<serde_json::Value, String> {
 	let _ = user_name;
 
-	let mut json = services::ygoprodeck::fetch_cardinfo(name, fname, id)
+	let http = client.inner().clone();
+	let mut json = services::ygoprodeck::fetch_cardinfo(&http, name, fname, id)
 		.await
 		.map_err(|e| format!("{e:#}"))?;
 

@@ -12,21 +12,25 @@ pub struct LoadDeckCardsFromBytesRequest {
 
 #[tauri::command]
 pub async fn load_deck_cards_from_ydk(
+	client: tauri::State<'_, reqwest::Client>,
 	req: LoadDeckCardsRequest,
 ) -> Result<services::decks::LoadDeckCardsResponse, String> {
-	services::decks::load_deck_cards_from_ydk(&req.path)
+	let http = client.inner().clone();
+	services::decks::load_deck_cards_from_ydk(&http, &req.path)
 		.await
 		.map_err(|e| format!("{e:#}"))
 }
 
 #[tauri::command]
 pub async fn load_deck_cards_from_ydk_bytes(
+	client: tauri::State<'_, reqwest::Client>,
 	req: LoadDeckCardsFromBytesRequest,
 ) -> Result<services::decks::LoadDeckCardsResponse, String> {
 	let contents = String::from_utf8(req.bytes)
 		.map_err(|_| "Invalid .ydk file encoding (expected UTF-8)".to_string())?;
 
-	services::decks::load_deck_cards_from_ydk_contents(&contents)
+	let http = client.inner().clone();
+	services::decks::load_deck_cards_from_ydk_contents(&http, &contents)
 		.await
 		.map_err(|e| format!("{e:#}"))
 }

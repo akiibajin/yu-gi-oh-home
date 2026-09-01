@@ -36,8 +36,12 @@ pub async fn convert_image_to_webp(req: ConvertToWebpRequest) -> Result<ConvertT
 }
 
 #[tauri::command]
-pub async fn download_image_bytes(req: DownloadImageBytesRequest) -> Result<Vec<u8>, String> {
-	services::images::download_bytes(&req.url)
+pub async fn download_image_bytes(
+	client: tauri::State<'_, reqwest::Client>,
+	req: DownloadImageBytesRequest,
+) -> Result<Vec<u8>, String> {
+	let http = client.inner().clone();
+	services::images::download_bytes(&http, &req.url)
 		.await
 		.map_err(|e| format!("{e:#}"))
 }

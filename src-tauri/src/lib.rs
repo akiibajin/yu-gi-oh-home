@@ -2,11 +2,19 @@
 mod commands;
 mod services;
 
+use std::time::Duration;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
+        .manage(
+            reqwest::Client::builder()
+                .timeout(Duration::from_secs(30))
+                .build()
+                .expect("failed to build reqwest client"),
+        )
 		.invoke_handler(tauri::generate_handler![
 			commands::greet::greet,
 			commands::ygoprodeck::fetch_ygoprodeck_card,
@@ -18,6 +26,8 @@ pub fn run() {
 			commands::card_maker_images::get_card_maker_images_dir,
 			commands::updater::check_update,
 			commands::updater::install_update,
+			commands::fandom::fetch_wiki_card_data,
+			commands::fandom::fetch_spanish_name_and_lore,
 		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

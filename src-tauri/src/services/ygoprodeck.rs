@@ -1,9 +1,11 @@
 use anyhow::Context;
+use std::fmt::Write as _;
 use std::time::Duration;
 
 const YGOPRODECK_CARDINFO_URL: &str = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
 pub async fn fetch_cardinfo(
+	client: &reqwest::Client,
 	name: Option<String>,
 	fname: Option<String>,
 	id: Option<u64>,
@@ -36,7 +38,6 @@ pub async fn fetch_cardinfo(
 		}
 	}
 
-	let client = reqwest::Client::new();
 	let resp = client
 		.get(url)
 		.send()
@@ -60,7 +61,10 @@ pub async fn fetch_cardinfo(
 		.context("failed to parse ygoprodeck response as JSON")
 }
 
-pub async fn fetch_cardinfo_by_ids(ids: &[u64]) -> anyhow::Result<serde_json::Value> {
+pub async fn fetch_cardinfo_by_ids(
+	client: &reqwest::Client,
+	ids: &[u64],
+) -> anyhow::Result<serde_json::Value> {
 	if ids.is_empty() {
 		return Err(anyhow::anyhow!("ids cannot be empty"));
 	}
@@ -71,15 +75,16 @@ pub async fn fetch_cardinfo_by_ids(ids: &[u64]) -> anyhow::Result<serde_json::Va
 		// YGOPRODeck supports a comma-separated list in the `id` query param:
 		// https://db.ygoprodeck.com/api/v7/cardinfo.php?id=1,2,3
 		let mut qp = url.query_pairs_mut();
-		let ids_csv = ids
-			.iter()
-			.map(|id| id.to_string())
-			.collect::<Vec<_>>()
-			.join(",");
+		let mut ids_csv = String::with_capacity(ids.len() * 11);
+		for (i, id) in ids.iter().enumerate() {
+			if i > 0 {
+				ids_csv.push(',');
+			}
+			let _ = write!(ids_csv, "{id}");
+		}
 		qp.append_pair("id", &ids_csv);
 	}
 
-	let client = reqwest::Client::new();
 	let resp = client
 		.get(url)
 		.send()
