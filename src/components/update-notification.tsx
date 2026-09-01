@@ -45,7 +45,7 @@ export default function UpdateNotification() {
 			aria-live="polite"
 			className="pointer-events-none fixed inset-x-0 z-50 bottom-4 flex justify-center px-4"
 		>
-			<div className="pointer-events-auto flex w-full max-w-lg flex-col gap-3 rounded-lg border bg-background p-4 shadow-lg dark:bg-card dark:border-input">
+			<div className="pointer-events-auto flex w-full max-w-lg flex-col gap-3 rounded-lg border bg-background p-4 shadow-lg animate-in fade-in slide-in-from-bottom-8 duration-200 ease-out dark:bg-card dark:border-input">
 				<div className="flex items-start justify-between gap-4">
 					<div className="flex items-center gap-2">
 						<RotateCcwIcon className="size-4 shrink-0 text-primary" />
