@@ -1,15 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { invoke } from "@tauri-apps/api/core";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-	DialogFooter,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { RotateCcwIcon } from "lucide-react";
+import { RotateCcwIcon, XIcon } from "lucide-react";
 import { canInvokeTauri } from "@/lib/tauri/can-invoke-tauri";
 
 interface UpdateInfo {
@@ -20,6 +12,7 @@ interface UpdateInfo {
 
 export default function UpdateNotification() {
 	const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+	const [dismissed, setDismissed] = useState(false);
 	const [installing, setInstalling] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -44,40 +37,52 @@ export default function UpdateNotification() {
 		}
 	};
 
-	if (!updateInfo) return null;
+	if (!updateInfo || dismissed) return null;
 
 	return (
-		<Dialog open={true}>
-			<DialogContent
-				onPointerDownOutside={(e: { preventDefault: () => void }) =>
-					e.preventDefault()
-				}
-				onInteractOutside={(e: { preventDefault: () => void }) =>
-					e.preventDefault()
-				}
-				onEscapeKeyDown={(e: { preventDefault: () => void }) =>
-					e.preventDefault()
-				}
-				showCloseButton={false}
-				className="sm:max-w-md"
-			>
-				<DialogHeader>
-					<DialogTitle>Update Available</DialogTitle>
-					<DialogDescription>
-						A new version ({updateInfo.version}) is ready to install.
-					</DialogDescription>
-				</DialogHeader>
+		<div
+			role="status"
+			aria-live="polite"
+			className="pointer-events-none fixed inset-x-0 z-50 bottom-4 flex justify-center px-4"
+		>
+			<div className="pointer-events-auto flex w-full max-w-lg flex-col gap-3 rounded-lg border bg-background p-4 shadow-lg dark:bg-card dark:border-input">
+				<div className="flex items-start justify-between gap-4">
+					<div className="flex items-center gap-2">
+						<RotateCcwIcon className="size-4 shrink-0 text-primary" />
+						<p className="text-sm font-medium">Update Available</p>
+					</div>
+					<button
+						type="button"
+						aria-label="Dismiss update notification"
+						className="rounded-xs text-muted-foreground opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+						onClick={() => setDismissed(true)}
+					>
+						<XIcon className="size-4" />
+					</button>
+				</div>
+
+				<p className="text-sm text-muted-foreground">
+					A new version ({updateInfo.version}) is ready to install.
+				</p>
 
 				{updateInfo.body && (
-					<div className="text-sm text-muted-foreground max-h-32 overflow-y-auto border rounded p-2">
+					<div className="max-h-24 overflow-y-auto rounded border p-2 text-xs text-muted-foreground">
 						{updateInfo.body}
 					</div>
 				)}
 
 				{error && <div className="text-sm text-destructive">{error}</div>}
 
-				<DialogFooter>
-					<Button onClick={handleInstall} disabled={installing}>
+				<div className="flex justify-end gap-2">
+					<Button
+						variant="outline"
+						size="sm"
+						disabled={installing}
+						onClick={() => setDismissed(true)}
+					>
+						Dismiss
+					</Button>
+					<Button size="sm" onClick={handleInstall} disabled={installing}>
 						{installing ? (
 							<>
 								<RotateCcwIcon className="mr-2 h-4 w-4 animate-spin" />
@@ -87,8 +92,8 @@ export default function UpdateNotification() {
 							"Update Now"
 						)}
 					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
+				</div>
+			</div>
+		</div>
 	);
 }
