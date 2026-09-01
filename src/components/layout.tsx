@@ -67,7 +67,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 	}, [path, navIndex]);
 
 	return (
-		<div className="grid grid-rows-[1fr_auto] md:grid-rows-[auto_1fr] h-dvh min-h-dvh min-w-0">
+		<div className="relative grid grid-rows-[1fr_auto] md:grid-rows-[auto_1fr] h-dvh min-h-dvh min-w-0">
 			<header className="hidden md:flex row-start-1 w-full min-w-0 items-center gap-2 border-b bg-card px-4 py-2">
 				<Breadcrumb>
 					<BreadcrumbList>
@@ -132,6 +132,9 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 				</Breadcrumb>
 			</footer>
 			<ToastContainer aria-label="Notifications" />
+			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
+				v 6.1.1
+			</span>
 		</div>
 	);
 }
