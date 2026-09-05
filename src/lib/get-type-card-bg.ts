@@ -4,7 +4,7 @@ import type {
 	YugiohMonsterType,
 } from "./types";
 
-const CARD_TEMPLATES_BASE_URL =
+export const CARD_TEMPLATES_BASE_URL =
 	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
 
 const cardTemplate = (fileName: string) =>

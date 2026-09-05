@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import type { YugiohCardDraft, YugiohMonsterStats } from "@/lib/types";
 import { splitPendulumDescription } from "@/lib/split-pendulum-description";
 import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
@@ -110,12 +111,25 @@ export function CardMakerForm(
 				<CardTitle>Opciones de la carta</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-5 min-w-0 **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full">
-				<CardMakerBasicFields draft={draft} setDraftField={setDraftField} />
+				<div className="flex items-center justify-between rounded-md border p-3 sm:p-4">
+					<label className="text-sm font-medium" htmlFor="cm-secondary-template">
+						Plantilla alternativa
+					</label>
+					<Switch
+						id="cm-secondary-template"
+						checked={draft.template === "secondary"}
+						onCheckedChange={(checked: boolean) =>
+							setDraftField("template", checked ? "secondary" : "primary")
+						}
+					/>
+				</div>
+				<CardMakerBasicFields draft={draft} setDraftField={setDraftField} isSecondaryTemplate={draft.template === "secondary"} />
 				<CardMakerImageFields
 					draft={draft}
 					setDraftField={setDraftField}
 					onImageUpload={handleImageUpload}
-					onOverframeImageUpload={handleOverframeImageUpload}
+          onOverframeImageUpload={handleOverframeImageUpload}
+          isSecondaryTemplate={draft.template === "secondary"}
 				/>
 				{isMonster ? (
 					<CardMakerMonsterOptions
@@ -137,13 +151,15 @@ export function CardMakerForm(
 					/>
 				) : null}
 				<CardMakerMonsterBoxColor
-					value={draft.descriptionStatsBoxColor}
+          value={draft.descriptionStatsBoxColor}
+					isSecondaryTemplate={draft.template === "secondary"}
 					onValueChange={(value) =>
 						setDraftField("descriptionStatsBoxColor", value)
 					}
 				/>
 				<CardMakerDescriptionFields
-					showDescription={draft.showDescription ?? true}
+          showDescription={draft.showDescription ?? true}
+					isSecondaryTemplate={draft.template === "secondary"}
 					onShowDescriptionChange={(checked) =>
 						setDraftField("showDescription", checked)
 					}

@@ -113,6 +113,7 @@ function CardMakerView() {
 			objectFit: currentDraft.objectFit,
 			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
+			template: currentDraft.template,
 			overframe: currentDraft.overframe ?? false,
 			fullArt: currentDraft.fullArt ?? false,
 			overframeImg: null,

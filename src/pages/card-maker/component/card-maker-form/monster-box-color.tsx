@@ -27,10 +27,11 @@ const BOX_COLOR_LABELS: Partial<
 export function CardMakerMonsterBoxColor(props: {
 	value: YugiohDescriptionStatsBoxColor | undefined;
 	onValueChange: (value: YugiohDescriptionStatsBoxColor) => void;
+	isSecondaryTemplate: boolean;
 }) {
-	const { value, onValueChange } = props;
+	const { value, onValueChange, isSecondaryTemplate } = props;
 
-	return (
+	return isSecondaryTemplate ? null : (
 		<div className="space-y-2 rounded-md border p-3 sm:p-4">
 			<label className="text-sm font-medium" htmlFor="cm-box-color">
 				Color del recuadro de descripción/estadísticas

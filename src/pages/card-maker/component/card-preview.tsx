@@ -6,15 +6,17 @@ import {
 } from "@/lib/constants";
 import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
 import getTypeCardBg, { BOX_TEXTURES } from "@/lib/get-type-card-bg";
+import getSecondaryTemplate from "@/lib/get-secondary-template";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useState } from "preact/hooks";
 import { cn } from "@/lib/utils";
 import MonsterLevel from "./monster-level";
 import RankImage from "./rank-image";
-import PendulumStats from "./pendulum-stats";
 import NumberCardLabel from "./numberCardLabel";
 import { CardNameDisplay } from "./card-name-display";
 import { getNameBg } from "@/lib/get-name-bg";
+import PrimaryDescription from "./primary-description";
+import { SecondaryDescription } from "./secondary-description";
 
 interface CardPreviewProps {
   size: "large" | "standard";
@@ -82,6 +84,10 @@ export function CardPreview(props: CardPreviewProps) {
     draft.cardType,
     draft.descriptionStatsBoxColor,
   );
+  const isSecondaryTemplate = draft.template === "secondary";
+  const borderImg = isSecondaryTemplate
+    ? getSecondaryTemplate(draft.monsterType ?? null, draft.cardType)
+    : typeCardImg.border;
   const iconImg = useMemo(() => {
     if (draft.cardType === "Spell") {
       return SPELL_ICONS[draft.spellType as keyof typeof SPELL_ICONS];
@@ -174,11 +180,12 @@ export function CardPreview(props: CardPreviewProps) {
         className={cn(
           "relative px-5 flex flex-col gap-0.5 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
           size === "large" && "w-[448px] h-[626px]",
+          isSecondaryTemplate && "gap-0"
         )}
         id="card-preview"
       >
         <img
-          src={typeCardImg.border}
+          src={borderImg}
           alt={draft.name}
           className="absolute inset-0 size-full z-1"
         />
@@ -194,6 +201,7 @@ export function CardPreview(props: CardPreviewProps) {
             className={cn(
               "absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.4rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
               draft.objectFit === "contain" && "bg-black",
+              isSecondaryTemplate && "h-99.25 top-3.25 translate-y-0"
             )}
           >
             <img
@@ -308,81 +316,30 @@ export function CardPreview(props: CardPreviewProps) {
             value={numberLabelValue}
           />
         )}
-        {isPendulum && (
-          <div className="relative mb-3 z-4 w-full flex justify-center pb-0.5">
-            {showDescription ? (
-              <>
-                {!isVoidDescriptionStatsBox &&
-                !isVoidInverseDescriptionStatsBox ? (
-                  <img
-                    src={BOX_TEXTURES.Spell.description}
-                    alt="descripción"
-                    className="absolute size-full object-fill"
-                    style={{ opacity: descriptionImageOpacity }}
-                  />
-                ) : null}
-                <p
-                  className={cn(
-                    "relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
-                    descriptionTextSizeClass,
-                    descriptionTextColorClass,
-                    isVoidDescriptionStatsBox &&
-                      "text-white! text-shadow-outline",
-                    isVoidInverseDescriptionStatsBox &&
-                      "text-black! text-shadow-outline-inverse",
-                  )}
-                >
-                  {draft.pendulumDescription}
-                </p>
-              </>
-            ) : null}
-            <PendulumStats
-              scale={draft.scale ?? 0}
-              className={cn(!showDescription && "mb-3")}
-            />
-          </div>
-        )}
-        {showDescription ? (
-          <div
-            className={cn(
-              "relative py-px max-h-full z-4 w-full flex pb-0.5 flex-col justify-start items-center",
-            )}
-          >
-            {isNumber && (
-              <NumberCardLabel
-                className={cn("-top-9")}
-                value={numberLabelValue}
-              />
-            )}
-            {isLink && draft.linkMarkersOnDescription && (
-              <RankImage
-                linkMarkers={draft.linkMarkers ?? []}
-                linkRating={draft.linkRating ?? 0}
-                option="B"
-              />
-            )}
-            {!isVoidDescriptionStatsBox && !isVoidInverseDescriptionStatsBox ? (
-              <img
-                src={typeCardImg.description}
-                alt="descripción"
-                className="absolute -z-10 size-full object-fill"
-                style={{ opacity: descriptionImageOpacity }}
-              />
-            ) : null}
-            <p
-              className={cn(
-                "relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
-                descriptionTextSizeClass,
-                descriptionTextColorClass,
-                isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
-                isVoidInverseDescriptionStatsBox &&
-                  "text-black! text-shadow-outline-inverse",
-              )}
-            >
-              {monsterDescription}
-            </p>
-          </div>
-        ) : null}
+        {!isSecondaryTemplate ? <PrimaryDescription
+          isPendulum={isPendulum}
+          showDescription={showDescription}
+          isNumber={isNumber}
+          isVoidDescriptionStatsBox={isVoidDescriptionStatsBox}
+          isVoidInverseDescriptionStatsBox={isVoidInverseDescriptionStatsBox}
+          isSecondaryTemplate={isSecondaryTemplate}
+          monsterDescription={monsterDescription}
+          descriptionImageOpacity={descriptionImageOpacity}
+          descriptionTextSizeClass={descriptionTextSizeClass}
+          isLink={isLink}
+          descriptionTextColorClass={descriptionTextColorClass}
+          numberLabelValue={numberLabelValue}
+          typeCardImg={typeCardImg}
+          draft={draft}
+        />
+          : <SecondaryDescription
+            isPendulum={isPendulum}
+            isNumber={isNumber}
+            scale={draft.scale ?? 0}
+            numberLabelValue={numberLabelValue}
+            pendulumDescription={draft.pendulumDescription ?? ""}
+            description={draft.description}
+          />}
         <CardNameDisplay
           displayName={displayName}
           showName={showName}

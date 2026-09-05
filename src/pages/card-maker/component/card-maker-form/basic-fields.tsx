@@ -46,8 +46,9 @@ const TRAP_TYPE_LABELS: Record<YugiohTrapType, string> = {
 export function CardMakerBasicFields(props: {
 	draft: YugiohCardDraft;
 	setDraftField: SetDraftField;
+	isSecondaryTemplate: boolean;
 }) {
-	const { draft, setDraftField } = props;
+	const { draft, setDraftField, isSecondaryTemplate } = props;
 	const isMonster = draft.cardType === "Monster";
 	const isFieldSpell = draft.cardType === "Field";
 
@@ -74,7 +75,7 @@ export function CardMakerBasicFields(props: {
 					onInput={(e) => setDraftField("name", e.currentTarget.value)}
 					placeholder="Dark Magician"
 				/>
-					<div className="flex items-center justify-between">
+					{!isSecondaryTemplate && <div className="flex items-center justify-between">
 						<label className="text-sm font-medium" htmlFor="cm-show-name-box">
 							Mostrar cuadro en el nombre
 						</label>
@@ -85,7 +86,7 @@ export function CardMakerBasicFields(props: {
 								setDraftField("showNameBox", checked)
 							}
 						/>
-					</div>
+					</div>}
 					<div className="flex items-center justify-between">
 						<label className="text-sm font-medium" htmlFor="cm-show-stats-box">
 							Mostar cuadro de stats?

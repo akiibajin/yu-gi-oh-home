@@ -27,7 +27,8 @@ import type {
 
 const MAX_RESULTS = 8;
 
-function mapApiTypeToCardType(apiType: string): YugiohCardType {
+function mapApiTypeToCardType(apiType: string, race?: string): YugiohCardType {
+	if (apiType === "Spell Card" && race === "Field") return "Field";
 	if (apiType === "Spell Card") return "Spell";
 	if (apiType === "Trap Card") return "Trap";
 	return "Monster";
@@ -190,7 +191,7 @@ export function CardSearcherForm() {
 		setApplying(true);
 		try {
 			const currentDraft = cardDraftSignal.value;
-			const cardType = mapApiTypeToCardType(card.type ?? "");
+			const cardType = mapApiTypeToCardType(card.type ?? "", card.race ?? "");
 			const monsterType =
 				cardType === "Monster"
 					? mapApiTypeToMonsterType(card.type ?? "")
@@ -254,9 +255,9 @@ export function CardSearcherForm() {
 						name: es.name,
 						description: es.lore,
 						pendulumDescription:
-							isPendulum && es.pendulum_effect
-								? es.pendulum_effect
-								: prev.pendulumDescription,
+						  isPendulum
+								? es.pendulum_effect ?? prev.pendulumDescription
+								: "",
 					};
 				}
 			} catch {
@@ -285,7 +286,8 @@ export function CardSearcherForm() {
 			if (!data) {
 				setWikiError("No se pudo obtener datos de la wiki.");
 				return;
-			}
+      }
+			console.log({ data })
 			setWikiCardData(data);
 			setWikiPreviewUrl(data.image_url ?? null);
 		} catch (e) {
@@ -307,7 +309,9 @@ export function CardSearcherForm() {
 					? "Spell"
 					: data.card_type === "Trap"
 						? "Trap"
-						: "Monster";
+						: data.card_type === "Field"
+							? "Field"
+							: "Monster";
 
 			const isPendulum = data.card_type?.includes("Pendulum") ?? false;
 			const isEffect = data.card_type?.includes("Effect") ?? false;
@@ -315,7 +319,8 @@ export function CardSearcherForm() {
 			const isSynchro = data.card_type?.includes("Synchro") ?? false;
 			const isXyz = data.card_type?.includes("Xyz") ?? false;
 			const isLink = data.card_type?.includes("Link") ?? false;
-			const isRitual = data.card_type?.includes("Ritual") ?? false;
+      const isRitual = data.card_type?.includes("Ritual") ?? false;
+			const isToken = data.card_type?.includes("Token") ?? false;
 
 			const attributeMap: Record<string, YugiohCardAttribute> = {
 				DARK: "DARK",
@@ -331,7 +336,7 @@ export function CardSearcherForm() {
 				WIND: "WIND",
 				VIENTO: "WIND",
 				DIVINE: "DIVINE",
-				DIVINO: "DIVINE",
+				DIVINIDAD: "DIVINE",
 			};
 
 			const attribute = data.attribute
@@ -358,7 +363,7 @@ export function CardSearcherForm() {
 			const subTypeMap: Record<string, MonsterType> = {
 				"Dragón": "Dragon",
 				"Dragon": "Dragon",
-				"Mago": "Spellcaster",
+				"Lanzador de Conjuros": "Spellcaster",
 				"Spellcaster": "Spellcaster",
 				"Guerrero": "Warrior",
 				"Warrior": "Warrior",
@@ -377,7 +382,7 @@ export function CardSearcherForm() {
 				"Insect": "Insect",
 				"Reptil": "Reptile",
 				"Reptile": "Reptile",
-				"Pececito": "Fish",
+				"Pez": "Fish",
 				"Fish": "Fish",
 				"Serpiente Mariana": "Sea Serpent",
 				"Sea Serpent": "Sea Serpent",
@@ -396,7 +401,8 @@ export function CardSearcherForm() {
 				"Ciberso": "Cyberse",
 				"Cyberse": "Cyberse",
 				"Dinosaurio": "Dinosaur",
-				"Dinosaur": "Dinosaur",
+        "Dinosaur": "Dinosaur",
+				"Bestia divina": "Divine-Beast"
 			};
 
 			const spellTypeMap: Record<string, YugiohSpellType> = {
@@ -409,7 +415,7 @@ export function CardSearcherForm() {
 				"Quick-Play": "Quick-Play",
 				"Ritual": "Ritual",
 				"Campo": "Normal",
-				"Field": "Normal",
+        "Field": "Normal",
 			};
 
 			const trapTypeMap: Record<string, YugiohTrapType> = {
@@ -420,7 +426,7 @@ export function CardSearcherForm() {
 				"Counter": "Counter",
 			};
 
-			const monsterTypeMap = (): YugiohMonsterType | undefined => {
+      const monsterTypeMap = (): YugiohMonsterType | undefined => {
 				if (isPendulum) {
 					if (isFusion) return "Pendulum Fusion";
 					if (isSynchro) return "Pendulum Synchro";
@@ -433,7 +439,8 @@ export function CardSearcherForm() {
 				if (isSynchro) return "Synchro";
 				if (isFusion) return "Fusion";
 				if (isRitual) return "Ritual";
-			if (isEffect) return "Effect";
+        if (isEffect) return "Effect";
+        if (isToken) return "Token";
 			return "Normal";
 			};
 

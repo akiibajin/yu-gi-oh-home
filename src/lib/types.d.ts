@@ -85,6 +85,8 @@ export type YugiohDescriptionTextSize = "small" | "normal" | "big";
 
 export type YugiohCardType = "Monster" | "Spell" | "Trap" | "Field";
 
+export type YugiohTemplate = "primary" | "secondary";
+
 export type YugiohRarity =
 	| "Common"
 	| "Rare"
@@ -136,6 +138,7 @@ export interface YugiohCardDraft {
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 	imgRotationDeg?: number;
 	descriptionImageOpacity?: number;
+	template?: YugiohTemplate;
 	overframe?: boolean;
 	fullArt?: boolean;
 	overframeImg: Blob | string | null;

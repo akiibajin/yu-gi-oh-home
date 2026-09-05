@@ -1,0 +1,9 @@
+.card-description {
+  /* Fallback: unsupported browsers ignore text-fit and keep this base size. */
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: pre-line;
+  /* Chromium 150+ only. Fits the block's text to its width, scaling all
+     lines consistently (pendulum + monster description together). */
+  text-fit: shrink consistent;
+}

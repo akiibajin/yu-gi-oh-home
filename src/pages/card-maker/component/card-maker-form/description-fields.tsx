@@ -18,13 +18,14 @@ export function CardMakerDescriptionFields(props: {
 	descriptionImageOpacity: number | undefined;
 	onDescriptionImageOpacityChange: (value: number | undefined) => void;
 	descriptionTextColor?: YugiohDescriptionTextColor;
-	onDescriptionTextColorChange?: (value: YugiohDescriptionTextColor) => void;
+	onDescriptionTextColorChange: (value: YugiohDescriptionTextColor) => void;
 	descriptionTextSize?: YugiohDescriptionTextSize;
-	onDescriptionTextSizeChange?: (value: YugiohDescriptionTextSize) => void;
+	onDescriptionTextSizeChange: (value: YugiohDescriptionTextSize) => void;
 	label: string;
 	value: string;
 	onInput: (value: string) => void;
-	placeholder: string;
+  placeholder: string;
+	isSecondaryTemplate: boolean;
 }) {
 	const {
 		showDescription,
@@ -38,22 +39,23 @@ export function CardMakerDescriptionFields(props: {
 		label,
 		value,
 		onInput,
-		placeholder,
+    placeholder,
+		isSecondaryTemplate
 	} = props;
 
 	return (
 		<div className="space-y-2 rounded-md border p-3 sm:p-4">
-			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-				<label className="text-sm font-medium" htmlFor="cm-show-description">
-					Mostrar descripción en la vista previa
-				</label>
-				<Switch
-					id="cm-show-description"
-					checked={showDescription}
-					onCheckedChange={onShowDescriptionChange}
-				/>
-			</div>
-			<div className="space-y-2">
+      {!isSecondaryTemplate && <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <label className="text-sm font-medium" htmlFor="cm-show-description">
+          Mostrar descripción en la vista previa
+        </label>
+        <Switch
+          id="cm-show-description"
+          checked={showDescription}
+          onCheckedChange={onShowDescriptionChange}
+        />
+      </div>}
+			{!isSecondaryTemplate && <div className="space-y-2">
 				<label className="text-sm font-medium" htmlFor="cm-description-opacity">
 					Opacidad de la imagen de descripción
 				</label>
@@ -85,11 +87,8 @@ export function CardMakerDescriptionFields(props: {
 						<SelectItem value="1">100%</SelectItem>
 					</SelectContent>
 				</Select>
-			</div>
-			{descriptionTextColor &&
-			onDescriptionTextColorChange &&
-			descriptionTextSize &&
-			onDescriptionTextSizeChange ? (
+			</div>}
+			{!isSecondaryTemplate ? (
 				<div className="grid gap-4 sm:grid-cols-2">
 					<div className="space-y-2 min-w-0">
 						<label

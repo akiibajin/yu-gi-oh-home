@@ -23,7 +23,7 @@ interface NumberCardLabelProps {
   className?: string;
 }
 function NumberCardLabel(props: NumberCardLabelProps) {
-  const { value, className } = props;
+  const { value, className} = props;
 
   if (value === null || value === undefined) return null;
   if (!Number.isFinite(value)) return null;

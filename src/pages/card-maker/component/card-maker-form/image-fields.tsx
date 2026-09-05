@@ -16,8 +16,9 @@ export function CardMakerImageFields(props: {
 	setDraftField: SetDraftField;
 	onImageUpload: (file: File | null) => void;
 	onOverframeImageUpload: (file: File | null) => void;
+	isSecondaryTemplate: boolean;
 }) {
-	const { draft, setDraftField, onImageUpload, onOverframeImageUpload } = props;
+	const { draft, setDraftField, onImageUpload, onOverframeImageUpload, isSecondaryTemplate } = props;
 
 	return (
 		<div className="space-y-3 rounded-md border p-3 sm:p-4">
@@ -96,19 +97,19 @@ export function CardMakerImageFields(props: {
 				</div>
 			) : null}
 
-			<div className="flex items-center justify-between gap-2 pt-2">
-				<label className="text-sm font-medium" htmlFor="cm-overframe">
-					Overframe
-				</label>
-				<Switch
-					id="cm-overframe"
-					checked={draft.overframe ?? false}
-					onCheckedChange={(checked: boolean) => {
-						setDraftField("overframe", checked);
-						if (!checked) setDraftField("overframeImg", null);
-					}}
-				/>
-			</div>
+      {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
+        <label className="text-sm font-medium" htmlFor="cm-overframe">
+          Overframe
+        </label>
+        <Switch
+          id="cm-overframe"
+          checked={draft.overframe ?? false}
+          onCheckedChange={(checked: boolean) => {
+            setDraftField("overframe", checked);
+            if (!checked) setDraftField("overframeImg", null);
+          }}
+        />
+      </div>}
 
 			{draft.overframe ? (
 				<div className="space-y-2">
@@ -188,18 +189,18 @@ export function CardMakerImageFields(props: {
 				</div>
 			) : null}
 
-			<div className="flex items-center justify-between gap-2 pt-2">
-				<label className="text-sm font-medium" htmlFor="cm-full-art">
-					Utilizar imagen como full art
-				</label>
-				<Switch
-					id="cm-full-art"
-					checked={draft.fullArt ?? false}
-					onCheckedChange={(checked: boolean) =>
-						setDraftField("fullArt", checked)
-					}
-				/>
-			</div>
+      {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
+        <label className="text-sm font-medium" htmlFor="cm-full-art">
+          Utilizar imagen como full art
+        </label>
+        <Switch
+          id="cm-full-art"
+          checked={draft.fullArt ?? false}
+          onCheckedChange={(checked: boolean) =>
+            setDraftField("fullArt", checked)
+          }
+        />
+      </div>}
 		</div>
 	);
 }

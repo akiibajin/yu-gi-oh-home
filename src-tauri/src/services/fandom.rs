@@ -66,104 +66,104 @@ fn strip_ref_tags(input: &str) -> String {
 }
 
 fn strip_wiki_markup(mut input: String) -> String {
-	input = strip_ref_tags(&input);
+    input = strip_ref_tags(&input);
 
-	// Line breaks and bold/italic markup, stripped in a single pass to avoid
-	// allocating an intermediate String per replacement.
-	let mut out = String::with_capacity(input.len());
-	let bytes = input.as_bytes();
-	let mut i = 0;
-	while i < input.len() {
-		if bytes[i] == b'<' {
-			if bytes[i..].starts_with(b"<br />") {
-				out.push('\n');
-				i += b"<br />".len();
-				continue;
-			}
-			if bytes[i..].starts_with(b"<br/>") {
-				out.push('\n');
-				i += b"<br/>".len();
-				continue;
-			}
-			if bytes[i..].starts_with(b"<br>") {
-				out.push('\n');
-				i += b"<br>".len();
-				continue;
-			}
-		}
-		if bytes[i] == b'\'' {
-			if bytes[i..].starts_with(b"'''") {
-				i += b"'''".len();
-				continue;
-			}
-			if bytes[i..].starts_with(b"''") {
-				i += b"''".len();
-				continue;
-			}
-		}
-		let ch = input[i..].chars().next().expect("i is on a char boundary");
-		out.push(ch);
-		i += ch.len_utf8();
-	}
+    // Line breaks and bold/italic markup, stripped in a single pass to avoid
+    // allocating an intermediate String per replacement.
+    let mut out = String::with_capacity(input.len());
+    let bytes = input.as_bytes();
+    let mut i = 0;
+    while i < input.len() {
+        if bytes[i] == b'<' {
+            if bytes[i..].starts_with(b"<br />") {
+                out.push('\n');
+                i += b"<br />".len();
+                continue;
+            }
+            if bytes[i..].starts_with(b"<br/>") {
+                out.push('\n');
+                i += b"<br/>".len();
+                continue;
+            }
+            if bytes[i..].starts_with(b"<br>") {
+                out.push('\n');
+                i += b"<br>".len();
+                continue;
+            }
+        }
+        if bytes[i] == b'\'' {
+            if bytes[i..].starts_with(b"'''") {
+                i += b"'''".len();
+                continue;
+            }
+            if bytes[i..].starts_with(b"''") {
+                i += b"''".len();
+                continue;
+            }
+        }
+        let ch = input[i..].chars().next().expect("i is on a char boundary");
+        out.push(ch);
+        i += ch.len_utf8();
+    }
 
-	// Replace wiki links: [[A|B]] -> B, [[A]] -> A
-	let mut link_stripped = String::with_capacity(out.len());
-	let mut j = 0;
-	while j < out.len() {
-		let rest = &out[j..];
-		if rest.starts_with("[[") {
-			if let Some(end) = rest.find("]]") {
-				let inner = &rest[2..end];
-				let display = inner.rsplit('|').next().unwrap_or(inner);
-				link_stripped.push_str(display);
-				j += end + 2;
-				continue;
-			}
-		}
-		let ch = rest.chars().next().expect("j is on a char boundary");
-		link_stripped.push(ch);
-		j += ch.len_utf8();
-	}
+    // Replace wiki links: [[A|B]] -> B, [[A]] -> A
+    let mut link_stripped = String::with_capacity(out.len());
+    let mut j = 0;
+    while j < out.len() {
+        let rest = &out[j..];
+        if rest.starts_with("[[") {
+            if let Some(end) = rest.find("]]") {
+                let inner = &rest[2..end];
+                let display = inner.rsplit('|').next().unwrap_or(inner);
+                link_stripped.push_str(display);
+                j += end + 2;
+                continue;
+            }
+        }
+        let ch = rest.chars().next().expect("j is on a char boundary");
+        link_stripped.push(ch);
+        j += ch.len_utf8();
+    }
 
-	decode_basic_html_entities(link_stripped.trim())
+    decode_basic_html_entities(link_stripped.trim())
 }
 
 fn find_ascii_case_insensitive(haystack: &str, needle: &str) -> Option<usize> {
-	if needle.is_empty() {
-		return Some(0);
-	}
-	let hb = haystack.as_bytes();
-	let nb = needle.as_bytes();
-	hb.windows(nb.len()).position(|w| {
-		w.iter()
-			.zip(nb.iter())
-			.all(|(a, b)| a.eq_ignore_ascii_case(b))
-	})
+    if needle.is_empty() {
+        return Some(0);
+    }
+    let hb = haystack.as_bytes();
+    let nb = needle.as_bytes();
+    hb.windows(nb.len()).position(|w| {
+        w.iter()
+            .zip(nb.iter())
+            .all(|(a, b)| a.eq_ignore_ascii_case(b))
+    })
 }
 
 fn extract_template_param(content: &str, param: &str) -> Option<String> {
-	// We intentionally keep this lightweight (no regex dep).
-	// Strategy:
-	// 1) Find "| <param>" (case-insensitively, without copying the whole content)
-	// 2) From there, find '=' and take everything after it
-	// 3) Stop at the next line that starts with "|" (template next param) or end
+    // We intentionally keep this lightweight (no regex dep).
+    // Strategy:
+    // 1) Find "| <param>" (case-insensitively, without copying the whole content)
+    // 2) From there, find '=' and take everything after it
+    // 3) Stop at the next line that starts with "|" (template next param) or end
 
-	let needle = format!("| {}", param.to_lowercase());
-	let start = find_ascii_case_insensitive(content, &needle)?;
+    let needle = format!("| {}", param.to_lowercase());
+    let start = find_ascii_case_insensitive(content, &needle)?;
 
-	let after_start = &content[start..];
-	let eq_rel = after_start.find('=')?;
-	let value_start = start + eq_rel + 1;
+    let after_start = &content[start..];
+    let eq_rel = after_start.find('=')?;
+    let value_start = start + eq_rel + 1;
 
-	let value_rest = &content[value_start..];
+    let value_rest = &content[value_start..];
 
-	let mut end = value_rest.len();
-	for (idx, _) in value_rest.match_indices("\n|") {
-		end = idx;
-		break;
-	}
+    let mut end = value_rest.len();
+    for (idx, _) in value_rest.match_indices("\n|") {
+        end = idx;
+        break;
+    }
 
-	Some(value_rest[..end].trim().to_string()).filter(|s| !s.is_empty())
+    Some(value_rest[..end].trim().to_string()).filter(|s| !s.is_empty())
 }
 
 pub async fn fetch_spanish_name_and_lore(
@@ -384,7 +384,14 @@ fn extract_card_type_from_carta(html: &str) -> Option<String> {
     } else if carta_value.contains("Carta de Trampa") {
         Some("Trap".to_string())
     } else if carta_value.contains("Carta M\u{e1}gica") || carta_value.contains("Carta Mágica") {
-        Some("Spell".to_string())
+        let is_field = extract_field_by_label(html, "Icono")
+            .map(|icono| icono.eq_ignore_ascii_case("De campo"))
+            .unwrap_or(false);
+        if is_field {
+            Some("Field".to_string())
+        } else {
+            Some("Spell".to_string())
+        }
     } else if carta_value.contains("Monstruo de Efecto") {
         Some("Effect Monster".to_string())
     } else if carta_value.contains("Monstruo Normal") {
@@ -403,6 +410,8 @@ fn extract_card_type_from_carta(html: &str) -> Option<String> {
         Some("Link Monster".to_string())
     } else if carta_value.contains("Monstruo de Ritual") {
         Some("Ritual Monster".to_string())
+    } else if carta_value.contains("Ficha") {
+        Some("Token".to_string())
     } else {
         None
     }
@@ -415,10 +424,7 @@ fn extract_card_type_from_carta(html: &str) -> Option<String> {
 ///   "Según el manga/anime original, el efecto de ... es el siguiente:"
 /// followed by a `<table>` with the effect text in a cell.
 fn extract_anime_effect(html: &str) -> Option<String> {
-    const ANIME_EFFECT_PREFIXES: [&str; 2] = [
-        "Seg\u{fa}n el anime",
-        "Seg\u{fa}n el manga/anime",
-    ];
+    const ANIME_EFFECT_PREFIXES: [&str; 2] = ["Seg\u{fa}n el anime", "Seg\u{fa}n el manga/anime"];
 
     for prefix in ANIME_EFFECT_PREFIXES {
         let mut search_from = 0;
@@ -689,4 +695,53 @@ pub async fn fetch_wiki_card_data(
         anime_effect,
         image_url,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::extract_card_type_from_carta;
+
+    #[test]
+    fn detects_field_spell_by_icono_label() {
+        // The Icono field on field spells is a plain <h3> label without a
+        // data-source attribute, and its value is "De campo".
+        let html = r#"
+            <div class="pi-item" data-source="carta">
+                <h3 class="pi-data-label pi-secondary-font">Tipo</h3>
+                <div class="pi-data-value pi-font"><div class="data data-color">
+                    <a href="/es/wiki/Carta_M%C3%A1gica">Carta Mágica</a>
+                </div></div>
+            </div>
+            <div class="pi-item"><h3 class="pi-data-label pi-secondary-font"> Icono </h3>
+                <div class="pi-data-value pi-font"><div class="data data-color">
+                    <span><img alt="Icono de campo" src="icono"/></span> De campo
+                </div></div>
+            </div>
+        "#;
+        assert_eq!(
+            extract_card_type_from_carta(html).as_deref(),
+            Some("Field")
+        );
+    }
+
+    #[test]
+    fn keeps_regular_spell_when_not_field() {
+        let html = r#"
+            <div class="pi-item" data-source="carta">
+                <h3 class="pi-data-label pi-secondary-font">Tipo</h3>
+                <div class="pi-data-value pi-font"><div class="data data-color">
+                    <a href="/es/wiki/Carta_M%C3%A1gica">Carta Mágica</a>
+                </div></div>
+            </div>
+            <div class="pi-item"><h3 class="pi-data-label pi-secondary-font"> Icono </h3>
+                <div class="pi-data-value pi-font"><div class="data data-color">
+                    <span><img alt="Icono mágica" src="icono"/></span> Normal
+                </div></div>
+            </div>
+        "#;
+        assert_eq!(
+            extract_card_type_from_carta(html).as_deref(),
+            Some("Spell")
+        );
+    }
 }

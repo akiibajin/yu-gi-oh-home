@@ -59,7 +59,7 @@ export function CardNameDisplay(props: {
       ) : null}
       <div
         className={cn(
-          "relative z-20 flex flex-1 w-full max-w-80 justify-center items-center",
+          "relative z-20 flex flex-1 w-full max-w-75 justify-center items-center",
           showNameBox && nameBgUrl ? "mx-auto h-10" : undefined,
         )}
         ref={containerRef}
