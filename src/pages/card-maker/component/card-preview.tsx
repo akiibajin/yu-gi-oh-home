@@ -5,7 +5,7 @@ import {
   YUGIOH_ATTRIBUTES,
 } from "@/lib/constants";
 import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
-import getTypeCardBg, { BOX_TEXTURES } from "@/lib/get-type-card-bg";
+import getTypeCardBg from "@/lib/get-type-card-bg";
 import getSecondaryTemplate from "@/lib/get-secondary-template";
 import { cardDraftSignal } from "@/pages/card-maker/state";
 import { useEffect, useMemo, useState } from "preact/hooks";
