@@ -199,9 +199,10 @@ export function CardPreview(props: CardPreviewProps) {
         {imgUrl && (
           <div
             className={cn(
-              "absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.4rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
+              "absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.42rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
               draft.objectFit === "contain" && "bg-black",
-              isSecondaryTemplate && "h-99.25 top-3.25 translate-y-0"
+              isSecondaryTemplate && "top-3.25 translate-y-0",
+              isSecondaryTemplate ? size === "large" ? "h-101" : "h-99.25" : ""
             )}
           >
             <img

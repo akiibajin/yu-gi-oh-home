@@ -4,10 +4,20 @@ mod services;
 
 use std::time::Duration;
 
+fn updater_plugin() -> tauri_plugin_updater::Builder {
+    let mut builder = tauri_plugin_updater::Builder::new();
+    if let Some(token) = option_env!("TAURI_UPDATER_GITHUB_TOKEN").filter(|t| !t.is_empty()) {
+        builder = builder
+            .header("Authorization", format!("Bearer {token}"))
+            .expect("invalid updater Authorization header");
+    }
+    builder
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(updater_plugin().build())
         .plugin(tauri_plugin_opener::init())
         .manage(
             reqwest::Client::builder()

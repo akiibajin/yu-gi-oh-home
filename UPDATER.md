@@ -2,11 +2,55 @@
 
 This app uses [Tauri Updater](https://v2.tauri.app/plugin/updater/) to deliver automatic updates via GitHub Releases.
 
+The release repo is **private**, so the updater authenticates every request (both the `latest.json` check and the installer download) with a GitHub token baked in at build time.
+
 ## How it works
 
 1. On launch, the app checks `latest.json` from the GitHub releases endpoint
 2. If a newer version is available, the user is prompted to update
 3. The update is downloaded and installed silently in the background
+
+## Private repo token
+
+The updater sends `Authorization: Bearer <token>` on every request. The token is embedded into the binary at compile time from the `TAURI_UPDATER_GITHUB_TOKEN` build env var.
+
+### 1. Create a token
+
+- GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token
+- Repository access: **Only select repositories** → `yu-gi-oh-card-maker`
+- Repository permissions → **Contents**: **Read-only**
+- Copy the `github_pat_...` value
+
+### 2. Set the env var
+
+Local builds pick it up automatically from a git-ignored file (repo root):
+
+```bash
+# .env.local (NOT committed)
+TAURI_UPDATER_GITHUB_TOKEN=github_pat_...
+```
+
+Or export it directly before building:
+
+```powershell
+# PowerShell
+$env:TAURI_UPDATER_GITHUB_TOKEN = "github_pat_..."
+```
+
+```bash
+# bash / zsh
+export TAURI_UPDATER_GITHUB_TOKEN="github_pat_..."
+```
+
+If the variable is unset or empty, the updater runs unauthenticated (e.g. for a public repo).
+
+### 3. CI/CD (GitHub Actions)
+
+The release workflow already forwards `TAURI_UPDATER_GITHUB_TOKEN`. Add it as a repository secret (`Settings > Secrets and variables > Actions`):
+
+- `TAURI_UPDATER_GITHUB_TOKEN` — the fine-grained token
+
+> Note: a token baked into a client binary can be extracted by anyone who has the app. Only give it read access to this one repo.
 
 ## Configuration
 
