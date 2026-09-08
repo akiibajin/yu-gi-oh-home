@@ -40,7 +40,7 @@
       },
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEwRUI5MkMzNDI4Rjk0RTgKUldUb2xJOUN3NUxyb0VmeVU2NlFVbFdlVU1pZStVN21VNGNyNlRpemtKRUhyYXZEVXEyVThTU3UK",
       "endpoints": [
-        "https://github.com/akiibajin/yu-gi-oh-card-maker/releases/latest/download/latest.json"
+        "https://github.com/akiibajin/yu-gi-oh-home/releases/latest/download/latest.json"
       ]
     }
   }
