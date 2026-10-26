@@ -576,7 +576,7 @@ export function CardSearcherForm() {
 									const preview = img.image_url_cropped ?? img.image_url;
 									return (
 										<button
-											key={img.id ?? idx}
+											key={idx}
 											type="button"
 											onClick={() => {
 												setSelectedImageIndex(idx);
