@@ -604,23 +604,132 @@ pub async fn fetch_wiki_card_data(
     client: &reqwest::Client,
     url: &str,
 ) -> anyhow::Result<WikiCardData> {
-    let resp = client
-        .get(url)
-        .header(
-            reqwest::header::USER_AGENT,
-            "yu-gi-oh-home/0.1 (+https://github.com)",
-        )
-        .send()
-        .await
-        .context("wiki page request failed")?;
+    let mut html = String::new();
+    let mut fetched_via_api = false;
 
-    let status = resp.status();
-    if !status.is_success() {
-        let body = resp.text().await.unwrap_or_default();
-        return Err(anyhow::anyhow!("wiki returned {status}: {body}"));
+    // Try MediaWiki API first to avoid Cloudflare challenges
+    if url.contains("fandom.com") {
+        if let Some(page) = url.split("/wiki/").nth(1) {
+            let title = page.split('?').next().unwrap_or(page);
+            if !title.is_empty() {
+                // Try Spanish wiki API first
+                let mut api_url = reqwest::Url::parse("https://yugioh.fandom.com/es/api.php")
+                    .context("failed to parse fandom api url")?;
+                {
+                    let mut qp = api_url.query_pairs_mut();
+                    qp.append_pair("action", "parse");
+                    qp.append_pair("format", "json");
+                    qp.append_pair("formatversion", "2");
+                    qp.append_pair("prop", "text");
+                    qp.append_pair("page", title);
+                }
+                eprintln!("[fandom] trying API parse: url={}", api_url);
+                if let Ok(resp) = client
+                    .get(api_url.clone())
+                    .header(
+                        reqwest::header::USER_AGENT,
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    )
+                    .header(reqwest::header::ACCEPT, "application/json,text/html,*/*;q=0.8")
+                    .send()
+                    .await
+                {
+                    let status = resp.status();
+                    eprintln!("[fandom] api response: status={} url={}", status, api_url);
+                    if status.is_success() {
+                        if let Ok(body) = resp.text().await {
+                            if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
+                                if let Some(text) = json
+                                    .get("parse")
+                                    .and_then(|p| p.get("text"))
+                                    .and_then(|t| t.as_str())
+                                {
+                                    html = text.to_string();
+                                    fetched_via_api = true;
+                                    eprintln!("[fandom] got HTML via API parse: len={}", html.len());
+                                }
+                            }
+                        }
+                    }
+                }
+                // If API failed, try non-es API
+                if !fetched_via_api {
+                    let mut api_url2 = reqwest::Url::parse("https://yugioh.fandom.com/api.php")
+                        .context("failed to parse fandom api url")?;
+                    {
+                        let mut qp = api_url2.query_pairs_mut();
+                        qp.append_pair("action", "parse");
+                        qp.append_pair("format", "json");
+                        qp.append_pair("formatversion", "2");
+                        qp.append_pair("prop", "text");
+                        qp.append_pair("page", title);
+                    }
+                    eprintln!("[fandom] trying API parse (non-es): url={}", api_url2);
+                    if let Ok(resp) = client
+                        .get(api_url2.clone())
+                        .header(
+                            reqwest::header::USER_AGENT,
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                        )
+                        .header(reqwest::header::ACCEPT, "application/json,text/html,*/*;q=0.8")
+                        .send()
+                        .await
+                    {
+                        let status = resp.status();
+                        eprintln!("[fandom] api response (non-es): status={} url={}", status, api_url2);
+                        if status.is_success() {
+                            if let Ok(body) = resp.text().await {
+                                if let Ok(json) = serde_json::from_str::<serde_json::Value>(&body) {
+                                    if let Some(text) = json
+                                        .get("parse")
+                                        .and_then(|p| p.get("text"))
+                                        .and_then(|t| t.as_str())
+                                    {
+                                        html = text.to_string();
+                                        fetched_via_api = true;
+                                        eprintln!("[fandom] got HTML via API parse (non-es): len={}", html.len());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    let html = resp.text().await.context("failed to read wiki page body")?;
+    if !fetched_via_api {
+        eprintln!("[fandom] fetching wiki page directly: url={}", url);
+        let resp = client
+            .get(url)
+            .header(
+                reqwest::header::USER_AGENT,
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            )
+            .header(reqwest::header::ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
+            .header(reqwest::header::ACCEPT_LANGUAGE, "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7")
+            .header(reqwest::header::ACCEPT_ENCODING, "gzip, deflate, br")
+            .header(reqwest::header::CONNECTION, "keep-alive")
+            .header(reqwest::header::UPGRADE_INSECURE_REQUESTS, "1")
+            .header("Sec-Fetch-Dest", "document")
+            .header("Sec-Fetch-Mode", "navigate")
+            .header("Sec-Fetch-Site", "none")
+            .header("Sec-Fetch-User", "?1")
+            .send()
+            .await
+            .context("wiki page request failed")?;
+
+        let status = resp.status();
+        eprintln!("[fandom] wiki response: status={} url={} headers={:?}", status, url, resp.headers());
+        if !status.is_success() {
+            let body = resp.text().await.unwrap_or_default();
+            eprintln!("[fandom] wiki request failed: status={} url={} body={}", status, url, body);
+            return Err(anyhow::anyhow!("wiki returned {status}: {body}"));
+        }
+
+        html = resp.text().await.context("failed to read wiki page body")?;
+        eprintln!("[fandom] fetched wiki page directly: url={} status={} len={}", url, status, html.len());
+    }
 
     let name = extract_infobox_field(&html, "nombre");
     let english_name = extract_infobox_field(&html, "ingl\u{e9}s");

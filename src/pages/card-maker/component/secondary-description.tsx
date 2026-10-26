@@ -39,20 +39,21 @@ export function SecondaryDescription(props: SecondaryDescriptionProps) {
       const height = container.clientHeight;
       if (width <= 0 || height <= 0) return;
 
-      let low = minSize;
-      let high = maxSize;
-      let fitted = minSize;
+      let low = Math.round(minSize * 2);
+      let high = Math.round(maxSize * 2);
+      let fittedHalf = low;
       while (low <= high) {
-        const size = Math.round((low + high) / 2);
+        const midHalf = Math.floor((low + high) / 2);
+        const size = midHalf / 2;
         text.style.fontSize = `${size}px`;
         if (text.scrollWidth <= width && text.scrollHeight <= height) {
-          fitted = size;
-          low = size + 1;
+          fittedHalf = midHalf;
+          low = midHalf + 1;
         } else {
-          high = size - 1;
+          high = midHalf - 1;
         }
       }
-      text.style.fontSize = `${fitted}px`;
+      text.style.fontSize = `${fittedHalf / 2}px`;
     };
 
     fit();
