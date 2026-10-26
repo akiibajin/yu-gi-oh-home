@@ -15,6 +15,7 @@ import { fetchWikiCardData, fetchSpanishNameAndLore, type WikiCardData } from "@
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import { canInvokeTauri } from "@/lib/tauri/can-invoke-tauri";
 import { cardDraftSignal } from "@/pages/card-maker/state";
+import { cn } from "@/lib/utils";
 import type {
 	YugiohCardAttribute,
 	YugiohCardType,
@@ -133,6 +134,7 @@ export function CardSearcherForm() {
 	const [selectedPreviewUrl, setSelectedPreviewUrl] = useState<string | null>(
 		null,
 	);
+	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 	const [applying, setApplying] = useState(false);
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -181,6 +183,7 @@ export function CardSearcherForm() {
 	const selectFromDropdown = (card: YgoprodeckCard) => {
 		setDropdownOpen(false);
 		setSelectedCard(card);
+		setSelectedImageIndex(0);
 		setSelectedPreviewUrl(card.card_images?.[0]?.image_url_cropped ?? card.card_images?.[0]?.image_url ?? null);
 	};
 
@@ -202,7 +205,8 @@ export function CardSearcherForm() {
 				card.desc ?? "",
 			);
 
-			const imgUrl = card.card_images?.[0]?.image_url_cropped ?? card.card_images?.[0]?.image_url ?? null;
+			const selectedImg = card.card_images?.[selectedImageIndex] ?? card.card_images?.[0];
+			const imgUrl = selectedImg?.image_url_cropped ?? selectedImg?.image_url ?? card.card_images?.[0]?.image_url_cropped ?? card.card_images?.[0]?.image_url ?? null;
 			let img: Blob | string | null = null;
 			if (imgUrl) {
 				img = (await fetchImageAsBlob(imgUrl)) ?? imgUrl;
@@ -564,6 +568,37 @@ export function CardSearcherForm() {
 								alt={selectedCard.name}
 								className="w-40 rounded-md shadow-md"
 							/>
+						) : null}
+						{selectedCard.card_images && selectedCard.card_images.length > 1 ? (
+							<div className="flex flex-wrap justify-center gap-2">
+								{selectedCard.card_images.map((img, idx) => {
+									const thumb = img.image_url_small ?? img.image_url_cropped ?? img.image_url;
+									const preview = img.image_url_cropped ?? img.image_url;
+									return (
+										<button
+											key={img.id ?? idx}
+											type="button"
+											onClick={() => {
+												setSelectedImageIndex(idx);
+												setSelectedPreviewUrl(preview ?? null);
+											}}
+											className={cn(
+												"rounded border p-0.5 transition",
+												selectedImageIndex === idx
+													? "border-primary ring-1 ring-primary"
+													: "border-transparent hover:border-muted-foreground/50",
+											)}
+										>
+											<img
+												src={thumb}
+												alt={`${selectedCard.name} variante ${idx + 1}`}
+												className="size-12 rounded object-cover"
+												loading="lazy"
+											/>
+										</button>
+									);
+								})}
+							</div>
 						) : null}
 						<div className="text-center">
 							<div className="font-medium">{selectedCard.name}</div>

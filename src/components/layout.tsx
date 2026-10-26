@@ -133,7 +133,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 			</footer>
 			<ToastContainer aria-label="Notifications" />
 			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
-				v 6.1.4
+				v 6.2.0
 			</span>
 		</div>
 	);
