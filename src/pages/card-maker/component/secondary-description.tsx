@@ -64,7 +64,7 @@ export function SecondaryDescription(props: SecondaryDescriptionProps) {
     <>
       {isNumber && (
         <NumberCardLabel
-          className={cn("top-90 right-5")}
+          className={cn("top-95 right-5")}
           value={numberLabelValue}
         />
       )}
@@ -74,7 +74,7 @@ export function SecondaryDescription(props: SecondaryDescriptionProps) {
       />}
     <div
       ref={containerRef}
-      className={cn("w-full relative z-2 text-black overflow-hidden", isPendulum ? "h-43.5" : "h-38")}
+      className={cn("w-full relative z-2 text-black overflow-hidden", isPendulum ? "h-43.5" : "h-32.25")}
     >
       <p
         ref={textRef}

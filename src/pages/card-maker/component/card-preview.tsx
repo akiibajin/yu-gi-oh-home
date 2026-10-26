@@ -108,6 +108,23 @@ export function CardPreview(props: CardPreviewProps) {
       )
     : "";
   const iconFallback = SPELL_ICONS.Normal;
+
+  const getSecondaryImgSize = () => {
+    if (!isSecondaryTemplate) return;
+    if (!isMonster) {
+      return size === "large" ? "top-3.25! h-106.75" : "top-3.25! h-105"
+    }
+    if (isPendulum) {
+      if (size === "large") {
+        return "h-81.5"
+      }
+      return "h-80"
+    }
+    if (size === "large") {
+      return "h-93.5"
+    }
+    return "h-92"
+  }
   useEffect(() => {
     if (!draft.img) {
       setImgUrl(null);
@@ -137,6 +154,7 @@ export function CardPreview(props: CardPreviewProps) {
       }
     };
   }, [draft.img]);
+
 
   useEffect(() => {
     if (!draft.overframeImg) {
@@ -179,7 +197,7 @@ export function CardPreview(props: CardPreviewProps) {
       <div
         className={cn(
           "relative px-5 flex flex-col gap-0.5 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
-          size === "large" && "w-[448px] h-[626px]",
+          size === "large" && "w-md h-156.5",
           isSecondaryTemplate && "gap-0"
         )}
         id="card-preview"
@@ -201,8 +219,8 @@ export function CardPreview(props: CardPreviewProps) {
             className={cn(
               "absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.42rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
               draft.objectFit === "contain" && "bg-black",
-              isSecondaryTemplate && "top-3.25 translate-y-0",
-              isSecondaryTemplate ? size === "large" ? "h-101" : "h-99.25" : ""
+              isSecondaryTemplate && "top-16.25 translate-y-0",
+              isSecondaryTemplate && getSecondaryImgSize(),
             )}
           >
             <img
@@ -237,9 +255,10 @@ export function CardPreview(props: CardPreviewProps) {
             className={cn(
               "absolute top-3.25 left-0 w-full flex h-12",
               isLink ? "justify-start" : "justify-between",
+              isSecondaryTemplate && "top-1.5"
             )}
           >
-            {draft.showStatsBox !== false && (
+            {!isSecondaryTemplate && draft.showStatsBox !== false && (
               <img
                 className={cn(
                   "w-full opacity-70 absolute",
