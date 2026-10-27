@@ -9,6 +9,7 @@ export type StoreCardMakerImageResponse = {
 
 export type StoreCardMakerImageOptions = {
 	folderName?: string;
+	format?: string;
 };
 
 export async function getCardMakerImagesDir(opts?: {
@@ -30,6 +31,7 @@ export async function storeCardMakerWebpById(
 	const trimmedId = id.trim();
 	if (!trimmedId) return undefined;
 	const folderName = opts?.folderName?.trim();
+	const format = opts?.format?.trim();
 
 	let bytes: Uint8Array;
 	if (input instanceof Uint8Array) {
@@ -45,6 +47,7 @@ export async function storeCardMakerWebpById(
 			id: trimmedId,
 			bytes: Array.from(bytes),
 			folder_name: folderName || null,
+			format: format || null,
 		},
 	});
 }

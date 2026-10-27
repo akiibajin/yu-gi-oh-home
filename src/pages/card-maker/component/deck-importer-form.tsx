@@ -547,6 +547,30 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 						</Select>
 					</div>
 
+					<div className="space-y-2">
+						<label className="text-sm font-medium" htmlFor="deck-export-format">
+							Formato de exportación
+						</label>
+						<Select
+							value={cardDraftSignal.value.exportFormat ?? "webp"}
+							onValueChange={(value: string) => {
+								cardDraftSignal.value = {
+									...cardDraftSignal.value,
+									exportFormat: value as "webp" | "png" | "jpg",
+								};
+							}}
+						>
+							<SelectTrigger id="deck-export-format" className="w-full">
+								<SelectValue placeholder="Selecciona un formato" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="webp">WebP</SelectItem>
+								<SelectItem value="png">PNG</SelectItem>
+								<SelectItem value="jpg">JPG</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+
 					<div className="flex items-center gap-2">
 						<Button
 							type="button"

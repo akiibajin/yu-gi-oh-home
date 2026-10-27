@@ -1,4 +1,4 @@
-use anyhow::Context;
+﻿use anyhow::Context;
 use std::path::PathBuf;
 use tauri::Manager;
 
@@ -25,13 +25,9 @@ fn sanitize_filename_stem(input: &str) -> String {
 }
 
 pub fn card_maker_images_dir(app: &tauri::AppHandle) -> anyhow::Result<PathBuf> {
-	// Windows requirement: keep images under Documents/card-maker-ims
 	let base_dir = if cfg!(target_os = "windows") {
 		app.path().document_dir().context("failed to resolve documents dir")?
 	} else if cfg!(target_os = "android") {
-		// Android: put exports under a user-visible Documents subfolder.
-		// This typically maps to the app-specific external Documents directory, so it
-		// remains writable without broad storage permissions.
 		let docs = app
 			.path()
 			.document_dir()
@@ -39,7 +35,6 @@ pub fn card_maker_images_dir(app: &tauri::AppHandle) -> anyhow::Result<PathBuf> 
 			.context("failed to resolve documents/app data dir")?;
 		docs.join("yu-gi-oh-home")
 	} else {
-		// Desktop fallback: prefer app data (private), but fall back to documents.
 		app.path()
 			.app_data_dir()
 			.or_else(|_| app.path().document_dir())
@@ -75,11 +70,27 @@ pub struct StoredCardMakerImage {
 	pub path: PathBuf,
 }
 
+fn normalize_format(format: Option<&str>) -> String {
+	match format {
+		Some(f) => {
+			let f = f.trim().to_ascii_lowercase();
+			match f.as_str() {
+				"png" => "png".to_string(),
+				"jpg" | "jpeg" => "jpg".to_string(),
+				"webp" => "webp".to_string(),
+				_ => "webp".to_string(),
+			}
+		}
+		None => "webp".to_string(),
+	}
+}
+
 pub fn store_card_maker_image(
 	app: &tauri::AppHandle,
 	bytes: &[u8],
 	id: &str,
 	folder_name: Option<&str>,
+	format: Option<&str>,
 ) -> anyhow::Result<StoredCardMakerImage> {
 	if bytes.is_empty() {
 		return Err(anyhow::anyhow!("image bytes are empty"));
@@ -89,10 +100,9 @@ pub fn store_card_maker_image(
 		return Err(anyhow::anyhow!("id is empty"));
 	}
 
-	// The card-maker export will always be WebP. We sanitize to ensure a safe filename
-	// (card names often include spaces and punctuation).
+	let fmt = normalize_format(format);
 	let stem = sanitize_filename_stem(id);
-	let filename = format!("{stem}.webp");
+	let filename = format!("{stem}.{fmt}");
 
 	let folder = folder_name
 		.map(str::trim)
@@ -103,7 +113,7 @@ pub fn store_card_maker_image(
 	#[cfg(target_os = "android")]
 	{
 		let folder_name = folder.as_deref();
-		match android_public_documents::store_webp_in_public_documents_with_folder(
+		match android_public_documents::store_image_in_public_documents_with_folder(
 			&filename,
 			bytes,
 			folder_name,
@@ -116,10 +126,7 @@ pub fn store_card_maker_image(
 				let path = PathBuf::from(uri);
 				return Ok(StoredCardMakerImage { dir, filename, path });
 			}
-			Err(_e) => {
-				// Fallback: keep exporting working even if public Documents writing fails.
-				// (e.g. OEM restrictions).
-			}
+			Err(_e) => {}
 		}
 	}
 

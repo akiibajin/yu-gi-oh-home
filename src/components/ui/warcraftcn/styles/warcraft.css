@@ -218,8 +218,13 @@
    ============================================ */
 
 @keyframes wc-icon-pulse {
-  0%, 100% { opacity: 0.03; }
-  50% { opacity: 0.08; }
+  0%,
+  100% {
+    opacity: 0.03;
+  }
+  50% {
+    opacity: 0.08;
+  }
 }
 
 /* Base icons - shared properties */
@@ -261,10 +266,164 @@
 }
 
 /* ============================================
+   SPINNER
+   ============================================ */
+
+@keyframes wc-spinner-core-light {
+  0%,
+  100% {
+    opacity: 0.2;
+    color: rgb(52 178 108 / 0.2);
+  }
+  25% {
+    opacity: 0.62;
+    color: rgb(56 186 114 / 0.62);
+  }
+  50% {
+    opacity: 0.98;
+    color: rgb(70 206 130 / 0.98);
+  }
+  75% {
+    opacity: 0.64;
+    color: rgb(57 190 116 / 0.64);
+  }
+}
+
+@keyframes wc-spinner-core-dark {
+  0%,
+  100% {
+    opacity: 0.2;
+    color: rgb(102 255 153 / 0.2);
+  }
+  25% {
+    opacity: 0.62;
+    color: rgb(110 255 159 / 0.62);
+  }
+  50% {
+    opacity: 0.98;
+    color: rgb(136 255 176 / 0.98);
+  }
+  75% {
+    opacity: 0.64;
+    color: rgb(112 255 161 / 0.64);
+  }
+}
+
+@keyframes wc-spinner-glow-light {
+  0%,
+  100% {
+    opacity: 0.08;
+    filter: blur(1.2px) drop-shadow(0 0 2px rgb(52 178 108 / 0.12))
+      drop-shadow(0 0 5px rgb(52 178 108 / 0.06));
+  }
+  25% {
+    opacity: 0.24;
+    filter: blur(1.6px) drop-shadow(0 0 6px rgb(56 186 114 / 0.28))
+      drop-shadow(0 0 14px rgb(56 186 114 / 0.14));
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(2.2px) drop-shadow(0 0 10px rgb(70 206 130 / 0.42))
+      drop-shadow(0 0 20px rgb(70 206 130 / 0.2));
+  }
+  75% {
+    opacity: 0.26;
+    filter: blur(1.7px) drop-shadow(0 0 7px rgb(57 190 116 / 0.3))
+      drop-shadow(0 0 15px rgb(57 190 116 / 0.14));
+  }
+}
+
+@keyframes wc-spinner-glow-dark {
+  0%,
+  100% {
+    opacity: 0.08;
+    filter: blur(1.2px) drop-shadow(0 0 2px rgb(102 255 153 / 0.12))
+      drop-shadow(0 0 5px rgb(102 255 153 / 0.06));
+  }
+  25% {
+    opacity: 0.24;
+    filter: blur(1.6px) drop-shadow(0 0 6px rgb(110 255 159 / 0.28))
+      drop-shadow(0 0 14px rgb(110 255 159 / 0.14));
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(2.2px) drop-shadow(0 0 10px rgb(130 255 172 / 0.42))
+      drop-shadow(0 0 20px rgb(130 255 172 / 0.2));
+  }
+  75% {
+    opacity: 0.26;
+    filter: blur(1.7px) drop-shadow(0 0 7px rgb(112 255 161 / 0.3))
+      drop-shadow(0 0 15px rgb(112 255 161 / 0.14));
+  }
+}
+
+.wc-spinner {
+  background: transparent;
+  color: rgb(52 178 108 / 0.95);
+  overflow: visible;
+}
+
+.dark .wc-spinner {
+  color: rgb(102 255 153 / 0.95);
+}
+
+@keyframes wc-spinner-flicker {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-0.03px) scale(1.0007);
+  }
+}
+
+.wc-spinner-wrap {
+  transform-origin: center;
+  animation: wc-spinner-flicker 3400ms linear infinite;
+}
+
+.wc-spinner-core {
+  transform-origin: center;
+  animation: wc-spinner-core-light 2600ms linear infinite;
+}
+
+.wc-spinner-glow {
+  transform-origin: center;
+  animation: wc-spinner-glow-light 2600ms linear infinite;
+}
+
+.dark .wc-spinner-core {
+  animation-name: wc-spinner-core-dark;
+}
+
+.dark .wc-spinner-glow {
+  animation-name: wc-spinner-glow-dark;
+}
+
+/* ============================================
    ACCESSIBILITY
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
+  .wc-spinner-wrap,
+  .wc-spinner-core,
+  .wc-spinner-glow,
+  .dark .wc-spinner-wrap,
+  .dark .wc-spinner-core,
+  .dark .wc-spinner-glow {
+    animation: none;
+  }
+
+  .wc-spinner-core,
+  .dark .wc-spinner-core {
+    opacity: 1;
+  }
+
+  .wc-spinner-glow,
+  .dark .wc-spinner-glow {
+    opacity: 0.35;
+  }
+
   .wc-skeleton-shimmer {
     animation: none;
   }
@@ -279,81 +438,545 @@
 }
 
 /* ============================================
-   WARCRAFT SCROLLBAR STYLES
+   TOOLTIP — Item Quality / Rarity Variants
    ============================================ */
 
-/* Webkit browsers (Chrome, Edge, Safari) */
-::-webkit-scrollbar {
-  width: 14px;
-  height: 14px;
+/* Shared tooltip background */
+.wc-tooltip-base {
+  background: linear-gradient(180deg, hsl(35 15% 8%) 0%, hsl(35 10% 5%) 100%);
 }
 
-::-webkit-scrollbar-track {
-  background: linear-gradient(
-    to right,
-    hsl(35 10% 8%) 0%,
-    hsl(35 8% 12%) 50%,
-    hsl(35 10% 8%) 100%
-  );
-  border-left: 1px solid hsl(35 20% 25%);
-  border-right: 1px solid hsl(35 10% 5%);
-  box-shadow: inset 0 0 6px hsl(0 0% 0% / 0.5);
+/* Default — gold/amber (Common) */
+.wc-tooltip {
+  border: 1px solid hsl(45 60% 35%);
+  box-shadow:
+    inset 0 0 8px hsl(45 50% 25% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    hsl(35 60% 45%) 0%,
-    hsl(35 50% 35%) 50%,
-    hsl(35 40% 25%) 100%
-  );
-  border: 2px solid hsl(35 30% 20%);
+/* Uncommon — muted green */
+.wc-tooltip-uncommon {
+  border: 1px solid hsl(120 35% 32%);
+  box-shadow:
+    inset 0 0 8px hsl(120 30% 28% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Rare — muted blue */
+.wc-tooltip-rare {
+  border: 1px solid hsl(220 50% 42%);
+  box-shadow:
+    inset 0 0 8px hsl(220 45% 38% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Epic — muted purple */
+.wc-tooltip-epic {
+  border: 1px solid hsl(280 40% 42%);
+  box-shadow:
+    inset 0 0 10px hsl(280 35% 38% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legendary — warm muted orange */
+.wc-tooltip-legendary {
+  border: 1px solid hsl(30 70% 40%);
+  box-shadow:
+    inset 0 0 10px hsl(30 60% 35% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* ============================================
+   Avatar FACTION VARIANTS
+   ============================================ */
+
+.wc-avatar-default {
+  --wc-frame-url: url("https://warcraftcn.com/warcraftcn/avatar-default.webp");
+}
+
+.wc-avatar-human {
+  --wc-frame-url: url("https://warcraftcn.com/warcraftcn/avatar-human.webp");
+}
+
+.wc-avatar-elf {
+  --wc-frame-url: url("https://warcraftcn.com/warcraftcn/avatar-elf.webp");
+}
+
+.wc-avatar-orc {
+  --wc-frame-url: url("https://warcraftcn.com/warcraftcn/avatar-orc.webp");
+}
+
+.wc-avatar-undead {
+  --wc-frame-url: url("https://warcraftcn.com/warcraftcn/avatar-undead.webp");
+}
+
+.wc-avatar-frame {
+  background-image: var(--wc-frame-url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* ============================================
+   Cursor FACTION VARIANTS
+   ============================================ */
+
+.wc-orc-cursor,
+.wc-orc-cursor * {
+  cursor: url("../assets/cursors/orc.cur"), auto;
+}
+
+.wc-human-cursor,
+.wc-human-cursor * {
+  cursor: url("../assets/cursors/human.cur"), auto;
+}
+
+.wc-elf-cursor,
+.wc-elf-cursor * {
+  cursor: url("../assets/cursors/elf.cur"), auto;
+}
+
+.wc-undead-cursor,
+.wc-undead-cursor * {
+  cursor: url("../assets/cursors/undead.cur"), auto;
+}
+
+/* checkbox.css */
+.wc-checkbox {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid transparent;
   border-radius: 4px;
-  box-shadow:
-    inset 0 1px 0 hsl(35 70% 55% / 0.5),
-    inset 0 -1px 0 hsl(35 20% 15% / 0.8),
-    0 2px 4px hsl(0 0% 0% / 0.4);
+  cursor: pointer;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    hsl(35 70% 55%) 0%,
-    hsl(35 60% 45%) 50%,
-    hsl(35 50% 35%) 100%
+.wc-checkbox:focus-visible {
+  outline: none;
+  border-color: hsl(45 100% 60%);
+  box-shadow: 0 0 0 3px hsl(45 100% 60% / 0.4);
+}
+
+.wc-checkbox[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wc-checkbox-default {
+  background-image: url("../assets/checkbox-default.webp");
+}
+.wc-checkbox-default[data-state="checked"] {
+  background-image: url("../assets/checkbox-default-checked.webp");
+}
+
+/* Human faction */
+.wc-checkbox-human {
+  background-image: url("../assets/checkbox-human.webp");
+}
+.wc-checkbox-human[data-state="checked"] {
+  background-image: url("../assets/checkbox-human-checked.webp");
+}
+
+/* Orc faction */
+.wc-checkbox-orc {
+  background-image: url("../assets/checkbox-orc.webp");
+}
+.wc-checkbox-orc[data-state="checked"] {
+  background-image: url("../assets/checkbox-orc-checked.webp");
+}
+
+/* Elf faction */
+.wc-checkbox-elf {
+  background-image: url("../assets/checkbox-elf.webp");
+}
+.wc-checkbox-elf[data-state="checked"] {
+  background-image: url("../assets/checkbox-elf-checked.webp");
+}
+
+/* Undead faction */
+.wc-checkbox-undead {
+  background-image: url("../assets/checkbox-undead.webp");
+}
+.wc-checkbox-undead[data-state="checked"] {
+  background-image: url("../assets/checkbox-undead-checked.webp");
+}
+
+/* ============================================
+   RADIO GROUP — Gem Socket Rune Style
+   ============================================ */
+
+/* Base gem socket - dark stone with metallic border */
+.wc-radio-socket {
+  all: unset;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  /* Dark stone socket */
+  background: radial-gradient(
+    circle at 40% 35%,
+    hsl(35 8% 18%) 0%,
+    hsl(35 6% 10%) 70%,
+    hsl(35 4% 6%) 100%
   );
-  border-color: hsl(35 40% 30%);
+
+  /* Metallic border ring */
   box-shadow:
-    inset 0 1px 0 hsl(35 80% 65% / 0.6),
-    inset 0 -1px 0 hsl(35 20% 15% / 0.8),
-    0 2px 6px hsl(35 70% 50% / 0.3);
+    inset 0 1px 3px hsl(0 0% 0% / 0.6),
+    inset 0 -1px 1px hsl(35 20% 30% / 0.2),
+    0 0 0 1.5px hsl(35 15% 28%),
+    0 0 0 2.5px hsl(35 10% 15%);
+  transition:
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(
-    180deg,
-    hsl(35 50% 35%) 0%,
-    hsl(35 40% 25%) 50%,
-    hsl(35 30% 20%) 100%
+/* Focus — gold magical glow */
+.wc-radio-socket:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 1px 3px hsl(0 0% 0% / 0.6),
+    inset 0 -1px 1px hsl(35 20% 30% / 0.2),
+    0 0 0 1.5px hsl(45 70% 50%),
+    0 0 0 3px hsl(45 80% 50% / 0.35),
+    0 0 12px hsl(45 100% 60% / 0.3);
+}
+
+/* Disabled */
+.wc-radio-socket[data-disabled],
+.wc-radio-socket:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Gem indicator (selected state) */
+
+.wc-radio-gem {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  /* Gold/amber gem gradient */
+  background: radial-gradient(
+    circle at 40% 35%,
+    hsl(48 100% 78%) 0%,
+    hsl(43 100% 60%) 40%,
+    hsl(38 90% 45%) 75%,
+    hsl(30 80% 35%) 100%
   );
+
+  /* Glow effect */
   box-shadow:
-    inset 0 2px 4px hsl(0 0% 0% / 0.5),
-    inset 0 -1px 0 hsl(35 20% 15% / 0.8);
+    0 0 4px hsl(45 100% 55% / 0.8),
+    0 0 10px hsl(45 100% 50% / 0.4),
+    inset 0 -1px 2px hsl(30 80% 30% / 0.4),
+    inset 0 1px 1px hsl(50 100% 85% / 0.5);
+  animation: wc-gem-pulse 2.5s ease-in-out infinite;
 }
 
-/* Scrollbar corner (where horizontal and vertical scrollbars meet) */
-::-webkit-scrollbar-corner {
-  background: hsl(35 8% 10%);
-  border-left: 1px solid hsl(35 20% 25%);
+/* Subtle pulse for living gem feel */
+@keyframes wc-gem-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 4px hsl(45 100% 55% / 0.8),
+      0 0 10px hsl(45 100% 50% / 0.4),
+      inset 0 -1px 2px hsl(30 80% 30% / 0.4),
+      inset 0 1px 1px hsl(50 100% 85% / 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 6px hsl(45 100% 55% / 1),
+      0 0 16px hsl(45 100% 50% / 0.55),
+      inset 0 -1px 2px hsl(30 80% 30% / 0.4),
+      inset 0 1px 1px hsl(50 100% 85% / 0.5);
+  }
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(35 50% 35%) hsl(35 8% 10%);
+@media (prefers-reduced-motion: reduce) {
+  .wc-radio-gem {
+    animation: none;
+  }
 }
 
-/* Hover effect for Firefox */
-*:hover {
-  scrollbar-color: hsl(35 60% 45%) hsl(35 8% 10%);
+/* ============================================
+   ACCORDION
+   ============================================ */
+
+.wc-accordion-medieval-icon--sword {
+  background-image: url("../assets/svg/sword.svg");
+  filter: brightness(0) saturate(100%) invert(83%) sepia(38%) saturate(1148%)
+    hue-rotate(349deg) brightness(102%) contrast(101%);
 }
+
+.wc-accordion-medieval-icon--shield {
+  background-image: url("../assets/svg/shield.svg");
+  filter: brightness(0) saturate(100%) invert(66%) sepia(30%) saturate(965%)
+    hue-rotate(171deg) brightness(92%) contrast(88%);
+}
+
+.wc-accordion-medieval-icon--rune-stone {
+  background-image: url("../assets/svg/rune-stone.svg");
+  filter: brightness(0) saturate(100%) invert(66%) sepia(18%) saturate(951%)
+    hue-rotate(253deg) brightness(94%) contrast(91%);
+}
+
+@keyframes wc-light-sweep {
+  from {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes wc-accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes wc-accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.wc-accordion-content-border {
+  border-image-source: url("../assets/accordion-content-bg.webp");
+}
+
+.wc-accordion-header-border {
+  border-image-source: url("../assets/accordion-header.webp");
+}
+/* Default Tab Faction */
+
+/* TAB BUTTON */
+.wc-tabs-default .wc-tab-trigger {
+  background-image: url("../assets/tabs/tab-list.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  height: 50px;
+}
+
+.wc-tab-trigger:focus-visible {
+  outline: 2px solid hsl(45 100% 60%);
+  outline-offset: 2px;
+}
+
+/* HOVER LIFT */
+.wc-tab-trigger:hover {
+  filter: brightness(1.25);
+}
+
+/* ACTIVE TAB */
+.wc-tabs-default .wc-tab-trigger[data-state="active"] {
+  background-image: url("../assets/tabs/tab-list-active.webp");
+}
+
+/* CONTENT PANEL */
+.wc-tabs-default .wc-tab-content {
+  background-image: url("../assets/tabs/tab-content.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Human Tab Faction */
+
+/* TAB BUTTON */
+.wc-tabs-human .wc-tab-trigger {
+  background-image: url("../assets/tabs/tab-list-human.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+
+/* ACTIVE TAB */
+.wc-tabs-human .wc-tab-trigger[data-state="active"] {
+  background-image: url("../assets/tabs/tab-list-active-human.webp");
+}
+
+/* CONTENT PANEL */
+.wc-tabs-human .wc-tab-content {
+  background-image: url("../assets/tabs/tab-content-human.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Orc Tab Faction */
+
+/* TAB BUTTON */
+.wc-tabs-orc .wc-tab-trigger {
+  background-image: url("../assets/tabs/tab-list-orc.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+
+/* ACTIVE TAB */
+.wc-tabs-orc .wc-tab-trigger[data-state="active"] {
+  background-image: url("../assets/tabs/tab-list-active-orc.webp");
+}
+
+/* CONTENT PANEL */
+.wc-tabs-orc .wc-tab-content {
+  background-image: url("../assets/tabs/tab-content-orc.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Elf Tab Faction */
+
+/* TAB BUTTON */
+.wc-tabs-elf .wc-tab-trigger {
+  background-image: url("../assets/tabs/tab-list-elf.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  color: var(--color-black);
+}
+
+/* ACTIVE TAB */
+.wc-tabs-elf .wc-tab-trigger[data-state="active"] {
+  background-image: url("../assets/tabs/tab-list-active-elf.webp");
+}
+
+/* CONTENT PANEL */
+.wc-tabs-elf .wc-tab-content {
+  background-image: url("../assets/tabs/tab-content-elf.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Undead Tab Faction */
+
+/* TAB BUTTON */
+.wc-tabs-undead .wc-tab-trigger {
+  background-image: url("../assets/tabs/tab-list-undead.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  color: var(--color-black);
+}
+
+/* ACTIVE TAB */
+.wc-tabs-undead .wc-tab-trigger[data-state="active"] {
+  background-image: url("../assets/tabs/tab-list-active-undead.webp");
+}
+
+/* CONTENT PANEL */
+.wc-tabs-undead .wc-tab-content {
+  background-image: url("../assets/tabs/tab-content-undead.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
+}
+
+/* Label and Content */
+.tab-label-base {
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.tab-label-vertical {
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+ .scroll-handle-default {
+   background-image: url('../assets/toast/scroll-handle.png');
+   background-size: 100% 100%;
+ }
+
+ .scroll-handle-human {
+   background-image: url('../assets/toast/scroll-handle-human.png');
+   background-size: 100% 100%;
+ }
+
+ .scroll-handle-undead {
+   background-image: url('../assets/toast/scroll-handle-undead.png');
+   background-size: 100% 100%;
+ }
+
+ .scroll-handle-orc {
+   background-image: url('../assets/toast/scroll-handle-orc.png');
+   background-size: 100% 100%;
+ }
+
+ .scroll-handle-elf {
+   background-image: url('../assets/toast/scroll-handle-elf.png');
+   background-size: 100% 100%;
+ }
+
+ .scroll-handle-flip {
+   transform: scaleX(-1);
+ }
+
+ .scroll-center-default {
+   background-image: url('../assets/toast/scroll-content.webp');
+   background-size: 100% 100%;
+ }
+
+ .scroll-center-human {
+   background-image: url('../assets/toast/scroll-content-human.webp');
+   background-size: 100% 100%;
+ }
+
+ .scroll-center-undead {
+   background-image: url('../assets/toast/scroll-content-undead.webp');
+   background-size: 100% 100%;
+ }
+
+ .scroll-center-orc {
+   background-image: url('../assets/toast/scroll-content-orc.webp');
+   background-size: 100% 100%;
+ }
+
+ .scroll-center-elf {
+   background-image: url('../assets/toast/scroll-content-elf.webp');
+   background-size: 100% 100%;
+ }

@@ -32,7 +32,7 @@ export function CardPreviewWrapper() {
           onClick={() => setSize("large")}
           className={cn(size === "large" && "bg-accent/50")}
         >
-          Grande
+          Magic
         </Button>
         <Button
           type="button"
@@ -40,7 +40,7 @@ export function CardPreviewWrapper() {
           onClick={() => setSize("standard")}
           className={cn(size === "standard" && "bg-accent/50")}
         >
-          Estándar
+          Yu-Gi-Oh
         </Button>
       </div>
       <CardPreview size={size} />

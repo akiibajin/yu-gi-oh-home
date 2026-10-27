@@ -260,3 +260,12 @@ pub fn store_webp_in_public_documents_with_folder(
 	}
 	Ok(rust_uri)
 }
+
+
+pub fn store_image_in_public_documents_with_folder(display_name: &str, bytes: &[u8], folder_name: Option<&str>) -> anyhow::Result<String> {
+\tstore_webp_in_public_documents_with_folder(display_name, bytes, folder_name)
+}
+
+pub fn store_image_in_public_documents(display_name: &str, bytes: &[u8]) -> anyhow::Result<String> {
+\tstore_webp_in_public_documents(display_name, bytes)
+}

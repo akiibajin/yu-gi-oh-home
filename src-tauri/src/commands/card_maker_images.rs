@@ -1,10 +1,11 @@
-use crate::services;
+﻿use crate::services;
 
 #[derive(serde::Deserialize)]
 pub struct StoreCardMakerImageRequest {
 	pub id: String,
 	pub bytes: Vec<u8>,
 	pub folder_name: Option<String>,
+	pub format: Option<String>,
 }
 
 #[derive(serde::Deserialize)]
@@ -30,6 +31,7 @@ pub async fn store_card_maker_image(
 		&req.bytes,
 		req.id.trim(),
 		req.folder_name.as_deref(),
+		req.format.as_deref(),
 	)
 	.map_err(|e| format!("{e:#}"))?;
 

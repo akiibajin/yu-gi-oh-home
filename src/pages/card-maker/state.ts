@@ -31,6 +31,7 @@ export function createDefaultCardDraft(): YugiohCardDraft {
 		overframeImg: null,
 		overframeObjectFit: "cover",
 		overframeImgRotationDeg: 0,
+		exportFormat: "webp",
 	};
 }
 

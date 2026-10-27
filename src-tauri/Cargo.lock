@@ -5895,7 +5895,7 @@ dependencies = [
 
 [[package]]
 name = "yu-gi-oh-home"
-version = "6.0.0"
+version = "6.2.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",

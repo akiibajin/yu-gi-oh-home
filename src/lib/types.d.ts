@@ -1,3 +1,5 @@
+export type YugiohExportFormat = "webp" | "png" | "jpg";
+
 export type YugiohCardAttribute =
 	| "DARK"
 	| "LIGHT"
@@ -108,6 +110,7 @@ export interface YugiohMonsterStats {
 	def: number | string;
 }
 
+
 export interface YugiohCardDraft {
 	name: string;
 	cardType: YugiohCardType;
@@ -144,6 +147,7 @@ export interface YugiohCardDraft {
 	overframeImg: Blob | string | null;
 	overframeObjectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
 	overframeImgRotationDeg?: number;
+	exportFormat?: YugiohExportFormat;
 }
 
 export interface YugiohCardDB {
@@ -173,3 +177,4 @@ export type YugiohCardWithImgUrl = Omit<YugiohCardDraft, "img"> & {
 };
 
 export {};
+
