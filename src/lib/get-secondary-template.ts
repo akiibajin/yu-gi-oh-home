@@ -7,11 +7,11 @@ const secondaryTemplate = (fileName: string) =>
 export const SECONDARY_TEMPLATE_FILES = {
 	normal: secondaryTemplate("normal-secondary-template.webp"),
 	effect: secondaryTemplate("effect-secondary-template.webp"),
-	link: secondaryTemplate("ritual-secondary-template.webp"),
+	ritual: secondaryTemplate("ritual-secondary-template.webp"),
 	fusion: secondaryTemplate("fusion-secondary-template.webp"),
 	synchro: secondaryTemplate("synchro-secondary-template.webp"),
 	xyz: secondaryTemplate("xyz-secondary-template.webp"),
-	ritual: secondaryTemplate("link-secondary-template.webp"),
+	link: secondaryTemplate("link-secondary-template.webp"),
 	spell: secondaryTemplate("spell-secondary-template.webp"),
 	trap: secondaryTemplate("trap-secondary-template.webp"),
 	field: secondaryTemplate("field-secondary-template.webp"),
