@@ -144,8 +144,8 @@ export function CardSearcherForm() {
 	const [wikiPreviewUrl, setWikiPreviewUrl] = useState<string | null>(null);
 	const [wikiCardData, setWikiCardData] = useState<WikiCardData | null>(null);
   const [useAnimeEffect, setUseAnimeEffect] = useState(false);
-  const draft = useCardStore(x => x.card);
-  const setCard = useCardStore(x=>x.setCard)
+  const draft = useCardStore().card;
+  const setCard = useCardStore().setCard
 
 	const doSearch = async () => {
 		const trimmed = query.trim();
@@ -216,7 +216,6 @@ export function CardSearcherForm() {
 
 			const englishName = card.name ?? "";
 			setCard({
-				...currentDraft,
 				name: englishName,
 				cardType,
 				attribute:
@@ -255,14 +254,12 @@ export function CardSearcherForm() {
 			try {
 				const es = await fetchSpanishNameAndLore(englishName);
 				if (es) {
-					const prev = {...draft};
           setCard({
-            ...prev,
             name: es.name,
             description: es.lore,
             pendulumDescription:
               isPendulum
-                ? es.pendulum_effect ?? prev.pendulumDescription
+                ? es.pendulum_effect ?? draft.pendulumDescription
                 : "",
           });
 				}

@@ -24,7 +24,7 @@ interface CardPreviewProps {
 
 export function CardPreview(props: CardPreviewProps) {
   const { size } = props;
-  const draft = useCardStore(x => x.card);
+  const draft = useCardStore().card;
   const showName: boolean = draft.showName ?? true;
   const showNameBox: boolean = draft.showNameBox ?? false;
   const displayName = draft.name.trim() || "";

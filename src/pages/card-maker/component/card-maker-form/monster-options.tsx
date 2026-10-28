@@ -99,8 +99,8 @@ export function CardMakerMonsterOptions(props: {
   ) => void;
 }) {
   const { draft, isPendulum, isLink, setDraftField, setStatsField } = props;
-  const card = useCardStore((x) => x.card);
-  const setCard = useCardStore((x) => x.setCard);
+  const card = useCardStore().card;
+  const setCard = useCardStore().setCard;
 
   const handleInput = (e: InputEvent<HTMLInputElement>) => {
     const parsed = Number.parseInt(e.currentTarget.value, 10);

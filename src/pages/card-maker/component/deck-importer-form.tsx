@@ -55,8 +55,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		onDeckFileNameChange,
 		onImportedCardSelected,
   } = props;
-  const card = useCardStore(x => x.card);
-  const setCard = useCardStore(x=> x.setCard)
+  const card = useCardStore().card;
+  const setCard = useCardStore().setCard
 	const [file, setFile] = useState<File | null>(null);
 	const [running, setRunning] = useState(false);
 	const [status, setStatus] = useState<string>("");
@@ -173,7 +173,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 
 		await new Promise<void>((r) => requestAnimationFrame(() => r()));
 		await new Promise<void>((r) => requestAnimationFrame(() => r()));
-
+		await new Promise<void>((r) => requestAnimationFrame(() => r()));
 		const start = Date.now();
 		const timeoutMs = 3000;
 		while (Date.now() - start < timeoutMs) {
