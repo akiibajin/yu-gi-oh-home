@@ -15,7 +15,7 @@ export type PrimaryDescriptionProps = {
   descriptionImageOpacity: number;
   descriptionTextSizeClass: string;
   descriptionTextColorClass: string;
-  draft: YugiohCardDraft;
+  draft: Partial<YugiohCardDraft>;
   typeCardImg: {
     description: string;
     stats?: string | undefined;

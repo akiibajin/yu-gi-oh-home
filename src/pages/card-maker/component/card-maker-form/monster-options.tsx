@@ -89,7 +89,7 @@ const SUBTYPE_LABELS: Record<MonsterType, string> = {
 };
 
 export function CardMakerMonsterOptions(props: {
-  draft: YugiohCardDraft;
+  draft: Partial<YugiohCardDraft>;
   isPendulum: boolean;
   isLink: boolean;
   setDraftField: SetDraftField;
@@ -107,7 +107,7 @@ export function CardMakerMonsterOptions(props: {
     setCard({
       ...card,
       stats: {
-        ...card.stats,
+        ...card.stats!,
         level: Number.isFinite(parsed)
           ? clampInt(parsed, 1, YUGIOH_MAX_STARS)
           : 1,
@@ -235,7 +235,7 @@ export function CardMakerMonsterOptions(props: {
               type="number"
               min={1}
               max={YUGIOH_MAX_STARS}
-              value={String(draft.stats.level)}
+              value={String(draft.stats?.level)}
               onInput={handleInput}
             />
           </div>
@@ -249,7 +249,7 @@ export function CardMakerMonsterOptions(props: {
             id="cm-atk"
             className="w-full"
             type="text"
-            value={String(draft.stats.atk)}
+            value={String(draft.stats?.atk)}
             onInput={(e) => setStatsField("atk", e.currentTarget.value)}
             placeholder="0, ?, ∞, x0000"
           />
@@ -264,7 +264,7 @@ export function CardMakerMonsterOptions(props: {
               id="cm-def"
               className="w-full"
               type="text"
-              value={String(draft.stats.def)}
+              value={String(draft.stats?.def)}
               onInput={(e) => setStatsField("def", e.currentTarget.value)}
               placeholder="0, ?, ∞, x0000"
             />

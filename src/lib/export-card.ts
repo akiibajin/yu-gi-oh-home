@@ -20,7 +20,7 @@ const getQuality = (format: string) => {
 };
 
 export const exportPreview = async (
-	draft: YugiohCardDraft,
+	draft: Partial<YugiohCardDraft>,
 	opts?: { id?: string; folderName?: string },
 ) => {
 	const { toCanvas } = await import("html-to-image");
@@ -52,7 +52,7 @@ export const exportPreview = async (
 		}
 	});
 
-	const id = opts?.id?.trim() || draft.name.trim() || `card-` + Date.now();
+	const id = opts?.id?.trim() || draft.name?.trim() || `card-` + Date.now();
 	const res = await storeCardMakerWebpById(id, blob, {
 		folderName: opts?.folderName,
 		format,

@@ -233,9 +233,9 @@ export function CardSearcherForm() {
 					? mapLinkMarkers(card.linkmarkers)
 					: currentDraft.linkMarkers,
 				stats: {
-					level: card.level ?? currentDraft.stats.level,
-					atk: card.atk ?? currentDraft.stats.atk,
-					def: card.def ?? currentDraft.stats.def,
+					level: card.level ?? currentDraft.stats!.level,
+					atk: card.atk ?? currentDraft.stats!.atk,
+					def: card.def ?? currentDraft.stats!.def,
 				},
 				spellType:
 					cardType === "Spell"
@@ -346,9 +346,9 @@ export function CardSearcherForm() {
 				? (attributeMap[data.attribute.toUpperCase()] ?? currentDraft.attribute)
 				: currentDraft.attribute;
 
-			const level = data.level ? Number.parseInt(data.level, 10) : currentDraft.stats.level;
-			const atk = data.atk ?? currentDraft.stats.atk;
-			const def = data.def ?? currentDraft.stats.def;
+			const level = data.level ? Number.parseInt(data.level, 10) : currentDraft.stats!.level;
+			const atk = data.atk ?? currentDraft.stats!.atk;
+			const def = data.def ?? currentDraft.stats!.def;
 			const scale = data.scale
 				? Number.parseInt(data.scale, 10)
 				: currentDraft.scale;
@@ -473,9 +473,9 @@ export function CardSearcherForm() {
 				description,
 				pendulumDescription: isPendulum ? pendulumEffect : currentDraft.pendulumDescription,
 				stats: {
-					level: isNaN(level) ? currentDraft.stats.level : level,
-					atk: atk ?? currentDraft.stats.atk,
-					def: def ?? currentDraft.stats.def,
+					level: isNaN(level) ? currentDraft.stats!.level : level,
+					atk: atk ?? currentDraft.stats!.atk,
+					def: def ?? currentDraft.stats!.def,
 				},
 				scale: isNaN(scale as number) ? currentDraft.scale : scale,
 				img,

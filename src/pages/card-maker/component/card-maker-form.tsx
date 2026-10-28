@@ -73,7 +73,7 @@ export function CardMakerForm(
     setCard({
       ...card,
       stats: {
-        ...card.stats,
+        ...card.stats!,
         [key]: value,
       },
     });
@@ -242,7 +242,7 @@ export function CardMakerForm(
                   setDraftField("descriptionTextSize", value)
                 }
                 label={isPendulum ? "Efecto de monstruo" : "Descripción"}
-                value={draft.description}
+                value={draft.description ?? ""}
                 onInput={onMonsterEffectInput}
                 placeholder={
                   isPendulum

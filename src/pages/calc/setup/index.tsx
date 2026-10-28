@@ -77,7 +77,7 @@ function CalcSetup() {
 					<CardContent>
 						<div className="text-sm">Invalid player count.</div>
 						<div className="mt-4">
-							<Button type="button" variant="frame" onClick={() => route("/")}>
+							<Button type="button" variant="frame" onClick={() => navigate("/")}>
 								Back
 							</Button>
 						</div>

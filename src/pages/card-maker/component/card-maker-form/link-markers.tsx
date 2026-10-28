@@ -28,7 +28,7 @@ const LINK_MARKER_LABELS: Record<LinkMarker, string> = {
 };
 
 export function CardMakerLinkMarkers(props: {
-	draft: YugiohCardDraft;
+	draft: Partial<YugiohCardDraft>;
 	setDraftField: SetDraftField;
 }) {
 	const { draft, setDraftField } = props;

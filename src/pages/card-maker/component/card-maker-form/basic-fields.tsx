@@ -45,7 +45,7 @@ const TRAP_TYPE_LABELS: Record<YugiohTrapType, string> = {
 };
 
 export function CardMakerBasicFields(props: {
-	draft: YugiohCardDraft;
+	draft: Partial<YugiohCardDraft>;
 	setDraftField: SetDraftField;
 	isSecondaryTemplate: boolean;
 }) {

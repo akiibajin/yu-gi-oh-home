@@ -27,9 +27,9 @@ export function CardPreview(props: CardPreviewProps) {
   const draft = useCardStore().card;
   const showName: boolean = draft.showName ?? true;
   const showNameBox: boolean = draft.showNameBox ?? false;
-  const displayName = draft.name.trim() || "";
+  const displayName = draft.name?.trim() || "";
   const nameBgUrl = showNameBox
-    ? getNameBg(draft.monsterType, draft.cardType)
+    ? getNameBg(draft.monsterType, draft.cardType!)
     : undefined;
   const isMonster = draft.cardType === "Monster";
   const isXyz = isMonster && (draft.monsterType?.includes("Xyz") ?? false);
@@ -43,15 +43,15 @@ export function CardPreview(props: CardPreviewProps) {
     isMonster && (draft.monsterType?.includes("Fusion") ?? false);
   const isNumber =
     isXyz &&
-    (draft.name.toLowerCase().includes("number") ||
-      draft.name.toLowerCase().includes("número"));
+    (draft.name?.toLowerCase().includes("number") ||
+      draft.name?.toLowerCase().includes("número"));
   const descriptionImageOpacity =
     draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
   const numberLabelValue = useMemo(() => {
     if (!isNumber) return null;
     const match =
-      draft.name.match(/\bnumber\s*(\d+)/i) ||
-      draft.name.match(/\bnúmero\s*(\d+)/i);
+      draft.name?.match(/\bnumber\s*(\d+)/i) ||
+      draft.name?.match(/\bnúmero\s*(\d+)/i);
     if (!match) return null;
     const parsed = Number.parseInt(match[1], 10);
     return Number.isFinite(parsed) ? parsed : null;
@@ -60,7 +60,7 @@ export function CardPreview(props: CardPreviewProps) {
   const isVoidInverseDescriptionStatsBox =
     draft.descriptionStatsBoxColor === "void-inverse";
   const showDescription = draft.showDescription ?? true;
-  const monsterDescription = draft.description.trim();
+  const monsterDescription = draft.description?.trim();
   const descriptionTextColor = draft.descriptionTextColor ?? "auto";
   const descriptionTextSize = draft.descriptionTextSize ?? "normal";
   const descriptionTextSizeClass =
@@ -81,12 +81,12 @@ export function CardPreview(props: CardPreviewProps) {
 
   const typeCardImg = getTypeCardBg(
     draft.monsterType ?? null,
-    draft.cardType,
+    draft.cardType!,
     draft.descriptionStatsBoxColor,
   );
   const isSecondaryTemplate = draft.template === "secondary";
   const borderImg = isSecondaryTemplate
-    ? getSecondaryTemplate(draft.monsterType ?? null, draft.cardType)
+    ? getSecondaryTemplate(draft.monsterType ?? null, draft.cardType!)
     : typeCardImg.border;
   const iconImg = useMemo(() => {
     if (draft.cardType === "Spell") {
@@ -271,7 +271,7 @@ export function CardPreview(props: CardPreviewProps) {
             <div className="relative w-1/2 flex items-center justify-start">
               {isMonster && (
                 <MonsterLevel
-                  level={draft.stats.level}
+                  level={draft.stats!.level}
                   isXyz={isXyz}
                   isTuner={draft.isTuner}
                   linkRating={draft.linkRating}
@@ -290,7 +290,7 @@ export function CardPreview(props: CardPreviewProps) {
                     : "",
                 )}
               >
-                {draft.stats.atk}
+                {draft.stats!.atk}
               </span>
             </div>
             <div
@@ -311,7 +311,7 @@ export function CardPreview(props: CardPreviewProps) {
                   isLink && "opacity-0",
                 )}
               >
-                {draft.stats.def ?? 0}
+                {draft.stats!.def ?? 0}
               </span>
               <div className="size-14 relative z-4 rounded-full border-4 border-black">
                 <img
@@ -339,11 +339,11 @@ export function CardPreview(props: CardPreviewProps) {
         {!isSecondaryTemplate ? <PrimaryDescription
           isPendulum={isPendulum}
           showDescription={showDescription}
-          isNumber={isNumber}
+          isNumber={!!isNumber}
           isVoidDescriptionStatsBox={isVoidDescriptionStatsBox}
           isVoidInverseDescriptionStatsBox={isVoidInverseDescriptionStatsBox}
           isSecondaryTemplate={isSecondaryTemplate}
-          monsterDescription={monsterDescription}
+          monsterDescription={monsterDescription ?? ""}
           descriptionImageOpacity={descriptionImageOpacity}
           descriptionTextSizeClass={descriptionTextSizeClass}
           isLink={isLink}
@@ -354,11 +354,11 @@ export function CardPreview(props: CardPreviewProps) {
         />
           : <SecondaryDescription
             isPendulum={isPendulum}
-            isNumber={isNumber}
+            isNumber={!!isNumber}
             scale={draft.scale ?? 0}
             numberLabelValue={numberLabelValue}
             pendulumDescription={draft.pendulumDescription ?? ""}
-            description={draft.description}
+            description={draft.description ?? ""}
           />}
         <CardNameDisplay
           displayName={displayName}

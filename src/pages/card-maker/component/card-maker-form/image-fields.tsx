@@ -13,7 +13,7 @@ import type { SetDraftField } from "./types";
 import { Label } from "@/components/ui/warcraftcn/label";
 
 export function CardMakerImageFields(props: {
-	draft: YugiohCardDraft;
+	draft: Partial<YugiohCardDraft>;
 	setDraftField: SetDraftField;
 	onImageUpload: (file: File | null) => void;
 	onOverframeImageUpload: (file: File | null) => void;
