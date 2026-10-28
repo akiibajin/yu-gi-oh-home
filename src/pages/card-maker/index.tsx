@@ -16,15 +16,16 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "react";
 import type { MonsterTypeIconProfile, YugiohCardDraft } from "@/lib/types";
-import { cardDraftSignal, resetCardDraft } from "@/pages/card-maker/state";
+import useCardStore from "@/pages/card-maker/state";
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import type { CardMakerFormExportOptions } from "@/pages/card-maker/component/card-maker-form";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { getCardMakerImagesDir } from "@/lib/tauri/card-maker-images";
-import { Skeleton } from "@/components/ui/skeleton";
 import { preloadCardMakerTemplateImages } from "@/pages/card-maker/preload-card-templates";
+import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 function CardMakerView() {
 	const [tab, setTab] = useState<"maker" | "deck" | "search">("maker");
@@ -37,8 +38,8 @@ function CardMakerView() {
 	const [deckFileName, setDeckFileName] = useState<string | null>(null);
 	const [importedExportOptions, setImportedExportOptions] =
 		useState<CardMakerFormExportOptions | null>(null);
-	const [deckResetNonce, setDeckResetNonce] = useState(0);
-
+  const [deckResetNonce, setDeckResetNonce] = useState(0);
+	const {card: draft, setCard, resetCard} = useCardStore()
 	const getImportedCardId = (
 		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
 	) => String(card.id);
@@ -73,7 +74,7 @@ function CardMakerView() {
 		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
 		cardId: string,
 	) => {
-		const currentDraft = cardDraftSignal.value;
+		const currentDraft = {...draft};
 		onImportedCardSelected(cardId);
 		setTab("maker");
 
@@ -86,7 +87,7 @@ function CardMakerView() {
 			img = card.imgUrl;
 		}
 
-		cardDraftSignal.value = {
+		setCard({
 			name: card.name,
 			cardType: card.cardType,
 			iconProfile: currentDraft.iconProfile ?? "light",
@@ -118,11 +119,11 @@ function CardMakerView() {
 			fullArt: currentDraft.fullArt ?? false,
 			overframeImg: null,
 			img,
-		};
+			});
 	};
 
 	const onResetAll = () => {
-		resetCardDraft();
+		resetCard();
 		setCards([]);
 		setSelectedImportedCardKey(null);
 		setImportedExportOptions(null);
@@ -144,7 +145,7 @@ function CardMakerView() {
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<div className="flex w-full flex-col gap-4 md:flex-row">
-				<div className="w-full md:w-auto md:flex-none space-y-4">
+				<div className="w-full md:w-auto md:max-w-115 md:flex-none space-y-4">
 					<CardPreviewWrapper />
 					{cards.length ? (
 						<Card className="w-full">
@@ -174,7 +175,7 @@ function CardMakerView() {
 										);
 									})}
 								</div>
-								<div className="mt-3 flex justify-end">
+								<div className="mt-3 flex py-2 px-3 justify-end">
 									<Button
 										type="button"
 										variant="frame"
@@ -191,21 +192,24 @@ function CardMakerView() {
 					<div className="flex flex-wrap items-center gap-3 mb-4">
 						<div className="inline-flex w-fit items-center rounded-md border p-1">
 							<Button
-								type="button"
+                type="button"
+								className="p-2 px-3"
 								variant="frame"
 								onClick={() => setTab("maker")}
 							>
 								Creador de cartas
 							</Button>
 						<Button
-							type="button"
+                type="button"
+                className="p-2 px-3"
 							variant="frame"
 							onClick={() => setTab("deck")}
 						>
 							Importar mazo
 						</Button>
 						<Button
-							type="button"
+                type="button"
+                className="p-2 px-3"
 							variant="frame"
 							onClick={() => setTab("search")}
 						>
@@ -214,16 +218,16 @@ function CardMakerView() {
 						</div>
 
 						<div className="flex items-center gap-2">
-							<label className="text-sm font-medium" htmlFor="icon-profile">
+							<Label className="text-sm font-medium" htmlFor="icon-profile">
 								Perfil
-							</label>
+							</Label>
 							<Select
-								value={cardDraftSignal.value.iconProfile ?? "light"}
+								value={draft.iconProfile ?? "light"}
 								onValueChange={(value: string) => {
-									cardDraftSignal.value = {
-										...cardDraftSignal.value,
+									setCard({
+										...draft,
 										iconProfile: value as MonsterTypeIconProfile,
-									};
+									});
 								}}
 							>
 								<SelectTrigger id="icon-profile" className="w-40">

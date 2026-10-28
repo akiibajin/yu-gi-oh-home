@@ -1,15 +1,30 @@
 import { defineConfig } from "vite";
-import preact from "@preact/preset-vite";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 // process is a Node.js global in the Vite config context
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-	plugins: [preact(), tailwindcss()],
+  plugins: [
+    react(),
+    babel({ presets: [reactCompilerPreset()] }),
+    tailwindcss(),
+  ],
 	assetsInclude: ["**/*.mpeg"],
-	build: {
+  build: {
+    target:
+          process.env.TAURI_ENV_PLATFORM == 'windows'
+            ? 'chrome105'
+            : 'safari13',
+        // don't minify for debug builds
+    minify: !process.env.TAURI_ENV_DEBUG,
+        // produce sourcemaps for debug builds
+    sourcemap: !!process.env.TAURI_ENV_DEBUG,
 		reportCompressedSize: true,
 		rollupOptions: {
 			output: {
@@ -27,26 +42,17 @@ export default defineConfig(async () => ({
 					if (id.includes("lucide-react")) return "icons";
 					if (id.includes("html5-qrcode")) return "qr";
 					if (id.includes("react-toastify")) return "toast";
-					// Keep Preact in the main vendor chunk to avoid circular chunk dependencies.
-					if (id.includes("@preact/") || id.includes("preact")) return "vendor";
 
 					return "vendor";
 				},
 			},
 		},
-	},
-
-	resolve: {
-		tsconfigPaths: true,
-		alias: {
-			react: "preact/compat",
-			"react-dom": "preact/compat",
-			"react-dom/client": "preact/compat/client",
-			"react-dom/test-utils": "preact/test-utils",
-			"react/jsx-runtime": "preact/jsx-runtime",
-			"react/jsx-dev-runtime": "preact/jsx-dev-runtime",
-		},
-	},
+  },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
 
 	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
 	//

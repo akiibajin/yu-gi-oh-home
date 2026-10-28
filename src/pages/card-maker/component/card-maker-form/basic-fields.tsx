@@ -21,6 +21,7 @@ import type {
 	YugiohTrapType,
 } from "@/lib/types";
 import type { SetDraftField } from "./types";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 const CARD_TYPE_LABELS: Record<YugiohCardType, string> = {
 	Monster: "Monstruo",
@@ -57,9 +58,9 @@ export function CardMakerBasicFields(props: {
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
 					<div className="flex items-center justify-between">
-						<label className="text-sm font-medium" htmlFor="cm-name">
+						<Label className="text-sm font-medium" htmlFor="cm-name">
 							Nombre
-						</label>
+						</Label>
 						<Switch
 							id="cm-show-name"
 							checked={draft.showName ?? true}
@@ -76,9 +77,9 @@ export function CardMakerBasicFields(props: {
 					placeholder="Dark Magician"
 				/>
 					{!isSecondaryTemplate && <div className="flex items-center justify-between">
-						<label className="text-sm font-medium" htmlFor="cm-show-name-box">
+						<Label className="text-sm font-medium" htmlFor="cm-show-name-box">
 							Mostrar cuadro en el nombre
-						</label>
+						</Label>
 						<Switch
 							id="cm-show-name-box"
 							checked={draft.showNameBox ?? false}
@@ -88,9 +89,9 @@ export function CardMakerBasicFields(props: {
 						/>
 					</div>}
 					<div className="flex items-center justify-between">
-						<label className="text-sm font-medium" htmlFor="cm-show-stats-box">
+						<Label className="text-sm font-medium" htmlFor="cm-show-stats-box">
 							Mostar cuadro de stats?
-						</label>
+						</Label>
 						<Switch
 							id="cm-show-stats-box"
 							checked={draft.showStatsBox ?? true}
@@ -102,9 +103,9 @@ export function CardMakerBasicFields(props: {
 				</div>
 
 				<div className="space-y-2 min-w-0">
-					<label className="text-sm font-medium" htmlFor="cm-card-type">
+					<Label className="text-sm font-medium" htmlFor="cm-card-type">
 						Tipo de carta
-					</label>
+					</Label>
 					<Select
 						value={draft.cardType}
 						onValueChange={(value: string) =>
@@ -126,9 +127,9 @@ export function CardMakerBasicFields(props: {
 
 				{!isFieldSpell && !isMonster ? (
 					<div className="space-y-2 min-w-0 md:col-span-2">
-						<label className="text-sm font-medium" htmlFor="cm-spell-trap-type">
+						<Label className="text-sm font-medium" htmlFor="cm-spell-trap-type">
 							Tipo de Magia/Trampa
-						</label>
+						</Label>
 						<Select
 							value={
 								draft.cardType === "Spell" ? draft.spellType : draft.trapType

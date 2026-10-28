@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/warcraftcn/button";
 
 export function CardMakerFormActions(props: {
 	onReset: () => void;
@@ -10,20 +10,21 @@ export function CardMakerFormActions(props: {
 
 	return (
 		<>
-			<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+			<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:items-center">
 				<Button
 					type="button"
-					variant="secondary"
+					variant="default"
 					onClick={onReset}
-					className="w-full sm:w-auto"
+					className="w-full sm:h-15 sm:w-auto"
 				>
 					Restablecer
 				</Button>
 				<Button
-					type="button"
+          type="button"
+					variant="frame"
 					onClick={onExport}
 					disabled={exporting}
-					className="w-full sm:w-auto"
+					className="w-full sm:w-auto sm:h-20 sm:min-w-30"
 				>
 					{exporting ? "Exportando..." : "Exportar"}
 				</Button>

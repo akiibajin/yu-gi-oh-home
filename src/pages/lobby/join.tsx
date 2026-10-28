@@ -1,5 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Input } from "@/components/ui/warcraftcn/input";
@@ -12,18 +12,16 @@ import {
 } from "@/components/ui/warcraftcn/card";
 import { getLobbyByCode, getLobbyPlayers, joinLobby } from "@/lib/lobby";
 import { AvatarSelector } from "@/components/avatar-selector";
-import lazy from "preact-iso/lazy";
 import { QrCodeIcon, UsersIcon } from "lucide-react";
 import { getSafeAvatarImages, PLAYERS_IMAGES } from "@/lib/avatars";
 import type { LobbyPlayer } from "@/lib/lobby";
+import { Label } from "@/components/ui/warcraftcn/label";
+import { QRScanner } from "@/components/qr-scanner";
 
-const QRScanner = lazy(() =>
-	import("@/components/qr-scanner").then((m) => m.QRScanner),
-);
 
 export default function JoinLobby() {
 	const isDev = import.meta.env.DEV;
-	const { route } = useLocation();
+	const navigate = useNavigate();
 	const [lobbyCode, setLobbyCode] = useState("");
 	const [selectedAvatar, setSelectedAvatar] = useState(
 		Object.keys(PLAYERS_IMAGES)[0],
@@ -91,7 +89,7 @@ export default function JoinLobby() {
 			if (result) {
 				const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;
 				if (isDev) console.log("Navigating to:", url);
-				route(url);
+				navigate(url);
 			} else {
 				setError(
 					"No se encontró la sala o ya no está activa. Verifica el código.",
@@ -125,7 +123,7 @@ export default function JoinLobby() {
 				return;
 			}
 			const url = `/lobby/guest/${result.lobby.id}?playerId=${result.player.id}`;
-			route(url);
+			navigate(url);
 		} catch (err) {
 			console.error("Error reclaiming slot:", err);
 			setError("Ocurrió un error. Inténtalo de nuevo.");
@@ -157,12 +155,12 @@ export default function JoinLobby() {
 					</CardHeader>
 					<div className="space-y-5 mt-6">
 						<div className="space-y-2">
-							<label
+							<Label
 								className="text-sm font-medium text-amber-100"
-								for="playerName"
+								htmlFor="playerName"
 							>
 								Tu nombre
-							</label>
+							</Label>
 							<Input
 								id="playerName"
 								type="text"
@@ -177,7 +175,7 @@ export default function JoinLobby() {
 						<div className="space-y-2">
 							<label
 								className="text-sm font-medium text-amber-100"
-								for="lobbyCode"
+								htmlFor="lobbyCode"
 							>
 								Código de sala
 							</label>
@@ -271,7 +269,7 @@ export default function JoinLobby() {
 
 						<Button
 							onClick={() => {
-								route("/lobby/create");
+								navigate("/lobby/create");
 							}}
 							className="w-full text-[10px]"
 						>

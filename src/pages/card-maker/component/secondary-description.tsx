@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "preact/hooks";
+import { useLayoutEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import NumberCardLabel from "./numberCardLabel";
 import PendulumStats from "./pendulum-stats";

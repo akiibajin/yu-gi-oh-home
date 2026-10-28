@@ -5,8 +5,8 @@ import {
 	PlayerLifePointsCards,
 	type PlayerLifePoints,
 } from "@/pages/calc/component/player-life-points-cards";
-import { useLocation, useRoute } from "preact-iso";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useNavigate, useParams } from "react-router";
+import { useEffect, useMemo, useState } from "react";
 
 function buildPlayers(count: number, names: string[]): PlayerLifePoints[] {
 	return Array.from({ length: count }, (_, index) => {
@@ -31,9 +31,9 @@ function getSelectedNamesFromQuery(): string[] {
 }
 
 function Calc() {
-	const { route } = useLocation();
-	const { params } = useRoute();
-	const numRaw = (params as Record<string, string | undefined>).num;
+	const navigate = useNavigate();
+	const params = useParams();
+	const numRaw = params["num"]
 	const num = numRaw ? Number.parseInt(numRaw, 10) : NaN;
 
 	const isValidNum = Number.isFinite(num) && num > 0;
@@ -52,8 +52,8 @@ function Calc() {
 	useEffect(() => {
 		if (!isValidNum) return;
 		if (isSetupComplete) return;
-		route(`/calc/${num}/setup`, true);
-	}, [isValidNum, isSetupComplete, num, route]);
+		navigate(`/calc/${num}/setup`, { replace: true });
+	}, [isValidNum, isSetupComplete, num, navigate]);
 
 	useEffect(() => {
 		initDuelSfx();

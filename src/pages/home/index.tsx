@@ -7,10 +7,10 @@ import {
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
 import { Badge } from "@/components/ui/warcraftcn/badge";
-import { useLocation } from "preact-iso";
+import { useNavigate } from "react-router";
 
 function Home() {
-	const { route } = useLocation();
+	const navigate = useNavigate()
 
 	return (
 		<div className="flex min-h-full w-full justify-center p-1 sm:p-4 md:items-center">
@@ -33,7 +33,7 @@ function Home() {
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 							<Button
 								type="button"
-								onClick={() => route("/calc")}
+								onClick={() => navigate("/calc")}
 								className="flex items-center justify-center text-xs sm:text-sm"
 								variant="default"
 							>
@@ -41,7 +41,7 @@ function Home() {
 							</Button>
 							<Button
 								type="button"
-								onClick={() => route("/card-maker")}
+								onClick={() => navigate("/card-maker")}
 								className="flex items-center justify-center"
 								variant="default"
 							>
@@ -70,7 +70,7 @@ function Home() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 							<Button
 								type="button"
-								onClick={() => route("/lobby/create")}
+								onClick={() => navigate("/lobby/create")}
 								className="flex items-center justify-center"
 								variant="default"
 							>
@@ -78,7 +78,7 @@ function Home() {
 							</Button>
 							<Button
 								type="button"
-								onClick={() => route("/lobby/join")}
+								onClick={() => navigate("/lobby/join")}
 								className="flex items-center justify-center"
 								variant="default"
 							>

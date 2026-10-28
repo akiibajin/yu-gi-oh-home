@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import type { LinkMarker, YugiohCardDraft } from "@/lib/types";
 import type { SetDraftField } from "./types";
 import { clampInt } from "./utils";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 const LINK_MARKERS: LinkMarker[] = [
 	"Top-Left",
@@ -44,9 +45,9 @@ export function CardMakerLinkMarkers(props: {
 			<legend className="px-1 text-sm font-medium">Marcadores de enlace</legend>
 			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
 				<div className="space-y-2 min-w-0">
-					<label className="text-sm font-medium" htmlFor="cm-link-rating">
+					<Label className="text-sm font-medium" htmlFor="cm-link-rating">
 						Clasificación de Enlace
-					</label>
+					</Label>
 					<Input
 						id="cm-link-rating"
 						className="w-full"
@@ -63,9 +64,9 @@ export function CardMakerLinkMarkers(props: {
 				</div>
 			</div>
 			<div className="space-y-2 min-w-0 flex items-center gap-2">
-				<label htmlFor="rating-desc" className="m-0">
+				<Label htmlFor="rating-desc" className="m-0">
 					¿Mostrar flechas en la descripción?
-				</label>
+				</Label>
 				<Switch
 					id="rating-desc"
 					checked={draft.linkMarkersOnDescription ?? false}

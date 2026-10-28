@@ -1,7 +1,7 @@
 import { CardPreview } from "./card-preview";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "react";
 
 type CardSize = "large" | "standard";
 
@@ -25,12 +25,12 @@ export function CardPreviewWrapper() {
 
   return (
     <div className="space-y-2">
-      <div className="inline-flex w-fit items-center rounded-md border p-1">
+      <div className="inline-flex items-center rounded-md border p-1">
         <Button
           type="button"
           variant="frame"
           onClick={() => setSize("large")}
-          className={cn(size === "large" && "bg-accent/50")}
+          className={cn("p-2", size === "large" && "bg-accent/50")}
         >
           Magic
         </Button>
@@ -38,7 +38,7 @@ export function CardPreviewWrapper() {
           type="button"
           variant="frame"
           onClick={() => setSize("standard")}
-          className={cn(size === "standard" && "bg-accent/50")}
+          className={cn("p-2", size === "standard" && "bg-accent/50")}
         >
           Yu-Gi-Oh
         </Button>

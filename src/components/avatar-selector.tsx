@@ -1,4 +1,4 @@
-import { useState } from "preact/hooks";
+import { useState } from "react";
 import { PLAYERS_IMAGES, TAG_IMAGES } from "@/lib/avatars";
 
 interface AvatarSelectorProps {

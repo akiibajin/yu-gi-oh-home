@@ -1,6 +1,6 @@
-import { Fragment, type ComponentChildren } from "preact";
-import { useMemo } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { Fragment } from "react";
+import { useMemo } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -10,7 +10,8 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NAV_ITEMS, type NavItem } from "@/lib/constants";
-import { ToastContainer } from "react-toastify";
+import UpdateNotification from "./update-notification";
+import { Cursor } from "./ui/warcraftcn/cursor";
 
 function flattenNavItems(items: NavItem[]): NavItem[] {
 	const out: NavItem[] = [];
@@ -30,9 +31,9 @@ function toTitleCaseFromSegment(segment: string) {
 		.join(" ");
 }
 
-export default function Layout({ children }: { children: ComponentChildren }) {
-	const { path, route } = useLocation();
-
+export default function Layout() {
+	const { pathname } = useLocation();
+  const navigate = useNavigate();
 	const navIndex = useMemo(() => {
 		const map = new Map<string, NavItem>();
 		for (const item of flattenNavItems(NAV_ITEMS)) {
@@ -42,7 +43,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 	}, []);
 
 	const breadcrumbItems = useMemo(() => {
-		const normalized = path.replace(/\/+$/, "") || "/";
+		const normalized = pathname.replace(/\/+$/, "") || "/";
 		if (normalized === "/") {
 			const home = navIndex.get("/");
 			return [{ href: "/", title: home?.title ?? "Home" }];
@@ -64,9 +65,10 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 			const segment = parts.length ? parts[parts.length - 1] : "";
 			return { href, title: toTitleCaseFromSegment(segment) };
 		});
-	}, [path, navIndex]);
+	}, [pathname, navIndex]);
 
-	return (
+  return (
+    <Cursor>
 		<div className="relative grid grid-rows-[1fr_auto] md:grid-rows-[auto_1fr] h-dvh min-h-dvh min-w-0">
 			<header className="hidden md:flex row-start-1 w-full min-w-0 items-center gap-2 border-b bg-card px-4 py-2">
 				<Breadcrumb>
@@ -84,7 +86,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 												href={item.href}
 												onClick={(event) => {
 													event.preventDefault();
-													route(item.href);
+													navigate(item.href);
 												}}
 											>
 												{item.title}
@@ -99,7 +101,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 				</Breadcrumb>
 			</header>
 			<main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-2 md:px-4 py-3 pb-[env(safe-area-inset-bottom)]">
-				{children}
+				<Outlet />
 			</main>
 			<footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
 				<Breadcrumb>
@@ -117,7 +119,7 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 												href={item.href}
 												onClick={(event) => {
 													event.preventDefault();
-													route(item.href);
+													navigate(item.href);
 												}}
 											>
 												{item.title}
@@ -131,10 +133,11 @@ export default function Layout({ children }: { children: ComponentChildren }) {
 					</BreadcrumbList>
 				</Breadcrumb>
 			</footer>
-			<ToastContainer aria-label="Notifications" />
 			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
 				v 6.2.1
-			</span>
-		</div>
+      </span>
+			      <UpdateNotification />
+      </div>
+    </Cursor>
 	);
 }

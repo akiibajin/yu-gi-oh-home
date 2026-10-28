@@ -1,10 +1,10 @@
 import {
 	type Dispatch,
-	type StateUpdater,
+	SetStateAction,
 	useEffect,
 	useRef,
 	useState,
-} from "preact/hooks";
+} from "react";
 
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
@@ -21,20 +21,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import { exportPreview } from "@/lib/export-card";
 import { loadDeckCardsFromYdkFile } from "@/lib/tauri/decks";
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import type {
 	YugiohCardDraft,
-	YugiohDescriptionStatsBoxColor,
 } from "@/lib/types";
-import { cardDraftSignal } from "@/pages/card-maker/state";
+import useCardStore from "@/pages/card-maker/state";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 interface DeckImporterFormProps {
 	cards: (Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string })[];
 	setCards: Dispatch<
-		StateUpdater<
+		SetStateAction<
 			(Omit<YugiohCardDraft, "img"> & {
 				imgUrl: string;
 				id: string;
@@ -55,7 +54,9 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		resetNonce,
 		onDeckFileNameChange,
 		onImportedCardSelected,
-	} = props;
+  } = props;
+  const card = useCardStore(x => x.card);
+  const setCard = useCardStore(x=> x.setCard)
 	const [file, setFile] = useState<File | null>(null);
 	const [running, setRunning] = useState(false);
 	const [status, setStatus] = useState<string>("");
@@ -170,7 +171,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		const node = document.getElementById("card-preview");
 		if (!node) return;
 
-		// Let Preact flush updates + effects.
 		await new Promise<void>((r) => requestAnimationFrame(() => r()));
 		await new Promise<void>((r) => requestAnimationFrame(() => r()));
 
@@ -184,7 +184,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			const hasCardArt =
 				!expectsCardArt || imgs.some((img) => img.src.startsWith("data:"));
 			if (allLoaded && hasCardArt) return;
-			await sleep(50);
+			await sleep(100);
 		}
 	};
 
@@ -192,7 +192,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		card: Omit<YugiohCardDraft, "img"> & { imgUrl: string; id: string },
 		cardId: string,
 	) => {
-		const currentDraft = cardDraftSignal.value;
 		setSelectedCardKey(cardId);
 		persistSelectedCardKey(cardId);
 		onImportedCardSelected?.(cardId);
@@ -203,17 +202,17 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		} catch {
 			img = card.imgUrl;
 		}
-		cardDraftSignal.value = {
+    setCard({
 			name: card.name,
 			cardType: card.cardType,
-			iconProfile: currentDraft.iconProfile ?? "light",
-			showDescription: currentDraft.showDescription ?? true,
-			showName: currentDraft.showName ?? true,
-			showNameBox: currentDraft.showNameBox ?? false,
+			iconProfile: card.iconProfile ?? "light",
+			showDescription: card.showDescription ?? true,
+			showName: card.showName ?? true,
+			showNameBox: card.showNameBox ?? false,
 			pendulumDescription: card.pendulumDescription ?? "",
 			description: card.description,
-			descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
-			descriptionTextSize: currentDraft.descriptionTextSize ?? "normal",
+			descriptionTextColor: card.descriptionTextColor ?? "auto",
+			descriptionTextSize: card.descriptionTextSize ?? "normal",
 			attribute: card.attribute,
 			monsterType: card.monsterType,
 			subType: card.subType,
@@ -224,17 +223,17 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			stats: card.stats,
 			spellType: card.spellType,
 			trapType: card.trapType,
-			linkMarkersOnDescription: currentDraft.linkMarkersOnDescription ?? false,
-			descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor ?? "auto",
-			objectFit: currentDraft.objectFit,
-			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
-			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
-			template: currentDraft.template,
-			overframe: currentDraft.overframe ?? false,
-			fullArt: currentDraft.fullArt ?? false,
+			linkMarkersOnDescription: card.linkMarkersOnDescription ?? false,
+			descriptionStatsBoxColor: card.descriptionStatsBoxColor ?? "auto",
+			objectFit: card.objectFit,
+			imgRotationDeg: card.imgRotationDeg ?? 0,
+			descriptionImageOpacity: card.descriptionImageOpacity,
+			template: card.template,
+			overframe: card.overframe ?? false,
+			fullArt: card.fullArt ?? false,
 			overframeImg: null,
 			img,
-		};
+		});
 	};
 
 	const exportCardsSequentially = async (
@@ -247,54 +246,10 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 		for (let i = 0; i < list.length; i++) {
 			const c = list[i];
 			setProgress({ current: i + 1, total: list.length, failures });
-			setStatus(`Exportando ${i + 1}/${list.length}: ${c.name}`);
-
-			try {
-				const currentDraft = cardDraftSignal.value;
-				// Always map the card first (with no image) so the preview never
-				// "sticks" on the previous card if fetching the new image fails.
-				cardDraftSignal.value = {
-					name: c.name,
-					cardType: c.cardType,
-					iconProfile: currentDraft.iconProfile ?? "light",
-					showDescription: currentDraft.showDescription ?? true,
-					showName: currentDraft.showName ?? true,
-					showNameBox: currentDraft.showNameBox ?? false,
-					pendulumDescription: c.pendulumDescription ?? "",
-					description: c.description,
-					descriptionTextColor: currentDraft.descriptionTextColor ?? "auto",
-					descriptionTextSize: currentDraft.descriptionTextSize ?? "normal",
-					attribute: c.attribute,
-					monsterType: c.monsterType,
-					subType: c.subType,
-					isTuner: c.isTuner,
-					scale: c.scale,
-					linkRating: c.linkRating,
-					linkMarkersOnDescription:
-						currentDraft.linkMarkersOnDescription ?? false,
-					linkMarkers: c.linkMarkers,
-					stats: c.stats,
-					spellType: c.spellType,
-					trapType: c.trapType,
-					descriptionStatsBoxColor:
-						currentDraft.descriptionStatsBoxColor ?? "auto",
-					objectFit: currentDraft.objectFit,
-					imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
-					descriptionImageOpacity: currentDraft.descriptionImageOpacity,
-					template: currentDraft.template,
-					overframe: currentDraft.overframe ?? false,
-					fullArt: currentDraft.fullArt ?? false,
-					overframeImg: null,
-					img: null,
-				};
-
-				let imgBlob: Blob | null = null;
+      setStatus(`Exportando ${i + 1}/${list.length}: ${c.name}`);
+      let imgBlob: Blob | null = null;
 				try {
 					imgBlob = await fetchCardImageBlob(c.imgUrl);
-					cardDraftSignal.value = {
-						...cardDraftSignal.value,
-						img: imgBlob,
-					};
 				} catch (err) {
 					failures++;
 					setProgress({ current: i + 1, total: list.length, failures });
@@ -305,9 +260,45 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					continue;
 				}
 
+			try {
+        setCard({
+					name: c.name,
+					cardType: c.cardType,
+					iconProfile: card.iconProfile ?? "light",
+					showDescription: card.showDescription ?? true,
+					showName: card.showName ?? true,
+					showNameBox: card.showNameBox ?? false,
+					pendulumDescription: c.pendulumDescription ?? "",
+					description: c.description,
+					descriptionTextColor: card.descriptionTextColor ?? "auto",
+					descriptionTextSize: card.descriptionTextSize ?? "normal",
+					attribute: c.attribute,
+					monsterType: c.monsterType,
+					subType: c.subType,
+					isTuner: c.isTuner,
+					scale: c.scale,
+					linkRating: c.linkRating,
+					linkMarkersOnDescription:
+						card.linkMarkersOnDescription ?? false,
+					linkMarkers: c.linkMarkers,
+					stats: c.stats,
+					spellType: c.spellType,
+					trapType: c.trapType,
+					descriptionStatsBoxColor:
+						card.descriptionStatsBoxColor ?? "auto",
+					objectFit: card.objectFit,
+					imgRotationDeg: card.imgRotationDeg ?? 0,
+					descriptionImageOpacity: card.descriptionImageOpacity,
+					template: card.template,
+					overframe: card.overframe ?? false,
+					fullArt: card.fullArt ?? false,
+					overframeImg: null,
+					img: imgBlob,
+					});
+
 				await waitForPreviewReady(Boolean(imgBlob));
 				// Import export goes to: card-maker-ims/<deck>/<cardId>.webp
-				await exportPreview(cardDraftSignal.value, {
+				await exportPreview(card, {
 					id: getImportedCardId(c),
 					folderName,
 				});
@@ -416,11 +407,11 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 				<CardHeader>
 					<CardTitle>Importar mazo (.ydk)</CardTitle>
 				</CardHeader>
-				<CardContent className="space-y-4">
+				<CardContent className="space-y-4 pl-6 pr-10 pb-6">
 					<div className="space-y-2">
-						<label className="text-sm font-medium" htmlFor="deck-ydk">
+						<Label className="text-sm font-medium" htmlFor="deck-ydk">
 							Archivo del mazo
-						</label>
+						</Label>
 						<div className="flex items-center gap-2">
 							<Input
 								key={resetNonce ?? 0}
@@ -443,7 +434,8 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 									onDeckFileNameChange?.(null);
 									setStatus("");
 									setLastResult(undefined);
-								}}
+                }}
+								className="px-3 py-2"
 								disabled={!file || running || locked}
 							>
 								Limpiar
@@ -457,80 +449,33 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium" htmlFor="deck-box-color">
-							Color del recuadro de descripción/estadísticas
-						</label>
-						<Select
-							value={cardDraftSignal.value.descriptionStatsBoxColor ?? "auto"}
-							onValueChange={(value: string) => {
-								cardDraftSignal.value = {
-									...cardDraftSignal.value,
-									descriptionStatsBoxColor:
-										value as YugiohDescriptionStatsBoxColor,
-								};
-							}}
-						>
-							<SelectTrigger id="deck-box-color" className="w-full">
-								<SelectValue placeholder="Selecciona un color" />
-							</SelectTrigger>
-							<SelectContent>
-								{YUGIOH_DESCRIPTION_STATS_BOX_COLORS.map((option) => (
-									<SelectItem key={option.value} value={option.value}>
-										{option.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="space-y-2">
-						<label className="text-sm font-medium" htmlFor="deck-img-rotation">
-							Rotación de imagen (°)
-						</label>
-						<Input
-							id="deck-img-rotation"
-							type="number"
-							inputMode="numeric"
-							value={String(cardDraftSignal.value.imgRotationDeg ?? 0)}
-							onInput={(e) => {
-								const raw = e.currentTarget.value;
-								const parsed = Number.parseFloat(raw);
-								cardDraftSignal.value = {
-									...cardDraftSignal.value,
-									imgRotationDeg: Number.isFinite(parsed) ? parsed : 0,
-								};
-							}}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<label
+						<Label
 							className="text-sm font-medium"
 							htmlFor="deck-description-opacity"
 						>
 							Opacidad de la imagen de descripción
-						</label>
+						</Label>
 						<Select
 							value={
-								cardDraftSignal.value.descriptionImageOpacity === undefined
+								card.descriptionImageOpacity === undefined
 									? "auto"
-									: String(cardDraftSignal.value.descriptionImageOpacity)
+									: String(card.descriptionImageOpacity)
 							}
 							onValueChange={(value: string) => {
 								if (value === "auto") {
-									cardDraftSignal.value = {
-										...cardDraftSignal.value,
+									setCard({
+										...card,
 										descriptionImageOpacity: undefined,
-									};
+									});
 									return;
 								}
 								const parsed = Number.parseFloat(value);
-								cardDraftSignal.value = {
-									...cardDraftSignal.value,
+								setCard({
+									...card,
 									descriptionImageOpacity: Number.isFinite(parsed)
 										? parsed
 										: undefined,
-								};
+								});
 							}}
 						>
 							<SelectTrigger id="deck-description-opacity" className="w-full">
@@ -548,16 +493,16 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					</div>
 
 					<div className="space-y-2">
-						<label className="text-sm font-medium" htmlFor="deck-export-format">
+						<Label className="text-sm font-medium" htmlFor="deck-export-format">
 							Formato de exportación
-						</label>
+						</Label>
 						<Select
-							value={cardDraftSignal.value.exportFormat ?? "webp"}
+							value={card.exportFormat ?? "webp"}
 							onValueChange={(value: string) => {
-								cardDraftSignal.value = {
-									...cardDraftSignal.value,
+								setCard({
+									...card,
 									exportFormat: value as "webp" | "png" | "jpg",
-								};
+								});
 							}}
 						>
 							<SelectTrigger id="deck-export-format" className="w-full">

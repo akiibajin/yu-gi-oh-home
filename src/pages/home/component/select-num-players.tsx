@@ -6,13 +6,13 @@ import {
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
 import { Input } from "@/components/ui/warcraftcn/input";
-import { useLocation } from "preact-iso";
-import { useMemo, useState } from "preact/hooks";
+import { useNavigate } from "react-router";
+import { useMemo, useState } from "react";
 
 const PRESET_PLAYER_COUNTS = [1, 2, 3, 4, 5] as const;
 
 export function SelectNumPlayers() {
-	const { route } = useLocation();
+	const navigate = useNavigate();
 	const [custom, setCustom] = useState<string>("");
 
 	const parsedCustom = useMemo(() => {
@@ -30,7 +30,7 @@ export function SelectNumPlayers() {
 			<CardContent className="space-y-4">
 				<div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
 					{PRESET_PLAYER_COUNTS.map((n) => (
-						<Button key={n} onClick={() => route(`/calc/${n}/setup`)}>
+						<Button key={n} onClick={() => navigate(`/calc/${n}/setup`)}>
 							{n} {n === 1 ? "jugador" : "jugadores"}
 						</Button>
 					))}
@@ -47,7 +47,7 @@ export function SelectNumPlayers() {
 							onInput={(event) => setCustom(event.currentTarget.value)}
 							onKeyDown={(event) => {
 								if (event.key === "Enter" && canGoCustom) {
-									route(`/calc/${parsedCustom}/setup`);
+									navigate(`/calc/${parsedCustom}/setup`);
 								}
 							}}
 						/>
@@ -57,7 +57,7 @@ export function SelectNumPlayers() {
 						disabled={!canGoCustom}
 						onClick={() => {
 							if (!canGoCustom) return;
-							route(`/calc/${parsedCustom}/setup`);
+							navigate(`/calc/${parsedCustom}/setup`);
 						}}
 					>
 						Ir

@@ -1,5 +1,5 @@
-import { useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
 import {
@@ -15,7 +15,7 @@ import { CrownIcon } from "lucide-react";
 const HOST_DISPLAY_NAME = "Host";
 
 export default function CreateLobby() {
-	const { route } = useLocation();
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
@@ -31,7 +31,7 @@ export default function CreateLobby() {
 				const url = `/lobby/host/${result.lobby.id}?code=${result.lobby.lobby_code}&playerId=${result.player.id}`;
 				console.log("Navigating to:", url);
 
-				route(url);
+				navigate(url);
 			} else {
 				setError("No se pudo crear la sala. Inténtalo de nuevo.");
 			}
@@ -77,7 +77,7 @@ export default function CreateLobby() {
 						<Button
 							variant="frame"
 							onClick={() => {
-								route("/lobby/join");
+								navigate("/lobby/join");
 							}}
 							className="w-full"
 						>

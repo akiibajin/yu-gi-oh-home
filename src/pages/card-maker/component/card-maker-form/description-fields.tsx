@@ -11,6 +11,7 @@ import type {
 	YugiohDescriptionTextColor,
 	YugiohDescriptionTextSize,
 } from "@/lib/types";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 export function CardMakerDescriptionFields(props: {
 	showDescription: boolean;
@@ -46,9 +47,9 @@ export function CardMakerDescriptionFields(props: {
 	return (
 		<div className="space-y-2 rounded-md border p-3 sm:p-4">
       {!isSecondaryTemplate && <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <label className="text-sm font-medium" htmlFor="cm-show-description">
+        <Label className="text-sm font-medium" htmlFor="cm-show-description">
           Mostrar descripción en la vista previa
-        </label>
+        </Label>
         <Switch
           id="cm-show-description"
           checked={showDescription}
@@ -56,9 +57,9 @@ export function CardMakerDescriptionFields(props: {
         />
       </div>}
 			{!isSecondaryTemplate && <div className="space-y-2">
-				<label className="text-sm font-medium" htmlFor="cm-description-opacity">
+				<Label className="text-sm font-medium" htmlFor="cm-description-opacity">
 					Opacidad de la imagen de descripción
-				</label>
+				</Label>
 				<Select
 					value={
 						descriptionImageOpacity === undefined
@@ -119,12 +120,12 @@ export function CardMakerDescriptionFields(props: {
 						</Select>
 					</div>
 					<div className="space-y-2 min-w-0">
-						<label
+						<Label
 							className="text-sm font-medium"
 							htmlFor="cm-description-text-size"
 						>
 							Tamaño del texto
-						</label>
+						</Label>
 						<Select
 							value={descriptionTextSize}
 							onValueChange={(value: string) =>
@@ -146,13 +147,13 @@ export function CardMakerDescriptionFields(props: {
 					</div>
 				</div>
 			) : null}
-			<label className="text-sm font-medium" htmlFor="cm-description">
+			<Label className="text-sm font-medium" htmlFor="cm-description">
 				{label}
-			</label>
+			</Label>
 			<Textarea
 				id="cm-description"
 				value={value}
-				spellcheck={false}
+				spellCheck={false}
 				onInput={(e) => onInput(e.currentTarget.value)}
 				placeholder={placeholder}
 				rows={5}

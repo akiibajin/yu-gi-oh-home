@@ -1,4 +1,5 @@
-import { render } from "preact";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router";
 import App from "./App";
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
@@ -7,4 +8,8 @@ if (!root) {
 	throw new Error('Root element with id "root" was not found.');
 }
 
-render(<App />, root);
+ReactDOM.createRoot(root).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+);

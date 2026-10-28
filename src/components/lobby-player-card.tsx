@@ -9,7 +9,7 @@ import { LifePointsCounter } from "@/components/life-points-counter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { playLifePointsChangeSfx } from "@/lib/sfx";
 import type { LobbyPlayer } from "@/lib/lobby";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef } from "react";
 import { getSafeAvatarImages } from "@/lib/avatars";
 import { XCircleIcon } from "lucide-react";
 

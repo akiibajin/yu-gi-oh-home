@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
@@ -14,7 +14,7 @@ import {
 import { fetchWikiCardData, fetchSpanishNameAndLore, type WikiCardData } from "@/lib/tauri/fandom";
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import { canInvokeTauri } from "@/lib/tauri/can-invoke-tauri";
-import { cardDraftSignal } from "@/pages/card-maker/state";
+import useCardStore from "@/pages/card-maker/state";
 import { cn } from "@/lib/utils";
 import type {
 	YugiohCardAttribute,
@@ -143,7 +143,9 @@ export function CardSearcherForm() {
 	const [wikiError, setWikiError] = useState<string | null>(null);
 	const [wikiPreviewUrl, setWikiPreviewUrl] = useState<string | null>(null);
 	const [wikiCardData, setWikiCardData] = useState<WikiCardData | null>(null);
-	const [useAnimeEffect, setUseAnimeEffect] = useState(false);
+  const [useAnimeEffect, setUseAnimeEffect] = useState(false);
+  const draft = useCardStore(x => x.card);
+  const setCard = useCardStore(x=>x.setCard)
 
 	const doSearch = async () => {
 		const trimmed = query.trim();
@@ -193,7 +195,7 @@ export function CardSearcherForm() {
 
 		setApplying(true);
 		try {
-			const currentDraft = cardDraftSignal.value;
+			const currentDraft = {...draft};
 			const cardType = mapApiTypeToCardType(card.type ?? "", card.race ?? "");
 			const monsterType =
 				cardType === "Monster"
@@ -213,7 +215,7 @@ export function CardSearcherForm() {
 			}
 
 			const englishName = card.name ?? "";
-			cardDraftSignal.value = {
+			setCard({
 				...currentDraft,
 				name: englishName,
 				cardType,
@@ -248,21 +250,21 @@ export function CardSearcherForm() {
 				pendulumDescription: isPendulum ? pendulumDescription : "",
 				descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor,
 				img,
-			};
+			});
 
 			try {
 				const es = await fetchSpanishNameAndLore(englishName);
 				if (es) {
-					const prev = cardDraftSignal.value;
-					cardDraftSignal.value = {
-						...prev,
-						name: es.name,
-						description: es.lore,
-						pendulumDescription:
-						  isPendulum
-								? es.pendulum_effect ?? prev.pendulumDescription
-								: "",
-					};
+					const prev = {...draft};
+          setCard({
+            ...prev,
+            name: es.name,
+            description: es.lore,
+            pendulumDescription:
+              isPendulum
+                ? es.pendulum_effect ?? prev.pendulumDescription
+                : "",
+          });
 				}
 			} catch {
 				// Translation failed; keep English text.
@@ -307,7 +309,7 @@ export function CardSearcherForm() {
 
 		setApplying(true);
 		try {
-			const currentDraft = cardDraftSignal.value;
+			const currentDraft = {...draft};
 			const cardType: YugiohCardType =
 				data.card_type === "Spell"
 					? "Spell"
@@ -406,7 +408,9 @@ export function CardSearcherForm() {
 				"Cyberse": "Cyberse",
 				"Dinosaurio": "Dinosaur",
         "Dinosaur": "Dinosaur",
-				"Bestia divina": "Divine-Beast"
+        "Bestia divina": "Divine-Beast",
+        "Galaxia": "Galaxy",
+				"Galaxy": "Galaxy"
 			};
 
 			const spellTypeMap: Record<string, YugiohSpellType> = {
@@ -448,7 +452,7 @@ export function CardSearcherForm() {
 			return "Normal";
 			};
 
-			cardDraftSignal.value = {
+			setCard({
 				...currentDraft,
 				name: data.name ?? currentDraft.name,
 				cardType,
@@ -478,7 +482,7 @@ export function CardSearcherForm() {
 				},
 				scale: isNaN(scale as number) ? currentDraft.scale : scale,
 				img,
-			};
+			});
 		} finally {
 			setApplying(false);
 		}
@@ -489,7 +493,7 @@ export function CardSearcherForm() {
 			<CardHeader>
 				<CardTitle>Buscar carta</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-4">
+			<CardContent className="space-y-4 pl-6 pr-10 pb-6">
 				<div ref={containerRef} className="relative">
 					<div className="flex gap-2">
 						<Input

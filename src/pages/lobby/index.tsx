@@ -1,5 +1,5 @@
-import { useEffect, useState } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
@@ -18,7 +18,7 @@ import {
 import { RefreshCwIcon, ShieldIcon, UsersIcon, CrownIcon } from "lucide-react";
 
 export default function LobbyIndex() {
-	const { route } = useLocation();
+	const navigate = useNavigate();
 	const [lobbies, setLobbies] = useState<Lobby[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -58,7 +58,7 @@ export default function LobbyIndex() {
 
 		// Navigate to host display
 		const url = `/lobby/host/${lobby.id}?code=${lobby.lobby_code}&playerId=${hostPlayer.id}`;
-		route(url);
+		navigate(url);
 	};
 
 	return (

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "preact/hooks";
-import { useLocation, useRoute } from "preact-iso";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
@@ -29,10 +29,11 @@ import halveIcon from "@/assets/images/Halve.webp";
 import { AvatarSelector } from "@/components/avatar-selector";
 
 export default function GuestControl() {
-	const { route, query } = useLocation();
-	const { params } = useRoute();
-	const lobbyId = params.lobbyId as string;
-	const playerId = query.playerId as string | undefined;
+  const params = useParams()
+  const lobbyId = params["lobbyId"] ?? "";
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams()
+	const playerId = searchParams.get("playerId");
 	const [player, setPlayer] = useState<LobbyPlayer | null>(null);
 	const [allPlayers, setAllPlayers] = useState<LobbyPlayer[]>([]);
 	const [lobby, setLobby] = useState<Lobby | null>(null);
@@ -138,7 +139,7 @@ export default function GuestControl() {
 			// Ensure we end in `active=false`, even if another presence update was in-flight.
 			await queuePresence(false, true);
 		} finally {
-			route("/lobby/join");
+			navigate("/lobby/join");
 		}
 	};
 	useEffect(() => {
@@ -174,7 +175,7 @@ export default function GuestControl() {
 			console.log({ lobbyId, playerId });
 			if (!playerId) {
 				console.log("No playerId, redirecting to join");
-				route("/lobby/join");
+				navigate("/lobby/join");
 				return;
 			}
 
@@ -189,7 +190,7 @@ export default function GuestControl() {
 			const currentPlayer = players.find((p) => p.id === playerId);
 			if (!currentPlayer) {
 				console.log("Player not found, redirecting to join");
-				route("/lobby/join");
+				navigate("/lobby/join");
 				return;
 			}
 

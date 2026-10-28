@@ -10,6 +10,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import type { YugiohCardDraft } from "@/lib/types";
 import type { SetDraftField } from "./types";
+import { Label } from "@/components/ui/warcraftcn/label";
 
 export function CardMakerImageFields(props: {
 	draft: YugiohCardDraft;
@@ -22,9 +23,9 @@ export function CardMakerImageFields(props: {
 
 	return (
 		<div className="space-y-3 rounded-md border p-3 sm:p-4">
-			<label className="text-sm font-medium" htmlFor="cm-image">
+			<Label className="text-sm font-medium" htmlFor="cm-image">
 				Imagen de la carta
-			</label>
+			</Label>
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center *:min-w-0">
 				<Input
 					id="cm-image"
@@ -35,18 +36,18 @@ export function CardMakerImageFields(props: {
 						const file = e.currentTarget.files?.[0] ?? null;
 						onImageUpload(file);
 					}}
-				/>
-				<div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-[auto_minmax(10rem,1fr)]">
-					<Button
+        />
+        <Button
 						type="button"
 						variant="secondary"
-						className="md:col-start-1 md:row-start-2 md:self-center"
+						className="md:col-start-1 md:row-start-1 md:row-span-2 md:self-center"
 						onClick={() => onImageUpload(null)}
 						disabled={!draft.img}
 					>
 						Limpiar
 					</Button>
-					<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-2">
+				<div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-[auto_minmax(10rem,1fr)]">
+					<Label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-2">
 						<span>Formato de imagen</span>
 						<Select
 							value={draft.objectFit}
@@ -68,8 +69,8 @@ export function CardMakerImageFields(props: {
 								<SelectItem value="none">Ninguno</SelectItem>
 							</SelectContent>
 						</Select>
-					</label>
-					<label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-3">
+					</Label>
+					<Label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-3">
 						<span>Rotación (°)</span>
 						<Input
 							type="number"
@@ -85,7 +86,7 @@ export function CardMakerImageFields(props: {
 								);
 							}}
 						/>
-					</label>
+					</Label>
 				</div>
 			</div>
 			{draft.img ? (
@@ -98,9 +99,9 @@ export function CardMakerImageFields(props: {
 			) : null}
 
       {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
-        <label className="text-sm font-medium" htmlFor="cm-overframe">
+        <Label className="text-sm font-medium" htmlFor="cm-overframe">
           Overframe
-        </label>
+        </Label>
         <Switch
           id="cm-overframe"
           checked={draft.overframe ?? false}
@@ -113,9 +114,9 @@ export function CardMakerImageFields(props: {
 
 			{draft.overframe ? (
 				<div className="space-y-2">
-					<label className="text-sm font-medium" htmlFor="cm-overframe-image">
+					<Label className="text-sm font-medium" htmlFor="cm-overframe-image">
 						Imagen overframe
-					</label>
+					</Label>
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-center *:min-w-0">
 						<Input
 							id="cm-overframe-image"
@@ -145,7 +146,7 @@ export function CardMakerImageFields(props: {
 						</div>
 					) : null}
 					<div className="grid w-full min-w-0 grid-cols-1 gap-2 sm:w-auto sm:grid-cols-[auto_minmax(10rem,1fr)]">
-						<label className="flex flex-col gap-2">
+						<Label className="flex flex-col gap-2">
 							<span>Formato overframe</span>
 							<Select
 								value={draft.overframeObjectFit}
@@ -167,8 +168,8 @@ export function CardMakerImageFields(props: {
 									<SelectItem value="none">Ninguno</SelectItem>
 								</SelectContent>
 							</Select>
-						</label>
-						<label className="flex flex-col gap-2">
+						</Label>
+						<Label className="flex flex-col gap-2">
 							<span>Rotación overframe (°)</span>
 							<Input
 								type="number"
@@ -184,15 +185,15 @@ export function CardMakerImageFields(props: {
 									);
 								}}
 							/>
-						</label>
+						</Label>
 					</div>
 				</div>
 			) : null}
 
       {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
-        <label className="text-sm font-medium" htmlFor="cm-full-art">
+        <Label className="text-sm font-medium" htmlFor="cm-full-art">
           Utilizar imagen como full art
-        </label>
+        </Label>
         <Switch
           id="cm-full-art"
           checked={draft.fullArt ?? false}

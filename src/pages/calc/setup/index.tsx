@@ -14,8 +14,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useLocation, useRoute } from "preact-iso";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useParams, useNavigate } from "react-router";
+import { useEffect, useMemo, useState } from "react";
 import { PLAYERS_NAMES } from "@/lib/avatars";
 
 function defaultNames(count: number) {
@@ -39,9 +39,9 @@ function normalizeNames(names: string[]) {
 }
 
 function CalcSetup() {
-	const { route } = useLocation();
-	const { params } = useRoute();
-	const numRaw = (params as Record<string, string | undefined>).num;
+	const navigate = useNavigate();
+	const params = useParams();
+  const numRaw = params["num"];
 	const num = numRaw ? Number.parseInt(numRaw, 10) : NaN;
 
 	const isValidNum = Number.isFinite(num) && num > 0;
@@ -207,7 +207,7 @@ function CalcSetup() {
 					) : null}
 
 					<div className="flex items-center justify-between gap-2">
-						<Button type="button" variant="frame" onClick={() => route("/")}>
+						<Button type="button" variant="frame" onClick={() => navigate("/")}>
 							Back
 						</Button>
 						<Button
@@ -215,7 +215,7 @@ function CalcSetup() {
 							disabled={!canStart}
 							onClick={() => {
 								if (!canStart) return;
-								route(buildCalcUrl(num, names));
+								navigate(buildCalcUrl(num, names));
 							}}
 						>
 							Start

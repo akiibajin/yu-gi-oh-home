@@ -5,6 +5,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/warcraftcn/label";
 import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import type { YugiohDescriptionStatsBoxColor } from "@/lib/types";
 
@@ -33,9 +34,9 @@ export function CardMakerMonsterBoxColor(props: {
 
 	return isSecondaryTemplate ? null : (
 		<div className="space-y-2 rounded-md border p-3 sm:p-4">
-			<label className="text-sm font-medium" htmlFor="cm-box-color">
+			<Label className="text-sm font-medium" htmlFor="cm-box-color">
 				Color del recuadro de descripción/estadísticas
-			</label>
+			</Label>
 			<Select
 				value={value ?? "auto"}
 				onValueChange={(v: string) =>

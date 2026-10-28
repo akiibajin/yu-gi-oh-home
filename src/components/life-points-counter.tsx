@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { CircleGaugeIcon } from "lucide-react";
-import type { ComponentProps } from "preact";
+import type { ComponentProps } from "react";
 
 export type LifePointsCounterProps = {
 	value: number;

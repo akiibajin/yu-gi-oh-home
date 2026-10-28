@@ -1,7 +1,6 @@
-import { useState, useEffect } from "preact/hooks";
-import { useLocation } from "preact-iso";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
-import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
 	Dialog,
@@ -10,7 +9,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/warcraftcn/dialog";
+} from "@/components/ui/dialog";
 import {
 	Card,
 	CardContent,
@@ -35,13 +34,16 @@ import { DuelHistoryViewer } from "@/components/duel-history-viewer";
 import QRCodeReact from "react-qr-code";
 import { initDuelSfx } from "@/lib/sfx";
 import { CopyIcon, CrownIcon, UsersIcon, QrCodeIcon } from "lucide-react";
+import { Badge } from "@/components/ui/warcraftcn/badge";
 
 // biome-ignore lint/suspicious/noExplicitAny: React component used in Preact
 const QRCode = QRCodeReact as any;
 
-export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
-	const { route, query } = useLocation();
-	const code = query.code as string | undefined;
+export default function HostDisplay() {
+  const params = useParams();
+  const lobbyId = params["lobbyId"] ?? ""
+  const navigate = useNavigate();
+  const code = params["code"];
 	const [players, setPlayers] = useState<LobbyPlayer[]>([]);
 	const [lobby, setLobby] = useState<Lobby | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -68,7 +70,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			await closeLobby(lobbyId);
 			setCloseDialogOpen(false);
 			console.log("Closing lobby and navigating to home");
-			route("/");
+			navigate("/");
 		} finally {
 			setClosingLobby(false);
 		}
@@ -182,7 +184,7 @@ export default function HostDisplay({ lobbyId }: { lobbyId: string }) {
 			<div className="flex items-center justify-center min-h-screen p-4">
 				<div className="text-center space-y-4">
 					<p className="text-lg text-red-400">Sala no encontrada</p>
-					<Button onClick={() => route("/lobby")}>Volver a salas</Button>
+					<Button onClick={() => navigate("/lobby")}>Volver a salas</Button>
 				</div>
 			</div>
 		);

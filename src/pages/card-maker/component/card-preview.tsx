@@ -7,8 +7,8 @@ import {
 import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
 import getTypeCardBg from "@/lib/get-type-card-bg";
 import getSecondaryTemplate from "@/lib/get-secondary-template";
-import { cardDraftSignal } from "@/pages/card-maker/state";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import useCardStore from "@/pages/card-maker/state";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import MonsterLevel from "./monster-level";
 import RankImage from "./rank-image";
@@ -24,7 +24,7 @@ interface CardPreviewProps {
 
 export function CardPreview(props: CardPreviewProps) {
   const { size } = props;
-  const draft = cardDraftSignal.value;
+  const draft = useCardStore(x => x.card);
   const showName: boolean = draft.showName ?? true;
   const showNameBox: boolean = draft.showNameBox ?? false;
   const displayName = draft.name.trim() || "";

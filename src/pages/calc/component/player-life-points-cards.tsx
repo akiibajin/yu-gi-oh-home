@@ -13,7 +13,7 @@ import {
 	InputGroupInput,
 } from "@/components/ui/input-group";
 import { MinusIcon, PlusIcon, RotateCcwIcon } from "lucide-react";
-import { useState } from "preact/hooks";
+import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { PLAYERS_IMAGES } from "@/lib/avatars";

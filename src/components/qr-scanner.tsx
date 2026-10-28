@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/warcraftcn/button";
 import {
 	Card,

@@ -148,7 +148,6 @@
 	font-family: "Yu-Gi-Oh Matrix", ui-sans-serif, system-ui, sans-serif;
 }
 
-
 @keyframes emergency-pulse {
 	0%, 100% {
 		box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
