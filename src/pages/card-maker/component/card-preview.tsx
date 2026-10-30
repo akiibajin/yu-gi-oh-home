@@ -262,7 +262,7 @@ export function CardPreview(props: CardPreviewProps) {
               <img
                 className={cn(
                   "w-full opacity-70 absolute",
-                  resolvedOverframeImgUrl && "z-4 -mt-4 h-15",
+                  resolvedOverframeImgUrl && "z-0 -mt-4 h-15",
                 )}
                 src={typeCardImg.stats ?? ""}
                 alt="ATK"

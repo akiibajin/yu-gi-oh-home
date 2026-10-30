@@ -126,6 +126,7 @@ export function CardMakerForm(
       setExporting(false);
     }
   };
+  console.log({ type: draft.descriptionStatsBoxColor })
   return (
     <Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
       <CardHeader>
@@ -208,22 +209,13 @@ export function CardMakerForm(
               </AccordionContent>
             </AccordionItem>
           )}
-          <AccordionItem value="border">
-            <AccordionTrigger>Recuadro</AccordionTrigger>
-            <AccordionContent>
-              <CardMakerMonsterBoxColor
-                value={draft.descriptionStatsBoxColor}
-                isSecondaryTemplate={draft.template === "secondary"}
-                onValueChange={(value) =>
-                  setDraftField("descriptionStatsBoxColor", value)
-                }
-              />
-            </AccordionContent>
-          </AccordionItem>
           <AccordionItem value="description">
             <AccordionTrigger>Descripción</AccordionTrigger>
             <AccordionContent>
               <CardMakerDescriptionFields
+                descriptionType={draft.descriptionStatsBoxColor!}
+                onDescriptionTypeChange={(value) =>
+                  setDraftField("descriptionStatsBoxColor", value)}
                 showDescription={draft.showDescription ?? true}
                 isSecondaryTemplate={draft.template === "secondary"}
                 onShowDescriptionChange={(checked) =>

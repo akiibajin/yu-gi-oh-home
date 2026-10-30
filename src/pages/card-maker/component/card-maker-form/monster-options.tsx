@@ -125,7 +125,7 @@ export function CardMakerMonsterOptions(props: {
             Atributo
           </Label>
           <DropdownMenu>
-            <DropdownMenuTrigger id="cm-attribute" className="w-full">
+            <DropdownMenuTrigger asChild id="cm-attribute" className="w-full">
               <Button>Selecciona un atributo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -149,7 +149,7 @@ export function CardMakerMonsterOptions(props: {
           </Label>
           <DropdownMenu
           >
-            <DropdownMenuTrigger id="cm-monster-type" className="w-full">
+            <DropdownMenuTrigger asChild id="cm-monster-type" className="w-full">
               <Button type="button">Selecciona un tipo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="overflow-auto max-h-120">
@@ -169,7 +169,7 @@ export function CardMakerMonsterOptions(props: {
           </Label>
           <DropdownMenu
           >
-            <DropdownMenuTrigger id="cm-sub-type" className="w-full">
+            <DropdownMenuTrigger asChild id="cm-sub-type" className="w-full">
               <Button type="button">tipo de monstruo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-h-120 overflow-auto">

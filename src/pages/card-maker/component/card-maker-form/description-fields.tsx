@@ -12,6 +12,24 @@ import type {
 	YugiohDescriptionTextSize,
 } from "@/lib/types";
 import { Label } from "@/components/ui/warcraftcn/label";
+import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
+import type { YugiohDescriptionStatsBoxColor } from "@/lib/types";
+
+const BOX_COLOR_LABELS: Partial<
+	Record<YugiohDescriptionStatsBoxColor | "auto" | "void", string>
+> = {
+	auto: "Automático (según tipo de carta)",
+	void: "Vacío (oculta imágenes del recuadro)",
+	"void-inverse": "Vacío inverso (letras negras, contorno blanco)",
+	Normal: "Normal (naranja)",
+	Effect: "Efecto (marrón)",
+	Ritual: "Ritual (azul)",
+	Fusion: "Fusión (morado)",
+	Synchro: "Sincronía (blanco)",
+	Xyz: "Xyz (negro)",
+	Link: "Enlace (azul)",
+	Trap: "Trampa (rosa)",
+};
 
 export function CardMakerDescriptionFields(props: {
 	showDescription: boolean;
@@ -26,7 +44,9 @@ export function CardMakerDescriptionFields(props: {
 	value: string;
 	onInput: (value: string) => void;
   placeholder: string;
-	isSecondaryTemplate: boolean;
+  isSecondaryTemplate: boolean;
+  descriptionType: YugiohDescriptionStatsBoxColor;
+  onDescriptionTypeChange: (value: YugiohDescriptionStatsBoxColor) => void;
 }) {
 	const {
 		showDescription,
@@ -41,11 +61,13 @@ export function CardMakerDescriptionFields(props: {
 		value,
 		onInput,
     placeholder,
-		isSecondaryTemplate
+    isSecondaryTemplate,
+    descriptionType,
+		onDescriptionTypeChange
 	} = props;
 
 	return (
-		<div className="space-y-2 rounded-md border p-3 sm:p-4">
+    <div className="space-y-2 rounded-md border p-3 sm:p-4">
       {!isSecondaryTemplate && <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <Label className="text-sm font-medium" htmlFor="cm-show-description">
           Mostrar descripción en la vista previa
@@ -56,7 +78,30 @@ export function CardMakerDescriptionFields(props: {
           onCheckedChange={onShowDescriptionChange}
         />
       </div>}
-			{!isSecondaryTemplate && <div className="space-y-2">
+      {isSecondaryTemplate ? null : (
+		<>
+			<Label className="text-sm font-medium" htmlFor="cm-box-color">
+				Color del recuadro de descripción/estadísticas
+			</Label>
+			<Select
+				value={descriptionType ?? "auto"}
+				onValueChange={(v: string) =>
+					onDescriptionTypeChange(v as YugiohDescriptionStatsBoxColor)
+				}
+			>
+				<SelectTrigger id="cm-box-color" className="w-full">
+					<SelectValue placeholder="Selecciona un color" />
+				</SelectTrigger>
+				<SelectContent>
+					{YUGIOH_DESCRIPTION_STATS_BOX_COLORS.map((option) => (
+						<SelectItem key={option.value} value={option.value}>
+							{BOX_COLOR_LABELS[option.value] ?? option.label}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+		</>)}
+			{!isSecondaryTemplate || !["void", "void-inverse"].includes(descriptionType) && <div className="space-y-2">
 				<Label className="text-sm font-medium" htmlFor="cm-description-opacity">
 					Opacidad de la imagen de descripción
 				</Label>
@@ -158,7 +203,7 @@ export function CardMakerDescriptionFields(props: {
 				placeholder={placeholder}
 				rows={5}
 				className="w-full resize-none max-h-20"
-			/>
+      />
 		</div>
 	);
 }

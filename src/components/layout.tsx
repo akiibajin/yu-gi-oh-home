@@ -10,6 +10,16 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NAV_ITEMS, type NavItem } from "@/lib/constants";
+import { FACTIONS, FACTION_LABELS, type Faction } from "@/lib/factions";
+import { useFactionStore } from "@/lib/faction-store";
+import { cn } from "@/lib/utils";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import UpdateNotification from "./update-notification";
 import { Cursor } from "./ui/warcraftcn/cursor";
 
@@ -20,6 +30,29 @@ function flattenNavItems(items: NavItem[]): NavItem[] {
 		if (item.children?.length) out.push(...flattenNavItems(item.children));
 	}
 	return out;
+}
+
+function FactionSelect({ className }: { className?: string }) {
+	const faction = useFactionStore((state) => state.faction);
+	const setFaction = useFactionStore((state) => state.setFaction);
+
+	return (
+		<Select
+			value={faction}
+			onValueChange={(value) => setFaction(value as Faction)}
+		>
+			<SelectTrigger size="sm" className={cn("w-28 shrink-0", className)}>
+				<SelectValue />
+			</SelectTrigger>
+			<SelectContent>
+				{FACTIONS.map((option) => (
+					<SelectItem key={option} value={option}>
+						{FACTION_LABELS[option]}
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
+	);
 }
 
 function toTitleCaseFromSegment(segment: string) {
@@ -34,6 +67,7 @@ function toTitleCaseFromSegment(segment: string) {
 export default function Layout() {
 	const { pathname } = useLocation();
   const navigate = useNavigate();
+	const faction = useFactionStore((state) => state.faction);
 	const navIndex = useMemo(() => {
 		const map = new Map<string, NavItem>();
 		for (const item of flattenNavItems(NAV_ITEMS)) {
@@ -68,7 +102,7 @@ export default function Layout() {
 	}, [pathname, navIndex]);
 
   return (
-    <Cursor>
+    <Cursor faction={faction}>
 		<div className="relative grid grid-rows-[1fr_auto] md:grid-rows-[auto_1fr] h-dvh min-h-dvh min-w-0">
 			<header className="hidden md:flex row-start-1 w-full min-w-0 items-center gap-2 border-b bg-card px-4 py-2">
 				<Breadcrumb>
@@ -99,11 +133,13 @@ export default function Layout() {
 						})}
 					</BreadcrumbList>
 				</Breadcrumb>
+				<FactionSelect className="ml-auto" />
 			</header>
 			<main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-2 md:px-4 py-3 pb-[env(safe-area-inset-bottom)]">
 				<Outlet />
 			</main>
 			<footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
+				<FactionSelect />
 				<Breadcrumb>
 					<BreadcrumbList>
 						{breadcrumbItems.map((item, index) => {
@@ -134,7 +170,7 @@ export default function Layout() {
 				</Breadcrumb>
 			</footer>
 			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
-				v 7.0.0
+				v 7.0.1
       </span>
 			      <UpdateNotification />
       </div>

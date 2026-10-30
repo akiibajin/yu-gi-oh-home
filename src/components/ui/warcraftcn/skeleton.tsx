@@ -2,6 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { useFactionStore } from "@/lib/faction-store";
 
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
@@ -34,9 +35,11 @@ function Skeleton({
   faction,
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof skeletonVariants>) {
+  const storeFaction = useFactionStore((state) => state.faction);
+
   return (
     <div
-      className={cn(skeletonVariants({ variant, faction }), className)}
+      className={cn(skeletonVariants({ variant, faction: faction ?? storeFaction }), className)}
       data-slot="skeleton"
       {...props}
     >

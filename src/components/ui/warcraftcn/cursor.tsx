@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import type { Faction } from "@/lib/factions";
 
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
@@ -20,7 +21,7 @@ const cursorVariants = cva("", {
 });
 
 export interface CursorProps extends React.ComponentProps<"div">, VariantProps<typeof cursorVariants> {
-  faction?: "default" | "orc" | "elf" | "human" | "undead";
+  faction?: Faction;
 }
 
 export const Cursor: React.FC<CursorProps> = ({
