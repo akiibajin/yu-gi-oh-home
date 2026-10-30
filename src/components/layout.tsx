@@ -170,7 +170,7 @@ export default function Layout() {
 				</Breadcrumb>
 			</footer>
 			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
-				v 7.0.1
+				v 7.0.2
       </span>
 			      <UpdateNotification />
       </div>

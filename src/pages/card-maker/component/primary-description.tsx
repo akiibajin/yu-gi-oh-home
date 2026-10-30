@@ -76,7 +76,7 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
           ) : null}
           <PendulumStats
             scale={draft.scale ?? 0}
-            className={cn(!showDescription && "mb-3")}
+            className={cn(!showDescription && "bottom-50")}
           />
         </div>
       )}
