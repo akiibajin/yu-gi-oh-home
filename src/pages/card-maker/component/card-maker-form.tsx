@@ -17,7 +17,6 @@ import { CardMakerDescriptionFields } from "./card-maker-form/description-fields
 import { CardMakerFormActions } from "./card-maker-form/form-actions";
 import { CardMakerImageFields } from "./card-maker-form/image-fields";
 import { CardMakerLinkMarkers } from "./card-maker-form/link-markers";
-import { CardMakerMonsterBoxColor } from "./card-maker-form/monster-box-color";
 import { CardMakerMonsterOptions } from "./card-maker-form/monster-options";
 import { CardMakerPendulumEffect } from "./card-maker-form/pendulum-effect";
 import type { SetDraftField } from "./card-maker-form/types";
