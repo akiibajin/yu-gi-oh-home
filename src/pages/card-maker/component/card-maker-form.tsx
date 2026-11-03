@@ -60,7 +60,6 @@ export function CardMakerForm(
     value: YugiohCardDraft[K],
   ) => {
     setCard({
-      ...card,
       [key]: value,
     });
   };
@@ -125,7 +124,6 @@ export function CardMakerForm(
       setExporting(false);
     }
   };
-  console.log({ type: draft.descriptionStatsBoxColor })
   return (
     <Card className="w-full md:max-h-[85vh] md:overflow-auto min-w-0">
       <CardHeader>

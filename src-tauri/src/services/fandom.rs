@@ -65,7 +65,34 @@ fn strip_ref_tags(input: &str) -> String {
     out
 }
 
+/// Remove HTML comments such as the official-name advisory that the Fandom
+/// wiki embeds in template params like `es_name`.
+fn strip_html_comments(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    let mut rest = input;
+    while let Some(start) = rest.find("<!--") {
+        out.push_str(&rest[..start]);
+        match rest[start..].find("-->") {
+            Some(end) => rest = &rest[start + end + "-->".len()..],
+            None => {
+                rest = "";
+                break;
+            }
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
+/// A card name is valid when it is not empty and does not still carry HTML
+/// comments (e.g. the official-name advisory added by the wiki editors).
+fn is_valid_card_name(name: &str) -> bool {
+    let trimmed = name.trim();
+    !trimmed.is_empty() && !trimmed.contains("<!--") && !trimmed.contains("-->")
+}
+
 fn strip_wiki_markup(mut input: String) -> String {
+    input = strip_html_comments(&input);
     input = strip_ref_tags(&input);
 
     // Line breaks and bold/italic markup, stripped in a single pass to avoid
@@ -125,7 +152,10 @@ fn strip_wiki_markup(mut input: String) -> String {
         j += ch.len_utf8();
     }
 
-    decode_basic_html_entities(link_stripped.trim())
+    // Strip comments again after entity decoding, since the wiki may encode
+    // them as `&lt;!-- ... --&gt;`.
+    let decoded = decode_basic_html_entities(link_stripped.trim());
+    strip_html_comments(&decoded).trim().to_string()
 }
 
 fn find_ascii_case_insensitive(haystack: &str, needle: &str) -> Option<usize> {
@@ -242,7 +272,7 @@ pub async fn fetch_spanish_name_and_lore(
         .map(|s| s.trim().to_string())
         .filter(|s| !s.is_empty());
 
-    if es_name.trim().is_empty() || es_lore.trim().is_empty() {
+    if !is_valid_card_name(&es_name) || es_lore.trim().is_empty() {
         return Ok(None);
     }
 
@@ -808,7 +838,28 @@ pub async fn fetch_wiki_card_data(
 
 #[cfg(test)]
 mod tests {
-    use super::extract_card_type_from_carta;
+    use super::{extract_card_type_from_carta, strip_wiki_markup};
+
+    #[test]
+    fn strips_html_comment_from_official_spanish_name() {
+        let raw = "Dragón Ciber de Dos Cabezas <!-- This is the official Spanish name. Do not change it. -->".to_string();
+        assert_eq!(
+            strip_wiki_markup(raw),
+            "Dragón Ciber de Dos Cabezas"
+        );
+    }
+
+    #[test]
+    fn strips_multiline_html_comment() {
+        let raw = "Nombre <!-- advertencia\nen varias líneas --> real".to_string();
+        assert_eq!(strip_wiki_markup(raw), "Nombre  real");
+    }
+
+    #[test]
+    fn drops_unterminated_html_comment() {
+        let raw = "Nombre <!-- comentario sin cerrar".to_string();
+        assert_eq!(strip_wiki_markup(raw), "Nombre");
+    }
 
     #[test]
     fn detects_field_spell_by_icono_label() {
