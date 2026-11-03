@@ -29,18 +29,18 @@ export function CardPreviewWrapper() {
         <Button
           type="button"
           variant="frame"
-          onClick={() => setSize("large")}
-          className={cn("p-2", size === "large" && "bg-accent/50")}
-        >
-          Magic
-        </Button>
-        <Button
-          type="button"
-          variant="frame"
           onClick={() => setSize("standard")}
           className={cn("p-2", size === "standard" && "bg-accent/50")}
         >
           Yu-Gi-Oh
+        </Button>
+        <Button
+          type="button"
+          variant="frame"
+          onClick={() => setSize("large")}
+          className={cn("p-2", size === "large" && "bg-accent/50")}
+        >
+          Magic
         </Button>
       </div>
       <CardPreview size={size} />

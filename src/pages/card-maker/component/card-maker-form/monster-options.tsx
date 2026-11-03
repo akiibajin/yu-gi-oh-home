@@ -154,7 +154,7 @@ export function CardMakerMonsterOptions(props: {
           </DropdownMenu>
         </div>
         <div className="space-y-2 min-w-0 flex flex-col">
-          <Label className="text-sm font-medium" htmlFor="cm-monster-type">
+          <Label className="text-sm font-medium truncate" htmlFor="cm-monster-type">
             Tipo de carta monstruo
           </Label>
           <DropdownMenu
@@ -179,7 +179,7 @@ export function CardMakerMonsterOptions(props: {
           <DropdownMenu
           >
             <DropdownMenuTrigger asChild id="cm-sub-type" className="w-full">
-              <Button type="button" className="p-2 w-min">tipo de monstruo</Button>
+              <Button type="button" className="p-2 w-min truncate">tipo de monstruo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-h-120 overflow-auto">
               <DropdownMenuLabel>{draft.subType}</DropdownMenuLabel>

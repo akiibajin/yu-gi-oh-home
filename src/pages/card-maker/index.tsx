@@ -9,15 +9,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/warcraftcn/card";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import type { MonsterTypeIconProfile, YugiohCardDraft } from "@/lib/types";
+import type { YugiohCardDraft } from "@/lib/types";
 import useCardStore from "@/pages/card-maker/state";
 import { downloadImageBlob } from "@/lib/tauri/download-image";
 import type { CardMakerFormExportOptions } from "@/pages/card-maker/component/card-maker-form";
@@ -25,7 +18,6 @@ import { openPath } from "@tauri-apps/plugin-opener";
 import { getCardMakerImagesDir } from "@/lib/tauri/card-maker-images";
 import { preloadCardMakerTemplateImages } from "@/pages/card-maker/preload-card-templates";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
-import { Label } from "@/components/ui/warcraftcn/label";
 
 function CardMakerView() {
 	const [tab, setTab] = useState<"maker" | "deck" | "search">("maker");
@@ -214,29 +206,6 @@ function CardMakerView() {
 						>
 							Buscar carta
 						</Button>
-						</div>
-
-						<div className="flex items-center gap-2">
-							<Label className="text-sm font-medium" htmlFor="icon-profile">
-								Perfil
-							</Label>
-							<Select
-								value={draft.iconProfile ?? "light"}
-								onValueChange={(value: string) => {
-									setCard({
-										...draft,
-										iconProfile: value as MonsterTypeIconProfile,
-									});
-								}}
-							>
-								<SelectTrigger id="icon-profile" className="w-40">
-									<SelectValue placeholder="Selecciona un perfil" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="light">Claro</SelectItem>
-									<SelectItem value="dark">Oscuro</SelectItem>
-								</SelectContent>
-							</Select>
 						</div>
 					</div>
 					{tab === "maker" ? (

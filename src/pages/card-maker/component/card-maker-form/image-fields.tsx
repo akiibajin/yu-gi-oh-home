@@ -12,6 +12,7 @@ import type { SetDraftField } from "./types";
 import { Label } from "@/components/ui/warcraftcn/label";
 import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
 import useFactionStore from "@/lib/faction-store";
+import { useEffect } from "react";
 
 export function CardMakerImageFields(props: {
 	draft: Partial<YugiohCardDraft>;
@@ -28,6 +29,12 @@ export function CardMakerImageFields(props: {
   const handleOverframeImageUpload = (file: File | null) => {
     setDraftField("overframeImg", file);
   };
+
+  useEffect(() => {
+    return () => {
+      setDraftField("imageDraggingEnabled", false)
+    }
+  }, [])
 
 	return (
 		<div className="space-y-3">
