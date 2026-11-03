@@ -135,7 +135,7 @@ export default function Layout() {
 				</Breadcrumb>
 				<FactionSelect className="ml-auto" />
 			</header>
-			<main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-2 md:px-4 py-3 pb-[env(safe-area-inset-bottom)]">
+			<main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-2 md:px-4 md:flex place-self-stretch justify-self-stretch py-3 pb-[env(safe-area-inset-bottom)]">
 				<Outlet />
 			</main>
 			<footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
@@ -170,7 +170,7 @@ export default function Layout() {
 				</Breadcrumb>
 			</footer>
 			<span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
-				v 7.0.2
+				v 7.1.2
       </span>
 			      <UpdateNotification />
       </div>

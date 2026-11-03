@@ -8,7 +8,12 @@ import { getMonsterTypeIcon } from "@/lib/monster-type-icons";
 import getTypeCardBg from "@/lib/get-type-card-bg";
 import getSecondaryTemplate from "@/lib/get-secondary-template";
 import useCardStore from "@/pages/card-maker/state";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@/lib/utils";
 import MonsterLevel from "./monster-level";
 import RankImage from "./rank-image";
@@ -17,11 +22,12 @@ import { CardNameDisplay } from "./card-name-display";
 import { getNameBg } from "@/lib/get-name-bg";
 import PrimaryDescription from "./primary-description";
 import { SecondaryDescription } from "./secondary-description";
+import InteractiveImage, { InteractiveImageHandle } from "./interactive-image";
+import ImageZoomControls from "./image-zoom-controls";
 
 interface CardPreviewProps {
   size: "large" | "standard";
 }
-
 export function CardPreview(props: CardPreviewProps) {
   const { size } = props;
   const draft = useCardStore().card;
@@ -76,8 +82,13 @@ export function CardPreview(props: CardPreviewProps) {
       : "text-black!";
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [overframeImgUrl, setOverframeImgUrl] = useState<string | null>(null);
+  const mainImageRef = useRef<InteractiveImageHandle>(null);
+  const overframeImageRef = useRef<InteractiveImageHandle>(null);
+  const imageDraggingEnabled = draft.imageDraggingEnabled ?? false;
   const resolvedOverframeImgUrl =
     draft.fullArt && imgUrl ? imgUrl : overframeImgUrl;
+  const showMainImage = Boolean(imgUrl) && !draft.fullArt;
+  const showOverframeImage = Boolean(resolvedOverframeImgUrl);
 
   const typeCardImg = getTypeCardBg(
     draft.monsterType ?? null,
@@ -205,7 +216,7 @@ export function CardPreview(props: CardPreviewProps) {
         <img
           src={borderImg}
           alt={draft.name}
-          className="absolute inset-0 size-full z-1"
+          className={cn("absolute inset-0 size-full z-1", imageDraggingEnabled && "z-0")}
         />
         {isLink && !draft.linkMarkersOnDescription && (
           <RankImage
@@ -214,40 +225,31 @@ export function CardPreview(props: CardPreviewProps) {
             option="A"
           />
         )}
-        {imgUrl && (
-          <div
-            className={cn(
+        {showMainImage && imgUrl && (
+          <InteractiveImage
+            ref={mainImageRef}
+            src={imgUrl}
+            alt={draft.name ?? ""}
+            objectFit={draft.objectFit ?? "cover"}
+            objectPosition={draft.objectFit === "contain" ? "top" : "center"}
+            enabled={true}
+            frameClassName={cn(
               "absolute h-[calc(100%-1.65rem)] w-[calc(100%-1.42rem)] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2",
               draft.objectFit === "contain" && "bg-black",
               isSecondaryTemplate && "top-16.25 translate-y-0",
               isSecondaryTemplate && getSecondaryImgSize(),
             )}
-          >
-            <img
-              src={imgUrl}
-              alt={draft.name}
-              className="size-full object-fill"
-              style={{
-                objectFit: draft.objectFit ?? "cover",
-                objectPosition:
-                  draft.objectFit === "contain" ? "top" : "center",
-                transform: `rotate(${draft.imgRotationDeg ?? 0}deg)`,
-                transformOrigin: "center",
-              }}
-            />
-          </div>
+          />
         )}
         {resolvedOverframeImgUrl && (
-          <img
+          <InteractiveImage
+            ref={overframeImageRef}
             src={resolvedOverframeImgUrl}
             alt="overframe"
-            className="absolute inset-0 size-full object-fill z-3"
-            style={{
-              objectFit: draft.overframeObjectFit ?? "cover",
-              objectPosition: "center",
-              transform: `rotate(${draft.overframeImgRotationDeg ?? 0}deg)`,
-              transformOrigin: "center",
-            }}
+            objectFit={draft.overframeObjectFit ?? "cover"}
+            objectPosition="center"
+            enabled={true}
+            frameClassName="absolute inset-0 z-3"
           />
         )}
         {isMonster && (
@@ -377,6 +379,26 @@ export function CardPreview(props: CardPreviewProps) {
           />
         )}
       </div>
+      {imageDraggingEnabled && (showMainImage || showOverframeImage) && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 pb-3 text-xs text-muted-foreground">
+          {showMainImage && (
+            <ImageZoomControls
+              label="Imagen"
+              onZoomIn={() => mainImageRef.current?.zoomIn()}
+              onZoomOut={() => mainImageRef.current?.zoomOut()}
+              onReset={() => mainImageRef.current?.reset()}
+            />
+          )}
+          {showOverframeImage && (
+            <ImageZoomControls
+              label={draft.fullArt ? "Imagen" : "Overframe"}
+              onZoomIn={() => overframeImageRef.current?.zoomIn()}
+              onZoomOut={() => overframeImageRef.current?.zoomOut()}
+              onReset={() => overframeImageRef.current?.reset()}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

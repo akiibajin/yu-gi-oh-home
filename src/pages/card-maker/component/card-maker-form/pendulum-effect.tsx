@@ -7,7 +7,7 @@ export function CardMakerPendulumEffect(props: {
 }) {
 	const { value, onInput } = props;
 	return (
-		<div className="space-y-2 rounded-md border p-3 sm:p-4">
+		<div className="space-y-2">
 			<Label className="text-sm font-medium" htmlFor="cm-pendulum-description">
 				Efecto Péndulo
 			</Label>

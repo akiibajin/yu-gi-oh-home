@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "yu-gi-oh-home",
-  "version": "7.0.2",
+  "version": "7.1.0",
   "identifier": "com.julia.yu-gi-oh-home",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -14,7 +14,8 @@
       {
         "title": "yu-gi-oh calc and maker",
         "width": 1280,
-        "height": 1280
+        "height": 1280,
+        "maximized": true
       }
     ],
     "security": {

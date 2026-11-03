@@ -112,7 +112,6 @@ function CardMakerView() {
 			linkMarkersOnDescription: currentDraft.linkMarkersOnDescription ?? false,
 			descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor ?? "auto",
 			objectFit: currentDraft.objectFit,
-			imgRotationDeg: currentDraft.imgRotationDeg ?? 0,
 			descriptionImageOpacity: currentDraft.descriptionImageOpacity,
 			template: currentDraft.template,
 			overframe: currentDraft.overframe ?? false,
@@ -143,9 +142,9 @@ function CardMakerView() {
 	};
 
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="flex flex-1 size-full gap-4">
 			<div className="flex w-full flex-col gap-4 md:flex-row">
-				<div className="w-full md:w-auto md:max-w-115 md:flex-none space-y-4">
+				<div className="w-full md:w-auto md:h-min md:max-w-115 md:flex-none space-y-4">
 					<CardPreviewWrapper />
 					{cards.length ? (
 						<Card className="w-full">
@@ -188,7 +187,7 @@ function CardMakerView() {
 						</Card>
 					) : null}
 				</div>
-				<div className="min-w-0 flex-1">
+				<div className="min-w-0 flex flex-col flex-1">
 					<div className="flex flex-wrap items-center gap-3 mb-4">
 						<div className="inline-flex w-fit items-center rounded-md border p-1">
 							<Button

@@ -24,8 +24,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/warcraftcn/dropdown-menu";
 import { Button } from "@/components/ui/warcraftcn/button";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/warcraftcn/input";
+import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
 
 const ATTRIBUTE_LABELS: Record<YugiohCardAttribute, string> = {
   DARK: "OSCURIDAD",
@@ -116,17 +116,28 @@ export function CardMakerMonsterOptions(props: {
   };
 
   return (
-    <fieldset className="space-y-4 rounded-md border p-3 sm:p-4">
+    <fieldset className="space-y-4">
       <legend className="px-1 text-sm font-medium">Opciones de monstruo</legend>
-
-      <div className="grid gap-4 md:grid-cols-2 *:min-w-0">
-        <div className="space-y-2 min-w-0">
+      <div className="grid gap-4 md:grid-cols-4 *:min-w-0">
+        <div className="flex items-center">
+          <Label className="text-sm font-medium" htmlFor="cm-is-tuner">
+            ¿Es Cantante?
+          </Label>
+          <Checkbox
+            id="cm-is-tuner"
+            checked={draft.isTuner}
+            onCheckedChange={(checked: boolean) =>
+              setDraftField("isTuner", checked)
+            }
+          />
+        </div>
+        <div className="space-y-2 min-w-0 flex flex-col gap-1">
           <Label className="text-sm font-medium" htmlFor="cm-attribute">
             Atributo
           </Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild id="cm-attribute" className="w-full">
-              <Button>Selecciona un atributo</Button>
+              <Button className="p-2 text-sm! w-min">Selecciona un atributo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>{card.attribute}</DropdownMenuLabel>
@@ -142,15 +153,14 @@ export function CardMakerMonsterOptions(props: {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        <div className="space-y-2 min-w-0">
+        <div className="space-y-2 min-w-0 flex flex-col">
           <Label className="text-sm font-medium" htmlFor="cm-monster-type">
             Tipo de carta monstruo
           </Label>
           <DropdownMenu
           >
             <DropdownMenuTrigger asChild id="cm-monster-type" className="w-full">
-              <Button type="button">Selecciona un tipo</Button>
+              <Button className="p-2 w-min" type="button">Selecciona un tipo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="overflow-auto max-h-120">
               <DropdownMenuLabel>{card.monsterType}</DropdownMenuLabel>
@@ -162,15 +172,14 @@ export function CardMakerMonsterOptions(props: {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        <div className="space-y-2 min-w-0">
+        <div className="space-y-2 min-w-0 flex flex-col">
           <Label className="text-sm font-medium" htmlFor="cm-sub-type">
             Tipo de Monstruo
           </Label>
           <DropdownMenu
           >
             <DropdownMenuTrigger asChild id="cm-sub-type" className="w-full">
-              <Button type="button">tipo de monstruo</Button>
+              <Button type="button" className="p-2 w-min">tipo de monstruo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-h-120 overflow-auto">
               <DropdownMenuLabel>{draft.subType}</DropdownMenuLabel>
@@ -183,47 +192,30 @@ export function CardMakerMonsterOptions(props: {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        <div className="space-y-3 min-w-0 self-end">
-          <div className="flex items-center justify-between rounded-md border px-3 py-2">
-            <Label className="text-sm font-medium" htmlFor="cm-is-tuner">
-              ¿Es Cantante?
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 *:min-w-0">
+        {isPendulum ? (
+          <div className="space-y-2 min-w-0">
+            <Label className="text-sm font-medium mr-2" htmlFor="cm-scale">
+              Escala Péndulo
             </Label>
-            <Switch
-              id="cm-is-tuner"
-              checked={draft.isTuner}
-              onCheckedChange={(checked: boolean) =>
-                setDraftField("isTuner", checked)
-              }
+            <Input
+              id="cm-scale"
+              className="w-full"
+              type="number"
+              min={0}
+              max={13}
+              value={String(draft.scale ?? 0)}
+              onInput={(e) => {
+                const parsed = Number.parseInt(e.currentTarget.value, 10);
+                const next = Number.isFinite(parsed)
+                  ? clampInt(parsed, 0, 13)
+                  : 0;
+                setDraftField("scale", next);
+              }}
             />
           </div>
-
-          {isPendulum ? (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium" htmlFor="cm-scale">
-                Escala Péndulo
-              </Label>
-              <Input
-                id="cm-scale"
-                className="w-full"
-                type="number"
-                min={0}
-                max={13}
-                value={String(draft.scale ?? 0)}
-                onInput={(e) => {
-                  const parsed = Number.parseInt(e.currentTarget.value, 10);
-                  const next = Number.isFinite(parsed)
-                    ? clampInt(parsed, 0, 13)
-                    : 0;
-                  setDraftField("scale", next);
-                }}
-              />
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 *:min-w-0">
+        ) : null}
         {!isLink ? (
           <div className="space-y-2 min-w-0">
             <Label className="text-sm font-medium" htmlFor="cm-level">

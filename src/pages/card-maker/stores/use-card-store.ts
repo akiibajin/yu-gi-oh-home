@@ -20,7 +20,7 @@ export const useCardStore = () => {
   const setCard = (value: Partial<YugiohCardDraft>) => {
     const dataKeys = ['name', 'cardType', 'attribute', 'monsterType', 'subType', 'spellType', 'trapType', 'isTuner', 'linkRating', 'linkMarkers', 'linkMarkersOnDescription', 'scale', 'stats', 'description', 'pendulumDescription'];
     const displayKeys = ['showName', 'showNameBox', 'showDescription', 'showStatsBox', 'template', 'iconProfile', 'descriptionTextColor', 'descriptionTextSize', 'descriptionImageOpacity', 'descriptionStatsBoxColor'];
-    const imageKeys = ['img', 'objectFit', 'imgRotationDeg', 'overframe', 'fullArt', 'overframeImg', 'overframeObjectFit', 'overframeImgRotationDeg'];
+    const imageKeys = ['img', 'objectFit', 'overframe', 'fullArt', 'overframeImg', 'overframeObjectFit', 'imageDraggingEnabled'];
     const exportKeys = ['exportFormat'];
     
     const dataUpdate: any = {};

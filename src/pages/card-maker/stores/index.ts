@@ -39,12 +39,11 @@ const initialCardCombined = {
   scale: 0,
   stats: { level: 4, atk: 0, def: 0 },
   img: null,
-  imgRotationDeg: 0,
   overframe: false,
   fullArt: false,
   overframeImg: null,
   overframeObjectFit: 'cover',
-  overframeImgRotationDeg: 0,
+  imageDraggingEnabled: false,
   exportFormat: 'webp',
 } as Partial<YugiohCardDraft>;
 
@@ -54,7 +53,7 @@ const useCardStoreCombined = create<CombinedCardStore>((set: any) => ({
     set((state: any) => ({ card: { ...state.card, ...value } }));
     const dataKeys = ['name', 'cardType', 'attribute', 'monsterType', 'subType', 'spellType', 'trapType', 'isTuner', 'linkRating', 'linkMarkers', 'linkMarkersOnDescription', 'scale', 'stats', 'description', 'pendulumDescription'];
     const displayKeys = ['showName', 'showNameBox', 'showDescription', 'showStatsBox', 'template', 'iconProfile', 'descriptionTextColor', 'descriptionTextSize', 'descriptionImageOpacity', 'descriptionStatsBoxColor'];
-    const imageKeys = ['img', 'objectFit', 'imgRotationDeg', 'overframe', 'fullArt', 'overframeImg', 'overframeObjectFit', 'overframeImgRotationDeg'];
+    const imageKeys = ['img', 'objectFit', 'overframe', 'fullArt', 'overframeImg', 'overframeObjectFit', 'imageDraggingEnabled'];
     const exportKeys = ['exportFormat'];
     
     const dataUpdate: any = {};

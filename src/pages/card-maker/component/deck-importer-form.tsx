@@ -226,7 +226,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 			linkMarkersOnDescription: card.linkMarkersOnDescription ?? false,
 			descriptionStatsBoxColor: card.descriptionStatsBoxColor ?? "auto",
 			objectFit: card.objectFit,
-			imgRotationDeg: card.imgRotationDeg ?? 0,
 			descriptionImageOpacity: card.descriptionImageOpacity,
 			template: card.template,
 			overframe: card.overframe ?? false,
@@ -287,7 +286,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					descriptionStatsBoxColor:
 						card.descriptionStatsBoxColor ?? "auto",
 					objectFit: card.objectFit,
-					imgRotationDeg: card.imgRotationDeg ?? 0,
 					descriptionImageOpacity: card.descriptionImageOpacity,
 					template: card.template,
 					overframe: card.overframe ?? false,

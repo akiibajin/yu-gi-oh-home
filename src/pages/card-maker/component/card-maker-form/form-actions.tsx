@@ -10,9 +10,12 @@ export function CardMakerFormActions(props: {
 
 	return (
 		<>
-			<div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:items-center">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:items-center">
+     			{saveStatus ? (
+				<div className="text-sm text-muted-foreground">{saveStatus}</div>
+			) : null}
 				<Button
-					type="button"
+          type="button"
 					variant="default"
 					onClick={onReset}
 					className="w-full sm:h-15 sm:w-auto"
@@ -29,10 +32,6 @@ export function CardMakerFormActions(props: {
 					{exporting ? "Exportando..." : "Exportar"}
 				</Button>
 			</div>
-
-			{saveStatus ? (
-				<div className="text-sm text-muted-foreground">{saveStatus}</div>
-			) : null}
 		</>
 	);
 }

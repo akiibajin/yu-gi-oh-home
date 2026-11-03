@@ -7,22 +7,30 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import type { YugiohCardDraft } from "@/lib/types";
 import type { SetDraftField } from "./types";
 import { Label } from "@/components/ui/warcraftcn/label";
+import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
+import useFactionStore from "@/lib/faction-store";
 
 export function CardMakerImageFields(props: {
 	draft: Partial<YugiohCardDraft>;
 	setDraftField: SetDraftField;
-	onImageUpload: (file: File | null) => void;
-	onOverframeImageUpload: (file: File | null) => void;
-	isSecondaryTemplate: boolean;
 }) {
-	const { draft, setDraftField, onImageUpload, onOverframeImageUpload, isSecondaryTemplate } = props;
+  const { draft, setDraftField } = props;
+  const faction = useFactionStore().faction
+  const isSecondaryTemplate = draft.template === "secondary"
+
+  const handleImageUpload = (file: File | null) => {
+    setDraftField("img", file);
+  };
+
+  const handleOverframeImageUpload = (file: File | null) => {
+    setDraftField("overframeImg", file);
+  };
 
 	return (
-		<div className="space-y-3 rounded-md border p-3 sm:p-4">
+		<div className="space-y-3">
 			<Label className="text-sm font-medium" htmlFor="cm-image">
 				Imagen de la carta
 			</Label>
@@ -34,14 +42,14 @@ export function CardMakerImageFields(props: {
 					accept="image/*"
 					onChange={(e) => {
 						const file = e.currentTarget.files?.[0] ?? null;
-						onImageUpload(file);
+						handleImageUpload(file);
 					}}
         />
         <Button
 						type="button"
 						variant="secondary"
 						className="md:col-start-1 md:row-start-1 md:row-span-2 md:self-center"
-						onClick={() => onImageUpload(null)}
+						onClick={() => handleImageUpload(null)}
 						disabled={!draft.img}
 					>
 						Limpiar
@@ -70,23 +78,6 @@ export function CardMakerImageFields(props: {
 							</SelectContent>
 						</Select>
 					</Label>
-					<Label className="md:col-start-2 md:self-center flex flex-col m-0 gap-2 md:row-start-3">
-						<span>Rotación (°)</span>
-						<Input
-							type="number"
-							inputMode="numeric"
-							className="h-8"
-							value={String(draft.imgRotationDeg ?? 0)}
-							onInput={(e) => {
-								const raw = e.currentTarget.value;
-								const parsed = Number.parseFloat(raw);
-								setDraftField(
-									"imgRotationDeg",
-									Number.isFinite(parsed) ? parsed : 0,
-								);
-							}}
-						/>
-					</Label>
 				</div>
 			</div>
 			{draft.img ? (
@@ -98,11 +89,24 @@ export function CardMakerImageFields(props: {
 				</div>
 			) : null}
 
-      {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
+			<div className="border-t pt-3">
+        <Checkbox
+          faction={faction}
+					id="cm-image-dragging"
+					checked={draft.imageDraggingEnabled ?? false}
+					onCheckedChange={(checked) =>
+						setDraftField("imageDraggingEnabled", checked === true)
+					}
+				>
+					Habilitar Movimiento y Zoom de Imagen <small>Deshabilitar una vez finalizados los cambios</small>
+				</Checkbox>
+			</div>
+
+      {!isSecondaryTemplate && <div className="flex items-center gap-2 pt-2">
         <Label className="text-sm font-medium" htmlFor="cm-overframe">
           Overframe
         </Label>
-        <Switch
+        <Checkbox
           id="cm-overframe"
           checked={draft.overframe ?? false}
           onCheckedChange={(checked: boolean) => {
@@ -125,13 +129,13 @@ export function CardMakerImageFields(props: {
 							accept="image/*"
 							onChange={(e) => {
 								const file = e.currentTarget.files?.[0] ?? null;
-								onOverframeImageUpload(file);
+								handleOverframeImageUpload(file);
 							}}
 						/>
 						<Button
 							type="button"
 							variant="secondary"
-							onClick={() => onOverframeImageUpload(null)}
+							onClick={() => handleOverframeImageUpload(null)}
 							disabled={!draft.overframeImg}
 						>
 							Limpiar
@@ -169,32 +173,15 @@ export function CardMakerImageFields(props: {
 								</SelectContent>
 							</Select>
 						</Label>
-						<Label className="flex flex-col gap-2">
-							<span>Rotación overframe (°)</span>
-							<Input
-								type="number"
-								inputMode="numeric"
-								className="h-8"
-								value={String(draft.overframeImgRotationDeg ?? 0)}
-								onInput={(e) => {
-									const raw = e.currentTarget.value;
-									const parsed = Number.parseFloat(raw);
-									setDraftField(
-										"overframeImgRotationDeg",
-										Number.isFinite(parsed) ? parsed : 0,
-									);
-								}}
-							/>
-						</Label>
 					</div>
 				</div>
 			) : null}
 
-      {!isSecondaryTemplate && <div className="flex items-center justify-between gap-2 pt-2">
+      {!isSecondaryTemplate && <div className="flex items-center gap-2 pt-2">
         <Label className="text-sm font-medium" htmlFor="cm-full-art">
           Utilizar imagen como full art
         </Label>
-        <Switch
+        <Checkbox
           id="cm-full-art"
           checked={draft.fullArt ?? false}
           onCheckedChange={(checked: boolean) =>

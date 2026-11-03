@@ -139,14 +139,13 @@ export interface YugiohCardDraft {
 	descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
 	img: Blob | string | null;
 	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
-	imgRotationDeg?: number;
 	descriptionImageOpacity?: number;
 	template?: YugiohTemplate;
 	overframe?: boolean;
 	fullArt?: boolean;
 	overframeImg: Blob | string | null;
 	overframeObjectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
-	overframeImgRotationDeg?: number;
+	imageDraggingEnabled?: boolean;
 	exportFormat?: YugiohExportFormat;
 }
 

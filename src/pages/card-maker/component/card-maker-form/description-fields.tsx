@@ -1,4 +1,3 @@
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
@@ -14,6 +13,7 @@ import type {
 import { Label } from "@/components/ui/warcraftcn/label";
 import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import type { YugiohDescriptionStatsBoxColor } from "@/lib/types";
+import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
 
 const BOX_COLOR_LABELS: Partial<
 	Record<YugiohDescriptionStatsBoxColor | "auto" | "void", string>
@@ -53,8 +53,6 @@ export function CardMakerDescriptionFields(props: {
 		onShowDescriptionChange,
 		descriptionImageOpacity,
 		onDescriptionImageOpacityChange,
-		descriptionTextColor,
-		onDescriptionTextColorChange,
 		descriptionTextSize,
 		onDescriptionTextSizeChange,
 		label,
@@ -67,12 +65,12 @@ export function CardMakerDescriptionFields(props: {
 	} = props;
 
 	return (
-    <div className="space-y-2 rounded-md border p-3 sm:p-4">
-      {!isSecondaryTemplate && <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-2">
+      {!isSecondaryTemplate && <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <Label className="text-sm font-medium" htmlFor="cm-show-description">
           Mostrar descripción en la vista previa
         </Label>
-        <Switch
+        <Checkbox
           id="cm-show-description"
           checked={showDescription}
           onCheckedChange={onShowDescriptionChange}
@@ -134,36 +132,7 @@ export function CardMakerDescriptionFields(props: {
 					</SelectContent>
 				</Select>
 			</div>}
-			{!isSecondaryTemplate ? (
-				<div className="grid gap-4 sm:grid-cols-2">
-					<div className="space-y-2 min-w-0">
-						<label
-							className="text-sm font-medium"
-							htmlFor="cm-description-text-color"
-						>
-							Color del texto
-						</label>
-						<Select
-							value={descriptionTextColor}
-							onValueChange={(value: string) =>
-								onDescriptionTextColorChange(
-									value as YugiohDescriptionTextColor,
-								)
-							}
-						>
-							<SelectTrigger
-								id="cm-description-text-color"
-								className="h-8 w-full"
-							>
-								<SelectValue placeholder="Color" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="auto">Automático</SelectItem>
-								<SelectItem value="black">Negro</SelectItem>
-								<SelectItem value="white">Blanco</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
+			{!isSecondaryTemplate && (
 					<div className="space-y-2 min-w-0">
 						<Label
 							className="text-sm font-medium"
@@ -189,9 +158,8 @@ export function CardMakerDescriptionFields(props: {
 								<SelectItem value="big">Grande</SelectItem>
 							</SelectContent>
 						</Select>
-					</div>
 				</div>
-			) : null}
+			)}
 			<Label className="text-sm font-medium" htmlFor="cm-description">
 				{label}
 			</Label>

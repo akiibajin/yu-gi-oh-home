@@ -1,12 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/warcraftcn/label';
 import {
 	SPELL_ICONS,
 	SPELL_TYPES,
@@ -14,14 +7,11 @@ import {
 	TRAP_TYPES,
 	YUGIOH_CARD_TYPES,
 } from "@/lib/constants";
-import type {
-	YugiohCardDraft,
-	YugiohCardType,
-	YugiohSpellType,
-	YugiohTrapType,
-} from "@/lib/types";
-import type { SetDraftField } from "./types";
-import { Label } from "@/components/ui/warcraftcn/label";
+import { YugiohCardDraft, YugiohCardType, YugiohSpellType, YugiohTrapType } from '@/lib/types';
+import { FC } from 'react';
+import { SetDraftField } from './types';
+import { Checkbox } from '@/components/ui/warcraftcn/checkbox';
+
 
 const CARD_TYPE_LABELS: Record<YugiohCardType, string> = {
 	Monster: "Monstruo",
@@ -43,44 +33,33 @@ const TRAP_TYPE_LABELS: Record<YugiohTrapType, string> = {
 	Continuous: "Continua",
 	Counter: "Contraefecto",
 };
-
-export function CardMakerBasicFields(props: {
-	draft: Partial<YugiohCardDraft>;
+interface CardConfigProps {
+ 	draft: Partial<YugiohCardDraft>;
 	setDraftField: SetDraftField;
-	isSecondaryTemplate: boolean;
-}) {
-	const { draft, setDraftField, isSecondaryTemplate } = props;
-	const isMonster = draft.cardType === "Monster";
-	const isFieldSpell = draft.cardType === "Field";
+}
 
-	return (
-		<div className="space-y-4 rounded-md border p-3 sm:p-4">
-			<div className="grid gap-4 md:grid-cols-2 *:min-w-0">
-				<div className="space-y-2 min-w-0">
-					<div className="flex items-center justify-between">
-						<Label className="text-sm font-medium" htmlFor="cm-name">
-							Nombre
-						</Label>
-						<Switch
-							id="cm-show-name"
-							checked={draft.showName ?? true}
-							onCheckedChange={(checked: boolean) =>
-								setDraftField("showName", checked)
-							}
-						/>
-					</div>
-				<Input
-					id="cm-name"
-					className="w-full"
-					value={draft.name}
-					onInput={(e) => setDraftField("name", e.currentTarget.value)}
-					placeholder="Dark Magician"
-				/>
-					{!isSecondaryTemplate && <div className="flex items-center justify-between">
+const CardConfig: FC<CardConfigProps> = (props) => {
+  const { draft, setDraftField } = props;
+  const isMonster = draft.cardType === "Monster";
+  const isFieldSpell = draft.cardType === "Field";
+	const isSecondaryTemplate = draft.template === "secondary"
+  return (
+    <div>
+      <Label className="text-sm" htmlFor="cm-secondary-template">
+        Plantilla alternativa
+      </Label>
+      <Checkbox
+        id="cm-secondary-template"
+        checked={draft.template === "secondary"}
+        onCheckedChange={(checked: boolean) =>
+          setDraftField("template", checked ? "secondary" : "primary")
+        }
+      />
+ 					{!isSecondaryTemplate && <div className="flex items-center justify-between">
 						<Label className="text-sm font-medium" htmlFor="cm-show-name-box">
 							Mostrar cuadro en el nombre
 						</Label>
-						<Switch
+						<Checkbox
 							id="cm-show-name-box"
 							checked={draft.showNameBox ?? false}
 							onCheckedChange={(checked: boolean) =>
@@ -92,7 +71,7 @@ export function CardMakerBasicFields(props: {
 						<Label className="text-sm font-medium" htmlFor="cm-show-stats-box">
 							Mostar cuadro de stats?
 						</Label>
-						<Switch
+						<Checkbox
 							id="cm-show-stats-box"
 							checked={draft.showStatsBox ?? true}
 							onCheckedChange={(checked: boolean) =>
@@ -100,9 +79,7 @@ export function CardMakerBasicFields(props: {
 							}
 						/>
 					</div>
-				</div>
-
-				<div className="space-y-2 min-w-0">
+  				<div className="space-y-2 min-w-0">
 					<Label className="text-sm font-medium" htmlFor="cm-card-type">
 						Tipo de carta
 					</Label>
@@ -124,8 +101,7 @@ export function CardMakerBasicFields(props: {
 						</SelectContent>
 					</Select>
 				</div>
-
-				{!isFieldSpell && !isMonster ? (
+      {!isFieldSpell && !isMonster ? (
 					<div className="space-y-2 min-w-0 md:col-span-2">
 						<Label className="text-sm font-medium" htmlFor="cm-spell-trap-type">
 							Tipo de Magia/Trampa
@@ -170,7 +146,8 @@ export function CardMakerBasicFields(props: {
 						</Select>
 					</div>
 				) : null}
-			</div>
-		</div>
-	);
-}
+    </div>
+  );
+};
+
+export default CardConfig;

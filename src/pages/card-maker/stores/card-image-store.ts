@@ -3,12 +3,11 @@ import { create } from 'zustand';
 export interface CardImageState {
   img: Blob | string | null;
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
-  imgRotationDeg?: number;
   overframe?: boolean;
   fullArt?: boolean;
   overframeImg: Blob | string | null;
   overframeObjectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
-  overframeImgRotationDeg?: number;
+  imageDraggingEnabled?: boolean;
   setImages: (value: Partial<Omit<CardImageState, 'setImages' | 'resetImages'>>) => void;
   resetImages: () => void;
 }
@@ -16,12 +15,11 @@ export interface CardImageState {
 const initialImages: Omit<CardImageState, 'setImages' | 'resetImages'> = {
   img: null,
   objectFit: 'cover',
-  imgRotationDeg: 0,
   overframe: false,
   fullArt: false,
   overframeImg: null,
   overframeObjectFit: 'cover',
-  overframeImgRotationDeg: 0,
+  imageDraggingEnabled: false,
 };
 
 const useCardImageStore = create<CardImageState>((set: any) => ({
