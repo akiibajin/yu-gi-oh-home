@@ -13,7 +13,7 @@ export type PrimaryDescriptionProps = {
   isVoidInverseDescriptionStatsBox: boolean;
   isSecondaryTemplate: boolean;
   descriptionImageOpacity: number;
-  descriptionTextSizeClass: string;
+  descriptionTextSize: "small" | "normal" | "big";
   descriptionTextColorClass: string;
   draft: Partial<YugiohCardDraft>;
   typeCardImg: {
@@ -35,7 +35,7 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
     isVoidInverseDescriptionStatsBox,
     isSecondaryTemplate,
     descriptionImageOpacity,
-    descriptionTextSizeClass,
+    descriptionTextSize,
     descriptionTextColorClass,
     draft,
     typeCardImg,
@@ -61,14 +61,16 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
               ) : null}
               <p
                 className={cn(
-                  "relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
-                  descriptionTextSizeClass,
+                  "relative z-2 tracking-tighter leading-3.75! max-w-[95%] w-full whitespace-pre-line",
                   descriptionTextColorClass,
                   isVoidDescriptionStatsBox &&
                     "text-white! text-shadow-outline",
                   isVoidInverseDescriptionStatsBox &&
                     "text-black! text-shadow-outline-inverse",
                 )}
+                style={{
+                  fontSize: descriptionTextSize === "big" ? "1.25rem" : descriptionTextSize === "small" ? "0.875rem" : "1rem",
+                }}
               >
                 {draft.pendulumDescription}
               </p>
@@ -111,13 +113,15 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
           ) : null}
           <p
             className={cn(
-              "relative z-2 tracking-tighter leading-3.75! max-w-[95%] size-full whitespace-pre-line",
-              descriptionTextSizeClass,
+              "relative z-2 tracking-tighter leading-3.75! max-w-[95%] w-full whitespace-pre-line",
               descriptionTextColorClass,
               isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
               isVoidInverseDescriptionStatsBox &&
                 "text-black! text-shadow-outline-inverse",
             )}
+            style={{
+              fontSize: descriptionTextSize === "big" ? "1.25rem" : descriptionTextSize === "small" ? "0.875rem" : "1rem",
+            }}
           >
             {monsterDescription}
           </p>

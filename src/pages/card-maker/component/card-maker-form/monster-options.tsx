@@ -1,9 +1,9 @@
 import {
+  getMonsterTypesForProfile,
   YUGIOH_ATTRIBUTES,
   YUGIOH_MAX_STARS,
   YUGIOH_MONSTER_TYPES,
 } from "@/lib/constants";
-import { getMonsterTypesForProfile } from "@/lib/monster-type-icons";
 import type {
   MonsterType,
   YugiohCardAttribute,
@@ -62,6 +62,10 @@ const SUBTYPE_LABELS: Record<MonsterType, string> = {
   Beast: "Bestia",
   "Beast-Warrior": "Bestia guerrera",
   "Creator God": "Dios creador",
+  "Magical Knight": "Guerrero mágico",
+  Yokai: "Yokai",
+  "Celestial Warrior": "Guerrero celestial",
+  "High Dragon": "Dragón alto",
   Cyberse: "Ciberso",
   Cyborg: "Ciborg",
   Dinosaur: "Dinosaurio",
@@ -118,7 +122,7 @@ export function CardMakerMonsterOptions(props: {
   return (
     <fieldset className="space-y-4">
       <legend className="px-1 text-sm font-medium">Opciones de monstruo</legend>
-      <div className="grid gap-4 md:grid-cols-4 *:min-w-0">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 *:min-w-0">
         <div className="flex items-center">
           <Label className="text-sm font-medium" htmlFor="cm-is-tuner">
             ¿Es Cantante?
@@ -137,7 +141,7 @@ export function CardMakerMonsterOptions(props: {
           </Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild id="cm-attribute" className="w-full">
-              <Button className="p-2 text-sm! w-min">Selecciona un atributo</Button>
+              <Button className="p-2 text-sm! w-min">atributo</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>{card.attribute}</DropdownMenuLabel>
@@ -160,7 +164,7 @@ export function CardMakerMonsterOptions(props: {
           <DropdownMenu
           >
             <DropdownMenuTrigger asChild id="cm-monster-type" className="w-full">
-              <Button className="p-2 w-min" type="button">Selecciona un tipo</Button>
+              <Button className="p-2 w-min" type="button">Tipo de Carta</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="overflow-auto max-h-120">
               <DropdownMenuLabel>{card.monsterType}</DropdownMenuLabel>
@@ -173,7 +177,7 @@ export function CardMakerMonsterOptions(props: {
           </DropdownMenu>
         </div>
         <div className="space-y-2 min-w-0 flex flex-col">
-          <Label className="text-sm font-medium" htmlFor="cm-sub-type">
+          <Label className="text-sm font-medium truncate" htmlFor="cm-sub-type">
             Tipo de Monstruo
           </Label>
           <DropdownMenu
@@ -193,10 +197,10 @@ export function CardMakerMonsterOptions(props: {
           </DropdownMenu>
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 *:min-w-0">
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 2xl:grid-cols-4 *:min-w-0">
         {isPendulum ? (
           <div className="space-y-2 min-w-0">
-            <Label className="text-sm font-medium mr-2" htmlFor="cm-scale">
+            <Label className="text-sm truncate font-medium mr-2" htmlFor="cm-scale">
               Escala Péndulo
             </Label>
             <Input
@@ -249,9 +253,9 @@ export function CardMakerMonsterOptions(props: {
 
         {!isLink ? (
           <div className="space-y-2 min-w-0">
-            <label className="text-sm font-medium" htmlFor="cm-def">
+            <Label className="text-sm font-medium" htmlFor="cm-def">
               DEF
-            </label>
+            </Label>
             <Input
               id="cm-def"
               className="w-full"

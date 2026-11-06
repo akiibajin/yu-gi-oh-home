@@ -1,5 +1,6 @@
 
 import { cn } from "cn";
+import type { CSSProperties } from "react";
 import {
   forwardRef,
   useCallback,
@@ -37,13 +38,14 @@ interface InteractiveImageProps {
   objectPosition: string;
   enabled: boolean;
   frameClassName?: string;
+  frameStyle?: CSSProperties;
 }
 
 const InteractiveImage = forwardRef<
   InteractiveImageHandle,
   InteractiveImageProps
 >(function InteractiveImage(
-  { src, alt, objectFit, objectPosition, enabled, frameClassName },
+  { src, alt, objectFit, objectPosition, enabled, frameClassName, frameStyle },
   ref,
 ) {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -237,6 +239,7 @@ const InteractiveImage = forwardRef<
         frameClassName,
         enabled && "overflow-hidden",
       )}
+      style={frameStyle}
     >
       <Draggable
         nodeRef={nodeRef}

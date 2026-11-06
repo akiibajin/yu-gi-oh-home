@@ -25,20 +25,20 @@ pub fn run() {
                 .build()
                 .expect("failed to build reqwest client"),
         )
-		.invoke_handler(tauri::generate_handler![
-			commands::greet::greet,
-			commands::ygoprodeck::fetch_ygoprodeck_card,
-			commands::decks::load_deck_cards_from_ydk,
-			commands::decks::load_deck_cards_from_ydk_bytes,
-			commands::images::convert_image_to_webp,
-			commands::images::download_image_bytes,
-			commands::card_maker_images::store_card_maker_image,
-			commands::card_maker_images::get_card_maker_images_dir,
-			commands::updater::check_update,
-			commands::updater::install_update,
-			commands::fandom::fetch_wiki_card_data,
-			commands::fandom::fetch_spanish_name_and_lore,
-		])
+        .invoke_handler(tauri::generate_handler![
+            commands::greet::greet,
+            commands::ygoprodeck::fetch_ygoprodeck_card,
+            commands::decks::load_deck_cards_from_ydk,
+            commands::decks::load_deck_cards_from_ydk_bytes,
+            commands::images::convert_image_to_webp,
+            commands::images::download_image_bytes,
+            commands::card_maker_images::store_card_maker_image,
+            commands::card_maker_images::get_card_maker_images_dir,
+            commands::updater::check_update,
+            commands::updater::install_update,
+            commands::fandom::fetch_wiki_card_data,
+            commands::fandom::fetch_spanish_name_and_lore,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -214,7 +214,8 @@ export function CardSearcherForm() {
 				img = (await fetchImageAsBlob(imgUrl)) ?? imgUrl;
 			}
 
-			const englishName = card.name ?? "";
+      const englishName = card.name ?? "";
+			console.log({card})
 			setCard({
 				name: englishName,
 				cardType,
@@ -247,7 +248,8 @@ export function CardSearcherForm() {
 						: currentDraft.trapType,
 				description: isPendulum ? monsterDescription : (card.desc ?? ""),
 				pendulumDescription: isPendulum ? pendulumDescription : "",
-				descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor,
+        descriptionStatsBoxColor: currentDraft.descriptionStatsBoxColor,
+				secondaryDescriptionTextSize: isPendulum ? 10 : 12.5,
 				img,
 			});
 

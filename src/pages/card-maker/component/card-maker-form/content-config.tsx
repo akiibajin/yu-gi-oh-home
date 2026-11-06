@@ -70,6 +70,27 @@ const ContentConfig: FC<ContentConfigProps> = (props) => {
       />
       {isMonster && <CardMakerMonsterOptions isLink={isLink} isPendulum={isPendulum} draft={draft} setDraftField={setDraftField} setStatsField={setStatsField} />}
       {isLink && <CardMakerLinkMarkers draft={draft} setDraftField={setDraftField} />}
+      {draft.template === "secondary" && (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium" htmlFor="cm-secondary-description-text-size">
+            Tamaño de descripción secundaria (px)
+          </Label>
+          <Input
+            id="cm-secondary-description-text-size"
+            className="w-full"
+            type="number"
+            min={0.1}
+            step="any"
+            value={String(draft.secondaryDescriptionTextSize ?? (isPendulum ? 10 : 12.5))}
+            onInput={(event) => {
+              const value = Number(event.currentTarget.value);
+              if (Number.isFinite(value) && value > 0) {
+                setDraftField("secondaryDescriptionTextSize", value);
+              }
+            }}
+          />
+        </div>
+      )}
       <CardMakerDescriptionFields
         descriptionType={draft.descriptionStatsBoxColor!}
         onDescriptionTypeChange={(value) =>

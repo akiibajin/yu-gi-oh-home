@@ -1,4 +1,4 @@
-import type { MonsterType } from "./types";
+import type { MonsterType, MonsterTypeIconProfile } from "./types";
 
 const CARD_TEMPLATE_BASE_URL =
 	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
@@ -6,19 +6,25 @@ const CARD_TEMPLATE_BASE_URL =
 const cardTemplate = (fileName: string) =>
 	`${CARD_TEMPLATE_BASE_URL}${fileName}`;
 
-const MONSTER_TYPE_ICON_LIGHT_BASE_URL =
-	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/light/";
+const MONSTER_TYPE_ICON_BASE_URL: Record<MonsterTypeIconProfile, string> = {
+	light:
+		"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/light/",
+	dark:
+		"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/dark/",
+};
 
-const MONSTER_TYPE_ICON_FILE: Record<MonsterType, string> = {
+const MONSTER_TYPE_ICON_FILES: Record<MonsterType, string> = {
 	Aqua: "Aqua.webp",
 	Beast: "Beast.webp",
 	"Beast-Warrior": "Beast-warrior.webp",
+	"Celestial Warrior": "Celestial-warrior.webp",
 	"Creator God": "Creator.webp",
 	Cyberse: "Cyberse.webp",
 	Cyborg: "Ciborg.webp",
 	Dinosaur: "Dinosaur.webp",
 	"Divine-Beast": "Divine.webp",
 	Dragon: "Dragon.webp",
+	"High Dragon": "High-dragon.webp",
 	Fairy: "Fairy.webp",
 	Fiend: "Fiend.webp",
 	Fish: "Fish.webp",
@@ -26,6 +32,7 @@ const MONSTER_TYPE_ICON_FILE: Record<MonsterType, string> = {
 	Insect: "Insect.webp",
 	Illusion: "Illusion.webp",
 	Machine: "Machine.webp",
+	"Magical Knight": "Magical-knight.webp",
 	Plant: "Plant.webp",
 	Psychic: "Psy.webp",
 	Pyro: "Pyro.webp",
@@ -37,11 +44,35 @@ const MONSTER_TYPE_ICON_FILE: Record<MonsterType, string> = {
 	Warrior: "Warrior.webp",
 	"Winged Beast": "Winged-beast.webp",
 	Wyrm: "Wyrm.webp",
+	Yokai: "Yokai.webp",
 	Zombie: "Zombie.webp",
 };
 
-const monsterTypeIcon = (type: MonsterType) =>
-	`${MONSTER_TYPE_ICON_LIGHT_BASE_URL}${MONSTER_TYPE_ICON_FILE[type]}`;
+const monsterTypeIcon = (
+	profile: MonsterTypeIconProfile,
+	type: MonsterType,
+) => `${MONSTER_TYPE_ICON_BASE_URL[profile]}${MONSTER_TYPE_ICON_FILES[type]}`;
+
+export const MONSTER_TYPE_ICON_PROFILES: MonsterTypeIconProfile[] = [
+	"light",
+	"dark",
+];
+
+export function getMonsterTypesForProfile(profile?: MonsterTypeIconProfile) {
+	const selectedProfile = profile ?? "light";
+	return (Object.keys(MONSTER_TYPE_ICON_FILES) as MonsterType[]).map((type) => ({
+		title: type,
+		img: monsterTypeIcon(selectedProfile, type),
+	}));
+}
+
+export function getMonsterTypeIcon(
+	profile: MonsterTypeIconProfile | undefined,
+	subType: MonsterType | undefined,
+): string | undefined {
+	if (!subType) return undefined;
+	return monsterTypeIcon(profile ?? "light", subType);
+}
 
 export type NavItem = {
 	title: string;
@@ -83,36 +114,8 @@ export const TRAP_ICONS = {
 	Normal: cardTemplate("normal.webp"),
 	Continuous: cardTemplate("continuos.webp"),
 };
-export const MONSTER_TYPES: { title: MonsterType; img: string }[] = [
-	{ title: "Aqua", img: monsterTypeIcon("Aqua") },
-	{ title: "Beast", img: monsterTypeIcon("Beast") },
-	{ title: "Beast-Warrior", img: monsterTypeIcon("Beast-Warrior") },
-	{ title: "Creator God", img: monsterTypeIcon("Creator God") },
-	{ title: "Cyberse", img: monsterTypeIcon("Cyberse") },
-	{ title: "Cyborg", img: monsterTypeIcon("Cyborg") },
-	{ title: "Dinosaur", img: monsterTypeIcon("Dinosaur") },
-	{ title: "Divine-Beast", img: monsterTypeIcon("Divine-Beast") },
-	{ title: "Dragon", img: monsterTypeIcon("Dragon") },
-	{ title: "Fairy", img: monsterTypeIcon("Fairy") },
-	{ title: "Fiend", img: monsterTypeIcon("Fiend") },
-	{ title: "Fish", img: monsterTypeIcon("Fish") },
-	{ title: "Galaxy", img: monsterTypeIcon("Galaxy") },
-	{ title: "Insect", img: monsterTypeIcon("Insect") },
-	{ title: "Illusion", img: monsterTypeIcon("Illusion") },
-	{ title: "Machine", img: monsterTypeIcon("Machine") },
-	{ title: "Plant", img: monsterTypeIcon("Plant") },
-	{ title: "Psychic", img: monsterTypeIcon("Psychic") },
-	{ title: "Pyro", img: monsterTypeIcon("Pyro") },
-	{ title: "Reptile", img: monsterTypeIcon("Reptile") },
-	{ title: "Rock", img: monsterTypeIcon("Rock") },
-	{ title: "Sea Serpent", img: monsterTypeIcon("Sea Serpent") },
-	{ title: "Spellcaster", img: monsterTypeIcon("Spellcaster") },
-	{ title: "Thunder", img: monsterTypeIcon("Thunder") },
-	{ title: "Warrior", img: monsterTypeIcon("Warrior") },
-	{ title: "Winged Beast", img: monsterTypeIcon("Winged Beast") },
-	{ title: "Wyrm", img: monsterTypeIcon("Wyrm") },
-	{ title: "Zombie", img: monsterTypeIcon("Zombie") },
-] as const;
+export const MONSTER_TYPES: { title: MonsterType; img: string }[] =
+	getMonsterTypesForProfile("light");
 
 export const YUGIOH_MONSTER_TYPES = [
 	"Normal",

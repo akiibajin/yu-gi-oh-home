@@ -31,7 +31,11 @@ export type MonsterType =
 	| "Aqua"
 	| "Beast"
 	| "Beast-Warrior"
-	| "Creator God"
+  | "Creator God"
+  | "Magical Knight"
+  | "Yokai"
+  | "Celestial Warrior"
+	| "High Dragon"
 	| "Cyberse"
 	| "Cyborg"
 	| "Dinosaur"
@@ -125,6 +129,8 @@ export interface YugiohCardDraft {
 	descriptionTextColor?: YugiohDescriptionTextColor;
 	/** Used for Spell/Trap/Field cards in the maker UI. */
 	descriptionTextSize?: YugiohDescriptionTextSize;
+	/** Pixel font size for secondary-template descriptions. */
+	secondaryDescriptionTextSize?: number;
 	attribute: YugiohCardAttribute;
 	monsterType?: YugiohMonsterType;
 	subType?: MonsterType;
@@ -176,4 +182,3 @@ export type YugiohCardWithImgUrl = Omit<YugiohCardDraft, "img"> & {
 };
 
 export {};
-

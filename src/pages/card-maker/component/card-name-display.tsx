@@ -9,6 +9,7 @@ export function CardNameDisplay(props: {
   nameBgUrl: string | undefined;
   overframeImgUrl: string | null;
   isSynchro: boolean;
+  isSecondaryTemplate: boolean;
 }) {
   const {
     displayName,
@@ -17,6 +18,7 @@ export function CardNameDisplay(props: {
     nameBgUrl,
     overframeImgUrl,
     isSynchro,
+    isSecondaryTemplate,
   } = props;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -48,6 +50,7 @@ export function CardNameDisplay(props: {
         showNameBox && nameBgUrl
           ? "-bottom-2.5 w-[calc(100%+2.5rem)] items-end"
           : "items-center w-full",
+        isSecondaryTemplate && "absolute left-1/2 -translate-x-1/2 z-2 bottom-2"
       )}
     >
       {showNameBox && nameBgUrl ? (

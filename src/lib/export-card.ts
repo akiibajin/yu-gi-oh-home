@@ -1,5 +1,6 @@
 import type { YugiohCardDraft } from "./types";
 import { storeCardMakerWebpById } from "./tauri/card-maker-images";
+import { snapdom } from "@zumer/snapdom";
 
 const getMimeType = (format: string) => {
 	switch (format) {
@@ -19,21 +20,30 @@ const getQuality = (format: string) => {
 	return 0.95;
 };
 
+const waitForPreviewRender = async (node: HTMLElement) => {
+	await document.fonts.ready;
+	await Promise.all(
+		Array.from(node.querySelectorAll("img"), (image) =>
+			image.decode().catch(() => undefined),
+		),
+	);
+	await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+	await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+};
+
 export const exportPreview = async (
 	draft: Partial<YugiohCardDraft>,
 	opts?: { id?: string; folderName?: string },
 ) => {
-	const { toCanvas } = await import("html-to-image");
 	const node = document.getElementById("card-preview");
 	if (!node) {
 		throw new Error("Could not find #card-preview.");
 	}
-	const canvas = await toCanvas(node, {
-		pixelRatio: 2,
-		cacheBust: true,
-		imagePlaceholder:
-			"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==",
-		onImageErrorHandler: (err) => console.log(err),
+	await waitForPreviewRender(node);
+	const canvas = await snapdom.toCanvas(node, {
+		dpr: 2,
+		backgroundColor: "transparent",
+		cache: "disabled",
 	});
 
 	const format = draft.exportFormat ?? "webp";

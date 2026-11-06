@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 const CARD_TEMPLATES_BASE_URL =
@@ -21,9 +22,10 @@ const digitImages = {
 interface NumberCardLabelProps {
   value?: number | null;
   className?: string;
+  style?: CSSProperties;
 }
 function NumberCardLabel(props: NumberCardLabelProps) {
-  const { value, className} = props;
+  const { value, className, style } = props;
 
   if (value === null || value === undefined) return null;
   if (!Number.isFinite(value)) return null;
@@ -35,7 +37,7 @@ function NumberCardLabel(props: NumberCardLabelProps) {
   if (digits.length === 0) return null;
 
   return (
-    <div className={cn("absolute z-3 right-0 flex", className)}>
+    <div className={cn("absolute z-3 right-0 flex", className)} style={style}>
       {digits.map((digit, index) => {
         const digitNumber = Number.parseInt(digit, 10);
         const src = digitImages[digitNumber as keyof typeof digitImages];

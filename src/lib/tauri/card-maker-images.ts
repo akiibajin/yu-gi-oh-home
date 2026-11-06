@@ -12,6 +12,7 @@ export type StoreCardMakerImageOptions = {
 	format?: string;
 };
 
+
 export async function getCardMakerImagesDir(opts?: {
 	folderName?: string;
 }): Promise<string | undefined> {

@@ -292,6 +292,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 					fullArt: card.fullArt ?? false,
 					overframeImg: null,
 					img: imgBlob,
+					secondaryDescriptionTextSize: c.pendulumDescription ? 10 : 12.5,
 					});
 
 				await waitForPreviewReady(Boolean(imgBlob));

@@ -102,11 +102,11 @@ export function CardMakerForm(
   return (
     <Card className="w-full flex flex-col flex-1 px-15! min-w-0">
       <CardHeader>
-        <CardTitle>Configuraciones de la carta</CardTitle>
+        <CardTitle className="text-xs sm:text-sm 2xl:text-base">Configuraciones de la carta</CardTitle>
         <div className="flex gap-2 flex-nowrap overflow-auto">
           {TABS.map((tab) => (
             <Button
-              className="p-3"
+              className="p-1"
               onClick={() => setCurrentTab(tab.name)}
               key={tab.name}
             >

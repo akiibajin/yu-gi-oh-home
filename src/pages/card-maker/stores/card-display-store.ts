@@ -10,6 +10,7 @@ export interface CardDisplayState {
   iconProfile?: MonsterTypeIconProfile;
   descriptionTextColor?: YugiohDescriptionTextColor;
   descriptionTextSize?: YugiohDescriptionTextSize;
+  secondaryDescriptionTextSize?: number;
   descriptionImageOpacity?: number;
   descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
   setDisplay: (value: Partial<Omit<CardDisplayState, 'setDisplay' | 'resetDisplay'>>) => void;
@@ -25,6 +26,7 @@ const initialDisplay: Omit<CardDisplayState, 'setDisplay' | 'resetDisplay'> = {
   iconProfile: 'light',
   descriptionTextColor: 'auto',
   descriptionTextSize: 'normal',
+  secondaryDescriptionTextSize: 16,
   descriptionImageOpacity: undefined,
   descriptionStatsBoxColor: 'auto',
 };

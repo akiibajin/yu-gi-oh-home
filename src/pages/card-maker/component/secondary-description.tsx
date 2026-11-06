@@ -1,94 +1,143 @@
-import { useLayoutEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useLayoutEffect, useRef, useState } from "react";
 import NumberCardLabel from "./numberCardLabel";
 import PendulumStats from "./pendulum-stats";
+import { SecondaryDescriptionSection } from "./secondary-description-section";
 
 interface SecondaryDescriptionProps {
-  pendulumDescription: string;
-  isPendulum: boolean;
-  isNumber: boolean;
-  numberLabelValue: number | null;
-  description: string;
-  minSize?: number;
-  maxSize?: number;
+	pendulumDescription: string;
+	isPendulum: boolean;
+	isNumber: boolean;
+	numberLabelValue: number | null;
+	description: string;
+	descriptionImage: string;
+	spellDescriptionImage: string;
   scale?: number;
+	size?: "standard" | "large";
+	fontSize: number;
+	onHeightChange: (height: number) => void;
 }
 
 export function SecondaryDescription(props: SecondaryDescriptionProps) {
-  const {
-    pendulumDescription,
-    isPendulum,
-    isNumber,
-    numberLabelValue,
-    description,
-    minSize = 8,
-    maxSize = 16,
+	const {
+		pendulumDescription,
+		isPendulum,
+		isNumber,
+		numberLabelValue,
+		description,
+		descriptionImage,
+		spellDescriptionImage,
     scale = 0,
-  } = props;
+		size = "standard",
+		fontSize,
+		onHeightChange,
+	} = props;
+	const descriptionRef = useRef<HTMLDivElement | null>(null);
+	const pendulumSectionRef = useRef<HTMLDivElement | null>(null);
+	const numberDescriptionRef = useRef<HTMLDivElement | null>(null);
+	const [pendulumBoundaryY, setPendulumBoundaryY] = useState(0);
+	const [numberLabelTop, setNumberLabelTop] = useState(0);
+	const hasDescription = description.trim().length > 0;
+	const hasPendulumDescription = pendulumDescription.trim().length > 0;
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const textRef = useRef<HTMLParagraphElement | null>(null);
+	useLayoutEffect(() => {
+		const container = descriptionRef.current;
+		if (!container) return;
 
-  useLayoutEffect(() => {
-    const container = containerRef.current;
-    const text = textRef.current;
-    if (!container || !text) return;
+		const updateLayout = () => {
+			onHeightChange(container.getBoundingClientRect().height);
+			const pendulumSection = pendulumSectionRef.current;
+			const coordinateOrigin =
+				container.offsetParent?.getBoundingClientRect().top ??
+				container.getBoundingClientRect().top;
+			const boundaryY = pendulumSection
+				? pendulumSection.getBoundingClientRect().top - coordinateOrigin
+				: 0;
+			setPendulumBoundaryY((current) =>
+				Math.abs(current - boundaryY) < 0.1 ? current + 12 : boundaryY + 12,
+			);
 
-    const fit = () => {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      if (width <= 0 || height <= 0) return;
+			const numberSection = numberDescriptionRef.current;
+			const numberTop = numberSection
+				? numberSection.getBoundingClientRect().top - coordinateOrigin
+				: container.getBoundingClientRect().top - coordinateOrigin;
+			setNumberLabelTop((current) =>
+				Math.abs(current - numberTop) < 0.1 ? current : numberTop,
+			);
+		};
+		updateLayout();
 
-      let low = Math.round(minSize * 2);
-      let high = Math.round(maxSize * 2);
-      let fittedHalf = low;
-      while (low <= high) {
-        const midHalf = Math.floor((low + high) / 2);
-        const size = midHalf / 2;
-        text.style.fontSize = `${size}px`;
-        if (text.scrollWidth <= width && text.scrollHeight <= height) {
-          fittedHalf = midHalf;
-          low = midHalf + 1;
-        } else {
-          high = midHalf - 1;
-        }
-      }
-      text.style.fontSize = `${fittedHalf / 2}px`;
-    };
+		const observer = new ResizeObserver(updateLayout);
+		observer.observe(container);
+		if (pendulumSectionRef.current) {
+			observer.observe(pendulumSectionRef.current);
+		}
+		if (numberDescriptionRef.current) {
+			observer.observe(numberDescriptionRef.current);
+		}
+		return () => observer.disconnect();
+	}, [onHeightChange, isPendulum, pendulumDescription, description, fontSize]);
 
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, [pendulumDescription, description, minSize, maxSize]);
-
-  return (
-    <>
-      {isNumber && (
-        <NumberCardLabel
-          className={cn("top-95 right-5")}
-          value={numberLabelValue}
-        />
-      )}
-      {isPendulum &&  <PendulumStats
-        scale={scale ?? 0}
-        className={"mb-3 top-85 w-full! left-1/2 -translate-x-1/2 h-min"}
-      />}
-    <div
-      ref={containerRef}
-      className={cn("w-full relative z-2 text-black overflow-hidden", isPendulum ? "h-43.5" : "h-32.25")}
-    >
-      <p
-        ref={textRef}
-        className={cn(
-          "size-full whitespace-pre-line tracking-tighter",
-        )}
-        style={{ fontSize: `${maxSize}px`, lineHeight: 1.15 }}
-      >
-        {pendulumDescription && `Efecto Pendulo: ${pendulumDescription}`}
-        {pendulumDescription ? <hr /> : null}
-        {pendulumDescription ? `Efecto monstruo: ${description}` : description}
-      </p>
-      </div>
-    </>
-  );
+	return (
+		<>
+			{isNumber && (
+				<NumberCardLabel
+					className="right-5 -translate-y-full"
+					style={{ top: numberLabelTop }}
+					value={numberLabelValue}
+				/>
+			)}
+			{isPendulum && (
+				<PendulumStats
+					scale={scale}
+					placement="boundary"
+					className="-translate-y-full"
+					style={{ top: pendulumBoundaryY }}
+				/>
+			)}
+			<div
+				ref={descriptionRef}
+				className={cn(
+					"relative z-0 flex h-auto max-h-58 w-full flex-col overflow-hidden text-black",
+					size === "large" ? "-mx-1.75 min-w-106" : "-mx-2.25 min-w-99.25"
+				)}
+			>
+				{isPendulum ? (
+					<>
+						{hasPendulumDescription && (
+							<div ref={pendulumSectionRef}>
+								<SecondaryDescriptionSection
+									backgroundImage={spellDescriptionImage}
+									className="pb-3"
+									text={pendulumDescription}
+									fontSize={fontSize}
+								/>
+							</div>
+						)}
+						{hasDescription && (
+							<div ref={numberDescriptionRef}>
+								<SecondaryDescriptionSection
+									backgroundImage={descriptionImage}
+									className="pb-4.75 max-h-full"
+									text={description}
+									fontSize={fontSize}
+								/>
+							</div>
+						)}
+					</>
+				) : (
+					hasDescription && (
+						<div ref={numberDescriptionRef}>
+							<SecondaryDescriptionSection
+								backgroundImage={descriptionImage}
+								className="pb-4.5 max-h-full"
+								text={description}
+								fontSize={fontSize}
+							/>
+						</div>
+					)
+				)}
+			</div>
+		</>
+	);
 }

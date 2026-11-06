@@ -32,6 +32,7 @@ const initialCardCombined = {
   description: '',
   descriptionTextColor: 'auto',
   descriptionTextSize: 'normal',
+  secondaryDescriptionTextSize: 14,
   attribute: 'DARK',
   monsterType: 'Effect',
   descriptionStatsBoxColor: 'auto',
@@ -52,20 +53,20 @@ const useCardStoreCombined = create<CombinedCardStore>((set: any) => ({
   setCard: (value: any) => {
     set((state: any) => ({ card: { ...state.card, ...value } }));
     const dataKeys = ['name', 'cardType', 'attribute', 'monsterType', 'subType', 'spellType', 'trapType', 'isTuner', 'linkRating', 'linkMarkers', 'linkMarkersOnDescription', 'scale', 'stats', 'description', 'pendulumDescription'];
-    const displayKeys = ['showName', 'showNameBox', 'showDescription', 'showStatsBox', 'template', 'iconProfile', 'descriptionTextColor', 'descriptionTextSize', 'descriptionImageOpacity', 'descriptionStatsBoxColor'];
+    const displayKeys = ['showName', 'showNameBox', 'showDescription', 'showStatsBox', 'template', 'iconProfile', 'descriptionTextColor', 'descriptionTextSize', 'secondaryDescriptionTextSize', 'descriptionImageOpacity', 'descriptionStatsBoxColor'];
     const imageKeys = ['img', 'objectFit', 'overframe', 'fullArt', 'overframeImg', 'overframeObjectFit', 'imageDraggingEnabled'];
     const exportKeys = ['exportFormat'];
-    
+
     const dataUpdate: any = {};
     const displayUpdate: any = {};
     const imageUpdate: any = {};
     const exportUpdate: any = {};
-    
+
     for (const k of dataKeys) if (k in value) dataUpdate[k] = (value as any)[k];
     for (const k of displayKeys) if (k in value) displayUpdate[k] = (value as any)[k];
     for (const k of imageKeys) if (k in value) imageUpdate[k] = (value as any)[k];
     for (const k of exportKeys) if (k in value) exportUpdate[k] = (value as any)[k];
-    
+
     if (Object.keys(dataUpdate).length) (useCardDataStore.getState() as any).setCardData(dataUpdate);
     if (Object.keys(displayUpdate).length) (useCardDisplayStore.getState() as any).setDisplay(displayUpdate);
     if (Object.keys(imageUpdate).length) (useCardImageStore.getState() as any).setImages(imageUpdate);
@@ -82,4 +83,3 @@ const useCardStoreCombined = create<CombinedCardStore>((set: any) => ({
 
 export { useCardStoreCombined as useCardStore };
 export default useCardStoreCombined;
-

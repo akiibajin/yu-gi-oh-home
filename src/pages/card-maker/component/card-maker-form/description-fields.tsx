@@ -99,7 +99,7 @@ export function CardMakerDescriptionFields(props: {
 				</SelectContent>
 			</Select>
 		</>)}
-			{!isSecondaryTemplate || !["void", "void-inverse"].includes(descriptionType) && <div className="space-y-2">
+			{(!isSecondaryTemplate && !["void", "void-inverse"].includes(descriptionType)) && <div className="space-y-2">
 				<Label className="text-sm font-medium" htmlFor="cm-description-opacity">
 					Opacidad de la imagen de descripción
 				</Label>
