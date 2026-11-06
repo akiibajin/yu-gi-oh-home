@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { Button } from "@/components/ui/warcraftcn/button";
+import { Progress } from "@/components/ui/progress";
 import {
 	Card,
 	CardContent,
@@ -377,31 +378,6 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 	};
 	return (
 		<>
-			{locked ? (
-				<div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-					<div className="absolute inset-0" />
-					<div className="relative z-10 h-full w-full flex items-center justify-center p-4">
-						<div className="w-full max-w-md rounded-md border bg-card p-4 text-card-foreground">
-							<div className="font-medium">Procesando mazo…</div>
-							{progress ? (
-								<div className="mt-2 text-sm text-muted-foreground">
-									{progress.current}/{progress.total}
-									{progress.failures ? ` (${progress.failures} fallidas)` : ""}
-								</div>
-							) : null}
-							{status ? (
-								<div className="mt-2 text-sm text-muted-foreground">
-									{status}
-								</div>
-							) : null}
-							<div className="mt-3 text-xs text-muted-foreground">
-								La interfaz queda bloqueada hasta que finalice la exportación.
-							</div>
-						</div>
-					</div>
-				</div>
-			) : null}
-
 			<Card className="w-full">
 				<CardHeader>
 					<CardTitle>Importar mazo (.ydk)</CardTitle>
@@ -515,7 +491,7 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 						</Select>
 					</div>
 
-					<div className="flex items-center gap-2">
+					<div className="space-y-2">
 						<Button
 							type="button"
 							onClick={run}
@@ -523,6 +499,24 @@ export function DeckImporterForm(props: DeckImporterFormProps) {
 						>
 							{running ? "Ejecutando..." : "Ejecutar y exportar"}
 						</Button>
+						{running && progress ? (
+							<div className="space-y-1.5">
+								<Progress
+									value={
+										progress.total > 0
+										? (progress.current / progress.total) * 100
+										: 0
+									}
+									aria-label="Progreso de exportación"
+								/>
+								<div className="text-xs text-muted-foreground">
+									{progress.current}/{progress.total} cartas
+									{progress.failures
+									? ` (${progress.failures} fallidas)`
+									: ""}
+								</div>
+							</div>
+						) : null}
 						{status ? (
 							<div className="text-sm text-muted-foreground">{status}</div>
 						) : null}
