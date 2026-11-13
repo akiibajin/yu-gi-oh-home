@@ -26,27 +26,7 @@ export default defineConfig(async () => ({
         // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
 		reportCompressedSize: true,
-		rollupOptions: {
-			output: {
-				manualChunks(id) {
-					if (!id.includes("node_modules")) return;
 
-					if (id.includes("@supabase/supabase-js")) return "supabase";
-					if (
-						id.includes("@radix-ui/") ||
-						id.includes("radix-ui") ||
-						id.includes("@floating-ui/")
-					)
-						return "radix";
-					if (id.includes("html-to-image")) return "export";
-					if (id.includes("lucide-react")) return "icons";
-					if (id.includes("html5-qrcode")) return "qr";
-					if (id.includes("react-toastify")) return "toast";
-
-					return "vendor";
-				},
-			},
-		},
   },
   resolve: {
     alias: {

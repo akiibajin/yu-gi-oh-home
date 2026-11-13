@@ -48,7 +48,7 @@ export function CardNameDisplay(props: {
       className={cn(
         "relative flex min-h-8 justify-center",
         showNameBox && nameBgUrl
-          ? "-bottom-2.5 w-[calc(100%+2.5rem)] items-end"
+          ? "-bottom-2.5 -mx-5.5 w-[calc(100%+2.5rem)] items-end"
           : "items-center w-full",
         isSecondaryTemplate && "absolute left-1/2 -translate-x-1/2 z-2 bottom-2"
       )}

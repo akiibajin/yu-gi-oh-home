@@ -1,6 +1,6 @@
 import type { YugiohCardDraft } from "./types";
 import { storeCardMakerWebpById } from "./tauri/card-maker-images";
-import { snapdom } from "@zumer/snapdom";
+
 
 const getMimeType = (format: string) => {
 	switch (format) {
@@ -40,6 +40,7 @@ export const exportPreview = async (
 		throw new Error("Could not find #card-preview.");
 	}
 	await waitForPreviewRender(node);
+	const { snapdom } = await import("@zumer/snapdom");
 	const canvas = await snapdom.toCanvas(node, {
 		dpr: 2,
 		backgroundColor: "transparent",
