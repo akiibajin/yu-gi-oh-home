@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Input } from "@/components/ui/warcraftcn/input";
 import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
+import useFactionStore from "@/lib/faction-store";
 
 const ATTRIBUTE_LABELS: Record<YugiohCardAttribute, string> = {
   DARK: "OSCURIDAD",
@@ -102,6 +103,7 @@ export function CardMakerMonsterOptions(props: {
   const { draft, isPendulum, isLink, setDraftField, setStatsField } = props;
   const card = useCardStore().card;
   const setCard = useCardStore().setCard;
+  const faction = useFactionStore().faction;
 
   const handleInput = (e: InputEvent<HTMLInputElement>) => {
     const parsed = Number.parseInt(e.currentTarget.value, 10);
@@ -118,16 +120,14 @@ export function CardMakerMonsterOptions(props: {
     <fieldset className="space-y-4">
       <legend className="px-1 text-sm font-medium">Opciones de monstruo</legend>
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4 *:min-w-0">
-        <div className="flex items-center">
-          <Label className="text-sm font-medium" htmlFor="cm-is-tuner">
-            ¿Es Cantante?
-          </Label>
-          <Checkbox
-            id="cm-is-tuner"
-            checked={draft.isTuner}
-            onCheckedChange={(checked: boolean) => setDraftField("isTuner", checked)}
-          />
-        </div>
+        <Checkbox
+          faction={faction}
+          id="cm-is-tuner"
+          checked={draft.isTuner}
+          onCheckedChange={(checked: boolean) => setDraftField("isTuner", checked)}
+        >
+          ¿Es Cantante?
+        </Checkbox>
         <div className="space-y-2 min-w-0 flex flex-col gap-1">
           <Label className="text-sm font-medium" htmlFor="cm-attribute">
             Atributo

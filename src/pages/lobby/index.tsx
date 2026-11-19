@@ -52,86 +52,86 @@ export default function LobbyIndex() {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="space-y-6 flex size-full flex-1 items-center justify-center">
       <Card>
-        <CardContent className="p-6 md:p-8">
-          <CardHeader className="px-0 pt-0 pb-6">
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-3">
-                <ShieldIcon className="w-6 h-6 text-amber-400" />
-                <CardTitle>Salas activas</CardTitle>
-                {!loading && lobbies.length > 0 && <Badge size="sm">{lobbies.length}</Badge>}
-              </div>
-              <Button variant="frame" onClick={loadLobbies} disabled={loading}>
-                <RefreshCwIcon className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-                Actualizar
-              </Button>
+        <CardHeader className="px-0 pt-0 pb-6">
+          <div className="items-start lg:items-center flex justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <ShieldIcon className="w-6 h-6 text-amber-400" />
+              <CardTitle>Salas activas</CardTitle>
+              {!loading && lobbies.length > 0 && <Badge size="sm">{lobbies.length}</Badge>}
             </div>
-          </CardHeader>
-          <div className="space-y-4">
-            {error && (
-              <div className="p-4 bg-red-950/30 border border-red-900/50 rounded-lg">
-                <Badge variant="destructive" size="sm" className="mb-2">
-                  Error
-                </Badge>
-                <p className="text-sm text-red-200">{error}</p>
-              </div>
-            )}
-            {loading && (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <Skeleton key={i} className="w-full h-32" />
-                ))}
-              </div>
-            )}
-            {!loading && lobbies.length === 0 && (
-              <div className="text-center py-12 px-4 bg-black/20 rounded-lg border border-amber-900/20">
-                <UsersIcon className="w-12 h-12 mx-auto mb-3 text-amber-700/50" />
-                <p className="text-muted-foreground">No se encontraron salas activas</p>
-                <p className="text-sm text-muted-foreground/70 mt-1">
-                  Crea o únete a una sala para empezar
-                </p>
-              </div>
-            )}
-            {lobbies.map((lobby) => (
-              <div
-                key={lobby.id}
-                className="flex flex-col gap-4 rounded-lg border border-amber-900/30 bg-black/20 p-4 md:flex-row md:items-center md:justify-between hover:border-amber-800/50 transition-colors"
-              >
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="default" size="sm">
-                      Activa
-                    </Badge>
-                    <span className="text-sm text-amber-200/70">Código de sala</span>
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold tracking-widest text-amber-100">
-                    {lobby.lobby_code}
-                  </div>
-                  <div className="text-xs text-muted-foreground flex items-center gap-2">
-                    <span>Creada {new Date(lobby.created_at).toLocaleString()}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2 w-full md:w-auto">
-                  <Button
-                    variant="default"
-                    className="w-full"
-                    onClick={() => handleEnterAsHost(lobby)}
-                  >
-                    <CrownIcon className="w-4 h-4 mr-2" />
-                    Entrar como anfitrión
-                  </Button>
-                  <Button
-                    variant="frame"
-                    className="w-full"
-                    onClick={() => handleCloseLobby(lobby.id)}
-                  >
-                    Cerrar sala
-                  </Button>
-                </div>
-              </div>
-            ))}
+            <Button variant="frame" className="py-2 px-3" onClick={loadLobbies} disabled={loading}>
+              <RefreshCwIcon className={`w-4 h-4 lg:mr-2 ${loading ? "animate-spin" : ""}`} />
+              <span className="hidden lg:block">Actualizar</span>
+            </Button>
           </div>
+        </CardHeader>
+        <CardContent className="px-1 flex flex-col md:p-8 min-w-3xs md:min-w-sm lg:min-w-2xl">
+          {error && (
+            <div className="p-4 bg-red-950/30 border border-red-900/50 rounded-lg">
+              <Badge variant="destructive" size="sm" className="mb-2">
+                Error
+              </Badge>
+              <p className="text-sm text-red-200">{error}</p>
+            </div>
+          )}
+          {loading && (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="w-full h-32" />
+              ))}
+            </div>
+          )}
+          {!loading && lobbies.length === 0 && (
+            <div className="text-center py-12 px-1 lg:px-4 bg-black/20 rounded-lg border border-amber-900/20">
+              <UsersIcon className="w-12 h-12 mx-auto mb-3 text-amber-700/50" />
+              <p className="mx-auto max-w-36 text-sm md:max-w-none md:text-base text-muted-foreground">
+                No se encontraron salas activas
+              </p>
+              <p className="mx-auto max-w-36 text-xs md:max-w-none md:text-sm text-muted-foreground/70 mt-1">
+                Crea o únete a una sala para empezar
+              </p>
+            </div>
+          )}
+          {lobbies.map((lobby) => (
+            <div
+              key={lobby.id}
+              className="flex flex-col gap-4 rounded-lg border border-amber-900/30 bg-black/20 p-4 md:flex-row md:items-center md:justify-between hover:border-amber-800/50 transition-colors"
+            >
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-2">
+                  <Badge variant="default" size="sm">
+                    Activa
+                  </Badge>
+                  <span className="text-sm text-amber-200/70">Código de sala</span>
+                </div>
+                <div className="text-2xl md:text-3xl font-bold tracking-widest text-amber-100">
+                  {lobby.lobby_code}
+                </div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2">
+                  <span>Creada {new Date(lobby.created_at).toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 w-full md:w-auto">
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={() => handleEnterAsHost(lobby)}
+                >
+                  <CrownIcon className="w-4 h-4 mr-2" />
+                  Entrar como anfitrión
+                </Button>
+                <Button
+                  variant="frame"
+                  className="w-full"
+                  onClick={() => handleCloseLobby(lobby.id)}
+                >
+                  Cerrar sala
+                </Button>
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>

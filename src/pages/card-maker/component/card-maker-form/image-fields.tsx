@@ -109,19 +109,17 @@ export function CardMakerImageFields(props: {
       </div>
 
       {!isSecondaryTemplate && (
-        <div className="flex items-center gap-2 pt-2">
-          <Label className="text-sm font-medium" htmlFor="cm-overframe">
-            Overframe
-          </Label>
-          <Checkbox
-            id="cm-overframe"
-            checked={draft.overframe ?? false}
-            onCheckedChange={(checked: boolean) => {
-              setDraftField("overframe", checked);
-              if (!checked) setDraftField("overframeImg", null);
-            }}
-          />
-        </div>
+        <Checkbox
+          faction={faction}
+          id="cm-overframe"
+          checked={draft.overframe ?? false}
+          onCheckedChange={(checked: boolean) => {
+            setDraftField("overframe", checked);
+            if (!checked) setDraftField("overframeImg", null);
+          }}
+        >
+          Overframe
+        </Checkbox>
       )}
 
       {draft.overframe ? (
@@ -186,16 +184,14 @@ export function CardMakerImageFields(props: {
       ) : null}
 
       {!isSecondaryTemplate && (
-        <div className="flex items-center gap-2 pt-2">
-          <Label className="text-sm font-medium" htmlFor="cm-full-art">
-            Utilizar imagen como full art
-          </Label>
-          <Checkbox
-            id="cm-full-art"
-            checked={draft.fullArt ?? false}
-            onCheckedChange={(checked: boolean) => setDraftField("fullArt", checked)}
-          />
-        </div>
+        <Checkbox
+          faction={faction}
+          id="cm-full-art"
+          checked={draft.fullArt ?? false}
+          onCheckedChange={(checked: boolean) => setDraftField("fullArt", checked)}
+        >
+          Utilizar imagen como full art
+        </Checkbox>
       )}
     </div>
   );

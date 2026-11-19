@@ -70,7 +70,7 @@ export default function CreateLobby() {
               {loading ? "Creando..." : "Crear sala"}
             </Button>
             <Link to={"/lobby/json"}>
-              <Button asChild variant="frame" className="w-full">
+              <Button variant="frame" className="w-full">
                 Unirse a una sala existente
               </Button>
             </Link>

@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/warcraftcn/label";
 import { YUGIOH_DESCRIPTION_STATS_BOX_COLORS } from "@/lib/constants";
 import type { YugiohDescriptionStatsBoxColor } from "@/lib/types";
 import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
+import useFactionStore from "@/lib/faction-store";
 
 const BOX_COLOR_LABELS: Partial<Record<YugiohDescriptionStatsBoxColor | "auto" | "void", string>> =
   {
@@ -59,20 +60,19 @@ export function CardMakerDescriptionFields(props: {
     descriptionType,
     onDescriptionTypeChange,
   } = props;
+  const faction = useFactionStore().faction;
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col space-y-2">
       {!isSecondaryTemplate && (
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <Label className="text-sm font-medium" htmlFor="cm-show-description">
-            Mostrar descripción en la vista previa
-          </Label>
-          <Checkbox
-            id="cm-show-description"
-            checked={showDescription}
-            onCheckedChange={onShowDescriptionChange}
-          />
-        </div>
+        <Checkbox
+          faction={faction}
+          id="cm-show-description"
+          checked={showDescription}
+          onCheckedChange={onShowDescriptionChange}
+        >
+          Mostrar descripción en la vista previa
+        </Checkbox>
       )}
       {isSecondaryTemplate ? null : (
         <>
@@ -85,7 +85,7 @@ export function CardMakerDescriptionFields(props: {
               onDescriptionTypeChange(v as YugiohDescriptionStatsBoxColor)
             }
           >
-            <SelectTrigger id="cm-box-color" className="w-full">
+            <SelectTrigger id="cm-box-color" className="w-full md:w-auto">
               <SelectValue placeholder="Selecciona un color" />
             </SelectTrigger>
             <SelectContent>
@@ -114,7 +114,7 @@ export function CardMakerDescriptionFields(props: {
               onDescriptionImageOpacityChange(Number.isFinite(parsed) ? parsed : undefined);
             }}
           >
-            <SelectTrigger id="cm-description-opacity" className="h-8 w-full">
+            <SelectTrigger id="cm-description-opacity" className="h-8 w-full md:w-auto">
               <SelectValue placeholder="Opacidad" />
             </SelectTrigger>
             <SelectContent>
@@ -138,7 +138,7 @@ export function CardMakerDescriptionFields(props: {
               onDescriptionTextSizeChange(value as YugiohDescriptionTextSize)
             }
           >
-            <SelectTrigger id="cm-description-text-size" className="h-8 w-full">
+            <SelectTrigger id="cm-description-text-size" className="h-8 w-full md:w-auto">
               <SelectValue placeholder="Tamaño" />
             </SelectTrigger>
             <SelectContent>

@@ -17,6 +17,7 @@ import { YugiohCardDraft, YugiohCardType, YugiohSpellType, YugiohTrapType } from
 import { FC } from "react";
 import { SetDraftField } from "./types";
 import { Checkbox } from "@/components/ui/warcraftcn/checkbox";
+import useFactionStore from "@/lib/faction-store";
 
 const CARD_TYPE_LABELS: Record<YugiohCardType, string> = {
   Monster: "Monstruo",
@@ -45,43 +46,43 @@ interface CardConfigProps {
 
 const CardConfig: FC<CardConfigProps> = (props) => {
   const { draft, setDraftField } = props;
+  const faction = useFactionStore().faction;
   const isMonster = draft.cardType === "Monster";
   const isFieldSpell = draft.cardType === "Field";
   const isSecondaryTemplate = draft.template === "secondary";
   return (
-    <div>
-      <Label className="text-sm" htmlFor="cm-secondary-template">
-        Plantilla alternativa
-      </Label>
+    <div className="flex flex-col">
       <Checkbox
+        faction={faction}
         id="cm-secondary-template"
         checked={draft.template === "secondary"}
         onCheckedChange={(checked: boolean) =>
           setDraftField("template", checked ? "secondary" : "primary")
         }
-      />
+      >
+        Plantilla alternativa
+      </Checkbox>
       {!isSecondaryTemplate && (
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium" htmlFor="cm-show-name-box">
-            Mostrar cuadro en el nombre
-          </Label>
-          <Checkbox
-            id="cm-show-name-box"
-            checked={draft.showNameBox ?? false}
-            onCheckedChange={(checked: boolean) => setDraftField("showNameBox", checked)}
-          />
-        </div>
-      )}
-      <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium" htmlFor="cm-show-stats-box">
-          Mostar cuadro de stats?
-        </Label>
         <Checkbox
+          faction={faction}
+          id="cm-show-name-box"
+          checked={draft.showNameBox ?? false}
+          onCheckedChange={(checked: boolean) => setDraftField("showNameBox", checked)}
+        >
+          {" "}
+          Mostrar cuadro en el nombre
+        </Checkbox>
+      )}
+      {!isSecondaryTemplate && (
+        <Checkbox
+          faction={faction}
           id="cm-show-stats-box"
           checked={draft.showStatsBox ?? true}
           onCheckedChange={(checked: boolean) => setDraftField("showStatsBox", checked)}
-        />
-      </div>
+        >
+          Mostar cuadro de stats?
+        </Checkbox>
+      )}
       <div className="space-y-2 min-w-0">
         <Label className="text-sm font-medium" htmlFor="cm-card-type">
           Tipo de carta
@@ -90,7 +91,7 @@ const CardConfig: FC<CardConfigProps> = (props) => {
           value={draft.cardType}
           onValueChange={(value: string) => setDraftField("cardType", value as YugiohCardType)}
         >
-          <SelectTrigger id="cm-card-type" className="w-full">
+          <SelectTrigger id="cm-card-type">
             <SelectValue placeholder="Tipo" />
           </SelectTrigger>
           <SelectContent>

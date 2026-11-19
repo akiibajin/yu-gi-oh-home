@@ -96,7 +96,7 @@ export function CardMakerForm(
   };
   const CurrentConfig = configElements?.[currentTab] ?? configElements["card-config"];
   return (
-    <Card className="w-full flex flex-col flex-1 px-15! min-w-0">
+    <Card className="w-full flex flex-col flex-1 lg:px-15! min-w-0">
       <CardHeader>
         <CardTitle className="text-xs sm:text-sm 2xl:text-base">
           Configuraciones de la carta
@@ -109,7 +109,7 @@ export function CardMakerForm(
           ))}
         </div>
       </CardHeader>
-      <CardContent className="space-y-2 min-w-0 **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full md:flex-1 md:max-h-full md:overflow-auto">
+      <CardContent className="space-y-2 min-w-0 overflow-auto **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full max-h-[50dvh] md:flex-1 lg:max-h-full">
         <CurrentConfig draft={draft} setStatsField={setStatsField} setDraftField={setDraftField} />
       </CardContent>
       <CardFooter className="justify-end">

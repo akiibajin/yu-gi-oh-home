@@ -126,8 +126,8 @@ export default function JoinLobby() {
   };
   if (isDev) console.log("Selected avatar:", selectedAvatar);
   return (
-    <div className="flex items-center justify-center min-h-screen md:max-w-lg sm:p-4 pb-[env(safe-area-inset-bottom)]">
-      <Card className="w-full">
+    <div className="flex flex-1 w-full h-full items-center justify-center sm:p-4 pb-[env(safe-area-inset-bottom)]">
+      <Card className="w-full md:max-w-xl lg:max-w-2xl">
         <CardContent className="p-6 md:p-8">
           <CardHeader className="px-0 pt-0">
             <div className="flex items-center gap-3 mb-2">
@@ -137,7 +137,7 @@ export default function JoinLobby() {
                 Invitado
               </Badge>
             </div>
-            <CardDescription className="px-0">
+            <CardDescription className="px-0 text-xs md:text-base">
               Ingresa el código de la sala para unirte a una sesión existente
             </CardDescription>
           </CardHeader>
@@ -184,6 +184,7 @@ export default function JoinLobby() {
                   variant="frame"
                   onClick={() => setShowScanner(true)}
                   disabled={loading}
+                  className="size-15 mx-auto my-auto"
                   type="button"
                 >
                   <QrCodeIcon className="h-4 w-4" />
@@ -240,9 +241,7 @@ export default function JoinLobby() {
               {loading ? "Uniéndose..." : "Unirse a la sala"}
             </Button>
             <Link to={"/lobby/create"}>
-              <Button asChild className="w-full text-[10px]">
-                Crear una sala nueva
-              </Button>
+              <Button className="w-full text-[10px]">Crear una sala nueva</Button>
             </Link>
           </div>
         </CardContent>

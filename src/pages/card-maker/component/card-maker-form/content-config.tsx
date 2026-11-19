@@ -9,6 +9,7 @@ import { YugiohCardDraft, YugiohMonsterStats } from "@/lib/types";
 import { SetDraftField } from "./types";
 import { CardMakerDescriptionFields } from "./description-fields";
 import { splitPendulumDescription } from "@/lib/split-pendulum-description";
+import useFactionStore from "@/lib/faction-store";
 
 interface ContentConfigProps {
   draft: Partial<YugiohCardDraft>;
@@ -18,6 +19,7 @@ interface ContentConfigProps {
 
 const ContentConfig: FC<ContentConfigProps> = (props) => {
   const { draft, setDraftField, setStatsField } = props;
+  const faction = useFactionStore().faction;
   const isMonster = draft.cardType === "Monster";
   const isPendulum = isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
   const isLink = isMonster && (draft.monsterType?.includes("Link") ?? false);
@@ -44,19 +46,17 @@ const ContentConfig: FC<ContentConfigProps> = (props) => {
   };
   return (
     <div>
-      <div className="flex items-center">
-        <Label className="text-sm font-medium" htmlFor="cm-name">
-          Nombre
-        </Label>
-        <Checkbox
-          id="cm-show-name"
-          checked={draft.showName ?? true}
-          onCheckedChange={(checked: boolean) => setDraftField("showName", checked)}
-        />
-      </div>
+      <Checkbox
+        faction={faction}
+        id="cm-show-name"
+        checked={draft.showName ?? true}
+        onCheckedChange={(checked: boolean) => setDraftField("showName", checked)}
+      >
+        Nombre
+      </Checkbox>
       <Input
         id="cm-name"
-        className="w-full md:w-auto"
+        className="w-full md:w-auto ml-2"
         value={draft.name}
         onInput={(e) => setDraftField("name", e.currentTarget.value)}
         placeholder="Dark Magician"

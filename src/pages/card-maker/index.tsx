@@ -170,8 +170,8 @@ function CardMakerView() {
           ) : null}
         </div>
         <div className="min-w-0 flex flex-col flex-1">
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <div className="inline-flex w-fit items-center rounded-md border p-1">
+          <div className="max-w-full mb-4">
+            <div className="flex flex-wrap w-fit items-center rounded-md border p-1">
               <Button
                 type="button"
                 className="p-2 px-3"
