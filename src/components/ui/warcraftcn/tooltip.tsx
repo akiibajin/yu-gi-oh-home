@@ -27,7 +27,7 @@ const tooltipContentVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 const TOOLTIP_TITLE_COLORS: Record<TooltipVariant, string> = {
@@ -51,9 +51,7 @@ function TooltipProvider({
   );
 }
 
-function Tooltip({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+function Tooltip({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) {
   return (
     <TooltipProvider>
       <TooltipPrimitive.Root data-slot="tooltip" {...props} />
@@ -61,12 +59,8 @@ function Tooltip({
   );
 }
 
-function TooltipTrigger({
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return (
-    <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
-  );
+function TooltipTrigger({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
 function TooltipContent({
@@ -86,7 +80,7 @@ function TooltipContent({
           tooltipContentVariants({ variant }),
           "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          className
+          className,
         )}
         {...props}
       >
@@ -98,10 +92,7 @@ function TooltipContent({
   );
 }
 
-function TooltipTitle({
-  className,
-  ...props
-}: React.ComponentProps<"p">) {
+function TooltipTitle({ className, ...props }: React.ComponentProps<"p">) {
   const variant = React.useContext(TooltipVariantContext);
 
   return (
@@ -113,10 +104,7 @@ function TooltipTitle({
   );
 }
 
-function TooltipBody({
-  className,
-  ...props
-}: React.ComponentProps<"p">) {
+function TooltipBody({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
       data-slot="tooltip-body"

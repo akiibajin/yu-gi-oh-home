@@ -4,8 +4,7 @@ import { cn } from "@/lib/utils";
 const CARD_TEMPLATES_BASE_URL =
   "https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
 
-const cardTemplateUrl = (fileName: string) =>
-  `${CARD_TEMPLATES_BASE_URL}${fileName}`;
+const cardTemplateUrl = (fileName: string) => `${CARD_TEMPLATES_BASE_URL}${fileName}`;
 
 const digitImages = {
   0: cardTemplateUrl("number-0.webp"),
@@ -42,14 +41,7 @@ function NumberCardLabel(props: NumberCardLabelProps) {
         const digitNumber = Number.parseInt(digit, 10);
         const src = digitImages[digitNumber as keyof typeof digitImages];
         if (!src) return null;
-        return (
-          <img
-            key={`${digit}-${index}`}
-            src={src}
-            className="h-12"
-            alt={`dígito ${digit}`}
-          />
-        );
+        return <img key={`${digit}-${index}`} src={src} className="h-12" alt={`dígito ${digit}`} />;
       })}
     </div>
   );

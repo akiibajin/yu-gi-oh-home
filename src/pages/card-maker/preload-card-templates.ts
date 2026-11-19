@@ -1,8 +1,7 @@
 const CARD_TEMPLATES_BASE_URL =
-	"https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
+  "https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
 
-const cardTemplateUrl = (fileName: string) =>
-	`${CARD_TEMPLATES_BASE_URL}${fileName}`;
+const cardTemplateUrl = (fileName: string) => `${CARD_TEMPLATES_BASE_URL}${fileName}`;
 
 const number0 = cardTemplateUrl("number-0.webp");
 const number1 = cardTemplateUrl("number-1.webp");
@@ -40,158 +39,155 @@ const cristal6 = cardTemplateUrl("cristal 6.webp");
 const cristal7 = cardTemplateUrl("cristal 7.webp");
 
 const REMOTE_TEMPLATE_FILE_NAMES = [
-	// Card textures
-	"normal-description.webp",
-	"normal-border.webp",
-	"stats-normal.webp",
-	"effect-description.webp",
-	"effect-border.webp",
-	"stats-effect.webp",
-	"ritual-description.webp",
-	"ritual-border.webp",
-	"stats-ritual.webp",
-	"fusion-description.webp",
-	"fusion-border.webp",
-	"stats-fusion.webp",
-	"synchro-description.webp",
-	"synchro-border.webp",
-	"stats-synchro.webp",
-	"xyz-description.webp",
-	"xyz-border.webp",
-	"stats-xyz.webp",
-	"link-description.webp",
-	"link-border.webp",
-	"stats-link.webp",
-	"spell-description.webp",
-	"spell-border.webp",
-	"trap-description.webp",
-	"trap-border.webp",
-	"stats-trap.webp",
-	"field-description.webp",
-	"field-border.webp",
-	"token-description.webp",
-	"token-border.webp",
-	"stats-token.webp",
-	"effect-pendulum-border.webp",
-	"normal-pendulum-border.webp",
-	"fusion-pendulum-border.webp",
-	"synchro-pendulum-border.webp",
-	"xyz-pendulum-border.webp",
-	"ritual-pendulum-border.webp",
+  // Card textures
+  "normal-description.webp",
+  "normal-border.webp",
+  "stats-normal.webp",
+  "effect-description.webp",
+  "effect-border.webp",
+  "stats-effect.webp",
+  "ritual-description.webp",
+  "ritual-border.webp",
+  "stats-ritual.webp",
+  "fusion-description.webp",
+  "fusion-border.webp",
+  "stats-fusion.webp",
+  "synchro-description.webp",
+  "synchro-border.webp",
+  "stats-synchro.webp",
+  "xyz-description.webp",
+  "xyz-border.webp",
+  "stats-xyz.webp",
+  "link-description.webp",
+  "link-border.webp",
+  "stats-link.webp",
+  "spell-description.webp",
+  "spell-border.webp",
+  "trap-description.webp",
+  "trap-border.webp",
+  "stats-trap.webp",
+  "field-description.webp",
+  "field-border.webp",
+  "token-description.webp",
+  "token-border.webp",
+  "stats-token.webp",
+  "effect-pendulum-border.webp",
+  "normal-pendulum-border.webp",
+  "fusion-pendulum-border.webp",
+  "synchro-pendulum-border.webp",
+  "xyz-pendulum-border.webp",
+  "ritual-pendulum-border.webp",
 
-	// Attributes
-	"dark.webp",
-	"light.webp",
-	"earth.webp",
-	"water.webp",
-	"fire.webp",
-	"wind.webp",
-	"divine.webp",
+  // Attributes
+  "dark.webp",
+  "light.webp",
+  "earth.webp",
+  "water.webp",
+  "fire.webp",
+  "wind.webp",
+  "divine.webp",
 
-	// Spell/Trap icons
-	"normal.webp",
-	"continuos.webp",
-	"equip.webp",
-	"quick-spell.webp",
-	"ritual.webp",
-	"field.webp",
-	"counter.webp",
+  // Spell/Trap icons
+  "normal.webp",
+  "continuos.webp",
+  "equip.webp",
+  "quick-spell.webp",
+  "ritual.webp",
+  "field.webp",
+  "counter.webp",
 ] as const;
 
 const CARD_MAKER_TEMPLATE_URLS = [
-	...REMOTE_TEMPLATE_FILE_NAMES.map(cardTemplateUrl),
+  ...REMOTE_TEMPLATE_FILE_NAMES.map(cardTemplateUrl),
 
-	// Local template assets
-	number0,
-	number1,
-	number2,
-	number3,
-	number4,
-	number5,
-	number6,
-	number7,
-	number8,
-	number9,
-	greenGem,
-	yellowGem,
-	scale0,
-	scale1,
-	scale2,
-	scale3,
-	scale4,
-	scale5,
-	scale6,
-	scale7,
-	scale8,
-	scale9,
-	rank,
-	star,
-	tunerStar,
-	cristal3,
-	cristal4,
-	cristal5,
-	cristal6,
-	cristal7,
+  // Local template assets
+  number0,
+  number1,
+  number2,
+  number3,
+  number4,
+  number5,
+  number6,
+  number7,
+  number8,
+  number9,
+  greenGem,
+  yellowGem,
+  scale0,
+  scale1,
+  scale2,
+  scale3,
+  scale4,
+  scale5,
+  scale6,
+  scale7,
+  scale8,
+  scale9,
+  rank,
+  star,
+  tunerStar,
+  cristal3,
+  cristal4,
+  cristal5,
+  cristal6,
+  cristal7,
 ] as const;
 
 const preloaded = new Set<string>();
 const inflight = new Map<string, Promise<void>>();
 
 const loadImage = (url: string) =>
-	new Promise<void>((resolve, reject) => {
-		const img = new Image();
-		const timeoutId = window.setTimeout(() => {
-			reject(new Error(`Timed out loading image: ${url}`));
-		}, 15_000);
+  new Promise<void>((resolve, reject) => {
+    const img = new Image();
+    const timeoutId = window.setTimeout(() => {
+      reject(new Error(`Timed out loading image: ${url}`));
+    }, 15_000);
 
-		const finalizeResolve = () => {
-			window.clearTimeout(timeoutId);
-			resolve();
-		};
+    const finalizeResolve = () => {
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
 
-		const finalizeReject = (err: Error) => {
-			window.clearTimeout(timeoutId);
-			reject(err);
-		};
+    const finalizeReject = (err: Error) => {
+      window.clearTimeout(timeoutId);
+      reject(err);
+    };
 
-		img.decoding = "async";
-		img.referrerPolicy = "no-referrer";
-		img.onload = () => finalizeResolve();
-		img.onerror = () =>
-			finalizeReject(new Error(`Failed to load image: ${url}`));
-		img.src = url;
-		if (img.complete) {
-			if (img.naturalWidth > 0) finalizeResolve();
-			else finalizeReject(new Error(`Failed to load image: ${url}`));
-		}
-	});
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.onload = () => finalizeResolve();
+    img.onerror = () => finalizeReject(new Error(`Failed to load image: ${url}`));
+    img.src = url;
+    if (img.complete) {
+      if (img.naturalWidth > 0) finalizeResolve();
+      else finalizeReject(new Error(`Failed to load image: ${url}`));
+    }
+  });
 
 const preloadImage = (url: string) => {
-	if (preloaded.has(url)) return Promise.resolve();
-	const existing = inflight.get(url);
-	if (existing) return existing;
+  if (preloaded.has(url)) return Promise.resolve();
+  const existing = inflight.get(url);
+  if (existing) return existing;
 
-	const promise = loadImage(url)
-		.then(() => {
-			preloaded.add(url);
-		})
-		.finally(() => {
-			inflight.delete(url);
-		});
+  const promise = loadImage(url)
+    .then(() => {
+      preloaded.add(url);
+    })
+    .finally(() => {
+      inflight.delete(url);
+    });
 
-	inflight.set(url, promise);
-	return promise;
+  inflight.set(url, promise);
+  return promise;
 };
 
 let preloadAllPromise: Promise<void> | null = null;
 
 export function preloadCardMakerTemplateImages() {
-	if (typeof window === "undefined") return Promise.resolve();
-	if (preloadAllPromise) return preloadAllPromise;
+  if (typeof window === "undefined") return Promise.resolve();
+  if (preloadAllPromise) return preloadAllPromise;
 
-	const uniqueUrls = Array.from(new Set<string>(CARD_MAKER_TEMPLATE_URLS));
-	preloadAllPromise = Promise.allSettled(uniqueUrls.map(preloadImage)).then(
-		() => undefined,
-	);
-	return preloadAllPromise;
+  const uniqueUrls = Array.from(new Set<string>(CARD_MAKER_TEMPLATE_URLS));
+  preloadAllPromise = Promise.allSettled(uniqueUrls.map(preloadImage)).then(() => undefined);
+  return preloadAllPromise;
 }

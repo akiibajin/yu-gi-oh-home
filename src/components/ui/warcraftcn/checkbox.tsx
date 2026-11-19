@@ -23,16 +23,14 @@ const checkboxVariants = cva(
     defaultVariants: {
       faction: "default",
     },
-  }
+  },
 );
 
 type Faction = "default" | "orc" | "elf" | "human" | "undead";
 
 interface CheckboxProps
-  extends Omit<
-      React.ComponentProps<typeof CheckboxPrimitive.Root>,
-      "children" | "asChild"
-    >,
+  extends
+    Omit<React.ComponentProps<typeof CheckboxPrimitive.Root>, "children" | "asChild">,
     VariantProps<typeof checkboxVariants> {
   faction?: Faction;
   children?: React.ReactNode;
@@ -49,10 +47,7 @@ function Checkbox({
   return (
     <label
       htmlFor={id}
-      className={cn(
-        checkboxVariants({ faction }),
-        disabled && "opacity-50 cursor-not-allowed"
-      )}
+      className={cn(checkboxVariants({ faction }), disabled && "opacity-50 cursor-not-allowed")}
     >
       <CheckboxPrimitive.Root
         data-slot="checkbox"

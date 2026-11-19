@@ -7,7 +7,6 @@ type CardSize = "large" | "standard";
 
 const STORAGE_KEY = "card-maker.card-size";
 
-
 function getStoredSize(): CardSize {
   if (typeof window === "undefined") return "standard";
   const stored = window.localStorage.getItem(STORAGE_KEY);

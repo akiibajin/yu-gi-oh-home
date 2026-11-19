@@ -63,23 +63,23 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
                 className={cn(
                   "relative z-2 tracking-tighter leading-3.75! max-w-[95%] w-full whitespace-pre-line",
                   descriptionTextColorClass,
-                  isVoidDescriptionStatsBox &&
-                    "text-white! text-shadow-outline",
-                  isVoidInverseDescriptionStatsBox &&
-                    "text-black! text-shadow-outline-inverse",
+                  isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
+                  isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
                 )}
                 style={{
-                  fontSize: descriptionTextSize === "big" ? "1.25rem" : descriptionTextSize === "small" ? "0.875rem" : "1rem",
+                  fontSize:
+                    descriptionTextSize === "big"
+                      ? "1.25rem"
+                      : descriptionTextSize === "small"
+                        ? "0.875rem"
+                        : "1rem",
                 }}
               >
                 {draft.pendulumDescription}
               </p>
             </>
           ) : null}
-          <PendulumStats
-            scale={draft.scale ?? 0}
-            className={cn(!showDescription && "bottom-50")}
-          />
+          <PendulumStats scale={draft.scale ?? 0} className={cn(!showDescription && "bottom-50")} />
         </div>
       )}
       {showDescription ? (
@@ -88,12 +88,7 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
             "relative py-px max-h-full z-4 w-full flex pb-0.5 flex-col justify-start items-center",
           )}
         >
-          {isNumber && (
-            <NumberCardLabel
-              className={cn("-top-9")}
-              value={numberLabelValue}
-            />
-          )}
+          {isNumber && <NumberCardLabel className={cn("-top-9")} value={numberLabelValue} />}
           {isLink && draft.linkMarkersOnDescription && (
             <RankImage
               linkMarkers={draft.linkMarkers ?? []}
@@ -116,11 +111,15 @@ const PrimaryDescription = (props: PrimaryDescriptionProps) => {
               "relative z-2 tracking-tighter leading-3.75! max-w-[95%] w-full whitespace-pre-line",
               descriptionTextColorClass,
               isVoidDescriptionStatsBox && "text-white! text-shadow-outline",
-              isVoidInverseDescriptionStatsBox &&
-                "text-black! text-shadow-outline-inverse",
+              isVoidInverseDescriptionStatsBox && "text-black! text-shadow-outline-inverse",
             )}
             style={{
-              fontSize: descriptionTextSize === "big" ? "1.25rem" : descriptionTextSize === "small" ? "0.875rem" : "1rem",
+              fontSize:
+                descriptionTextSize === "big"
+                  ? "1.25rem"
+                  : descriptionTextSize === "small"
+                    ? "0.875rem"
+                    : "1rem",
             }}
           >
             {monsterDescription}

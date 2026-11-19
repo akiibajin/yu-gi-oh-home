@@ -11,16 +11,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "bg-center px-5 py-4 bg-cover bg-no-repeat text-white hover:brightness-110",
-        frame:
-          "bg-center bg-cover bg-no-repeat text-white hover:brightness-110",
+        default: "bg-center px-5 py-4 bg-cover bg-no-repeat text-white hover:brightness-110",
+        frame: "bg-center bg-cover bg-no-repeat text-white hover:brightness-110",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 function Button({
@@ -34,8 +32,7 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
-  const borderImageClass =
-    variant === "frame" ? "wc-btn-border-frame" : "wc-btn-border";
+  const borderImageClass = variant === "frame" ? "wc-btn-border-frame" : "wc-btn-border";
 
   return (
     <Comp
@@ -43,7 +40,7 @@ function Button({
         buttonVariants({ variant }),
         "border-solid [border-image-repeat:stretch] border-5 [border-image-slice:16_fill]",
         borderImageClass,
-        className
+        className,
       )}
       style={style}
       data-slot="button"

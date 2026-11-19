@@ -36,9 +36,9 @@ export function CardMakerForm(
   } = {},
 ) {
   const { onReset, exportOptions } = props;
-  const [currentTab, setCurrentTab] = useState<
-    "card-config" | "image-options" | "content-config"
-  >("card-config");
+  const [currentTab, setCurrentTab] = useState<"card-config" | "image-options" | "content-config">(
+    "card-config",
+  );
   const { card, setCard, resetCard } = useCardStore();
   const draft = card;
   const [saveStatus, setSaveStatus] = useState<string>("");
@@ -70,14 +70,11 @@ export function CardMakerForm(
     setSaveStatus("Exportando...");
     try {
       const res = await exportPreview(draft, exportOptions ?? undefined);
-      const shownPath =
-        res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
+      const shownPath = res.dir && res.filename ? `${res.dir}/${res.filename}` : res.path;
       setSaveStatus(`exportado en: ${shownPath}`);
     } catch (err) {
       console.error(err);
-      setSaveStatus(
-        err instanceof Error ? err.message : "No se pudo exportar.",
-      );
+      setSaveStatus(err instanceof Error ? err.message : "No se pudo exportar.");
     } finally {
       setExporting(false);
     }
@@ -97,30 +94,23 @@ export function CardMakerForm(
     "image-options": CardMakerImageFields,
     "content-config": ContentConfig,
   };
-  const CurrentConfig =
-    configElements?.[currentTab] ?? configElements["card-config"];
+  const CurrentConfig = configElements?.[currentTab] ?? configElements["card-config"];
   return (
     <Card className="w-full flex flex-col flex-1 px-15! min-w-0">
       <CardHeader>
-        <CardTitle className="text-xs sm:text-sm 2xl:text-base">Configuraciones de la carta</CardTitle>
+        <CardTitle className="text-xs sm:text-sm 2xl:text-base">
+          Configuraciones de la carta
+        </CardTitle>
         <div className="flex gap-2 flex-nowrap overflow-auto">
           {TABS.map((tab) => (
-            <Button
-              className="p-1"
-              onClick={() => setCurrentTab(tab.name)}
-              key={tab.name}
-            >
+            <Button className="p-1" onClick={() => setCurrentTab(tab.name)} key={tab.name}>
               {tab.label}
             </Button>
           ))}
         </div>
       </CardHeader>
       <CardContent className="space-y-2 min-w-0 **:data-[slot=select-trigger]:max-w-full **:data-[slot=select-trigger]:min-w-0 [&_input]:max-w-full [&_textarea]:max-w-full md:flex-1 md:max-h-full md:overflow-auto">
-        <CurrentConfig
-          draft={draft}
-          setStatsField={setStatsField}
-          setDraftField={setDraftField}
-        />
+        <CurrentConfig draft={draft} setStatsField={setStatsField} setDraftField={setDraftField} />
       </CardContent>
       <CardFooter className="justify-end">
         <CardMakerFormActions

@@ -32,8 +32,7 @@ function Accordion({
   className,
   variant,
   ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Root> &
-  AccordionVariantProps) {
+}: React.ComponentProps<typeof AccordionPrimitive.Root> & AccordionVariantProps) {
   const resolvedVariant = variant ?? "default";
   return (
     <AccordionStyleContext.Provider value={{ variant: resolvedVariant }}>
@@ -51,11 +50,7 @@ function AccordionItem({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Item>) {
   return (
-    <AccordionPrimitive.Item
-      data-slot="accordion-item"
-      className={cn(className)}
-      {...props}
-    />
+    <AccordionPrimitive.Item data-slot="accordion-item" className={cn(className)} {...props} />
   );
 }
 

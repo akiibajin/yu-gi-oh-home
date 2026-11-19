@@ -1,14 +1,14 @@
-import type { YugiohExportFormat } from '@/lib/types';
-import { create } from 'zustand';
+import type { YugiohExportFormat } from "@/lib/types";
+import { create } from "zustand";
 
 export interface CardExportState {
   exportFormat?: YugiohExportFormat;
-  setExport: (value: Partial<Omit<CardExportState, 'setExport' | 'resetExport'>>) => void;
+  setExport: (value: Partial<Omit<CardExportState, "setExport" | "resetExport">>) => void;
   resetExport: () => void;
 }
 
-const initialExport: Omit<CardExportState, 'setExport' | 'resetExport'> = {
-  exportFormat: 'webp',
+const initialExport: Omit<CardExportState, "setExport" | "resetExport"> = {
+  exportFormat: "webp",
 };
 
 const useCardExportStore = create<CardExportState>((set: any) => ({
@@ -18,4 +18,3 @@ const useCardExportStore = create<CardExportState>((set: any) => ({
 }));
 
 export default useCardExportStore;
-

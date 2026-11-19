@@ -1,5 +1,11 @@
-import type { MonsterTypeIconProfile, YugiohDescriptionStatsBoxColor, YugiohDescriptionTextColor, YugiohDescriptionTextSize, YugiohTemplate } from '@/lib/types';
-import { create } from 'zustand';
+import type {
+  MonsterTypeIconProfile,
+  YugiohDescriptionStatsBoxColor,
+  YugiohDescriptionTextColor,
+  YugiohDescriptionTextSize,
+  YugiohTemplate,
+} from "@/lib/types";
+import { create } from "zustand";
 
 export interface CardDisplayState {
   showName?: boolean;
@@ -13,22 +19,22 @@ export interface CardDisplayState {
   secondaryDescriptionTextSize?: number;
   descriptionImageOpacity?: number;
   descriptionStatsBoxColor?: YugiohDescriptionStatsBoxColor;
-  setDisplay: (value: Partial<Omit<CardDisplayState, 'setDisplay' | 'resetDisplay'>>) => void;
+  setDisplay: (value: Partial<Omit<CardDisplayState, "setDisplay" | "resetDisplay">>) => void;
   resetDisplay: () => void;
 }
 
-const initialDisplay: Omit<CardDisplayState, 'setDisplay' | 'resetDisplay'> = {
+const initialDisplay: Omit<CardDisplayState, "setDisplay" | "resetDisplay"> = {
   showName: true,
   showNameBox: false,
   showDescription: true,
   showStatsBox: true,
-  template: 'primary',
-  iconProfile: 'light',
-  descriptionTextColor: 'auto',
-  descriptionTextSize: 'normal',
+  template: "primary",
+  iconProfile: "light",
+  descriptionTextColor: "auto",
+  descriptionTextSize: "normal",
   secondaryDescriptionTextSize: 16,
   descriptionImageOpacity: undefined,
-  descriptionStatsBoxColor: 'auto',
+  descriptionStatsBoxColor: "auto",
 };
 
 const useCardDisplayStore = create<CardDisplayState>((set: any) => ({
@@ -38,4 +44,3 @@ const useCardDisplayStore = create<CardDisplayState>((set: any) => ({
 }));
 
 export default useCardDisplayStore;
-

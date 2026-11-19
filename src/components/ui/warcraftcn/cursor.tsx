@@ -16,11 +16,12 @@ const cursorVariants = cva("", {
     },
   },
   defaultVariants: {
-    faction: "default"
+    faction: "default",
   },
 });
 
-export interface CursorProps extends React.ComponentProps<"div">, VariantProps<typeof cursorVariants> {
+export interface CursorProps
+  extends React.ComponentProps<"div">, VariantProps<typeof cursorVariants> {
   faction?: Faction;
 }
 
@@ -33,10 +34,7 @@ export const Cursor: React.FC<CursorProps> = ({
   const cursorClass = cursorVariants({ faction });
 
   return (
-    <div
-      className={cn("wc-cursor", cursorClass, className)}
-      {...props}
-    >
+    <div className={cn("wc-cursor", cursorClass, className)} {...props}>
       {children}
     </div>
   );

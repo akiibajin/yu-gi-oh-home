@@ -7,27 +7,20 @@ import { cn } from "@/lib/utils";
 
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
-interface RadioGroupProps
-  extends React.ComponentProps<typeof RadioGroupPrimitive.Root> {
+interface RadioGroupProps extends React.ComponentProps<typeof RadioGroupPrimitive.Root> {
   orientation?: "vertical" | "horizontal";
 }
 
-type RadioGroupItemProps = React.ComponentProps<
-  typeof RadioGroupPrimitive.Item
->;
+type RadioGroupItemProps = React.ComponentProps<typeof RadioGroupPrimitive.Item>;
 
-function RadioGroup({
-  className,
-  orientation = "vertical",
-  ...props
-}: RadioGroupProps) {
+function RadioGroup({ className, orientation = "vertical", ...props }: RadioGroupProps) {
   return (
     <RadioGroupPrimitive.Root
       data-slot="radio-group"
       className={cn(
         "fantasy flex gap-3",
         orientation === "horizontal" ? "flex-row flex-wrap" : "flex-col",
-        className
+        className,
       )}
       orientation={orientation}
       {...props}
@@ -35,10 +28,7 @@ function RadioGroup({
   );
 }
 
-function RadioGroupItem({
-  className,
-  ...props
-}: RadioGroupItemProps) {
+function RadioGroupItem({ className, ...props }: RadioGroupItemProps) {
   return (
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"

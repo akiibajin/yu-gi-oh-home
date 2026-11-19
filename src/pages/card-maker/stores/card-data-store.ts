@@ -1,5 +1,14 @@
-import type { LinkMarker, MonsterType, YugiohCardAttribute, YugiohCardType, YugiohMonsterStats, YugiohMonsterType, YugiohSpellType, YugiohTrapType } from '@/lib/types';
-import { create } from 'zustand';
+import type {
+  LinkMarker,
+  MonsterType,
+  YugiohCardAttribute,
+  YugiohCardType,
+  YugiohMonsterStats,
+  YugiohMonsterType,
+  YugiohSpellType,
+  YugiohTrapType,
+} from "@/lib/types";
+import { create } from "zustand";
 
 export interface CardDataState {
   name: string;
@@ -17,15 +26,15 @@ export interface CardDataState {
   stats: YugiohMonsterStats;
   description: string;
   pendulumDescription?: string;
-  setCardData: (value: Partial<Omit<CardDataState, 'setCardData' | 'resetCardData'>>) => void;
+  setCardData: (value: Partial<Omit<CardDataState, "setCardData" | "resetCardData">>) => void;
   resetCardData: () => void;
 }
 
-const initialCardData: Omit<CardDataState, 'setCardData' | 'resetCardData'> = {
-  name: '',
-  cardType: 'Monster',
-  attribute: 'DARK',
-  monsterType: 'Effect',
+const initialCardData: Omit<CardDataState, "setCardData" | "resetCardData"> = {
+  name: "",
+  cardType: "Monster",
+  attribute: "DARK",
+  monsterType: "Effect",
   subType: undefined,
   spellType: undefined,
   trapType: undefined,
@@ -35,8 +44,8 @@ const initialCardData: Omit<CardDataState, 'setCardData' | 'resetCardData'> = {
   linkMarkersOnDescription: false,
   scale: 0,
   stats: { level: 4, atk: 0, def: 0 },
-  description: '',
-  pendulumDescription: '',
+  description: "",
+  pendulumDescription: "",
 };
 
 const useCardDataStore = create<CardDataState>((set: any) => ({
@@ -46,4 +55,3 @@ const useCardDataStore = create<CardDataState>((set: any) => ({
 }));
 
 export default useCardDataStore;
-

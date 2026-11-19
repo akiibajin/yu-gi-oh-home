@@ -11,13 +11,7 @@ import getSecondaryTemplate, {
   SECONDARY_DESCRIPTION_FILES,
 } from "@/lib/get-secondary-template";
 import useCardStore from "@/pages/card-maker/state";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import MonsterLevel from "./monster-level";
 import RankImage from "./rank-image";
@@ -38,49 +32,33 @@ export function CardPreview(props: CardPreviewProps) {
   const showName: boolean = draft.showName ?? true;
   const showNameBox: boolean = draft.showNameBox ?? false;
   const displayName = draft.name?.trim() || "";
-  const nameBgUrl = showNameBox
-    ? getNameBg(draft.monsterType, draft.cardType!)
-    : undefined;
+  const nameBgUrl = showNameBox ? getNameBg(draft.monsterType, draft.cardType!) : undefined;
   const isMonster = draft.cardType === "Monster";
   const isXyz = isMonster && (draft.monsterType?.includes("Xyz") ?? false);
-  const isSynchro =
-    isMonster && (draft.monsterType?.includes("Synchro") ?? false);
+  const isSynchro = isMonster && (draft.monsterType?.includes("Synchro") ?? false);
   const isLink = isMonster && (draft.monsterType?.includes("Link") ?? false);
-  const isPendulum =
-    isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
+  const isPendulum = isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
   const isXyzOrLink = Boolean(isXyz || isLink);
-  const isFusion =
-    isMonster && (draft.monsterType?.includes("Fusion") ?? false);
+  const isFusion = isMonster && (draft.monsterType?.includes("Fusion") ?? false);
   const isNumber =
     isXyz &&
-    (draft.name?.toLowerCase().includes("number") ||
-      draft.name?.toLowerCase().includes("número"));
-  const descriptionImageOpacity =
-    draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
+    (draft.name?.toLowerCase().includes("number") || draft.name?.toLowerCase().includes("número"));
+  const descriptionImageOpacity = draft.descriptionImageOpacity ?? (isSynchro || isXyz ? 0.8 : 0.5);
   const numberLabelValue = useMemo(() => {
     if (!isNumber) return null;
-    const match =
-      draft.name?.match(/\bnumber\s*(\d+)/i) ||
-      draft.name?.match(/\bnúmero\s*(\d+)/i);
+    const match = draft.name?.match(/\bnumber\s*(\d+)/i) || draft.name?.match(/\bnúmero\s*(\d+)/i);
     if (!match) return null;
     const parsed = Number.parseInt(match[1], 10);
     return Number.isFinite(parsed) ? parsed : null;
   }, [draft.name, isNumber]);
   const isVoidDescriptionStatsBox = draft.descriptionStatsBoxColor === "void";
-  const isVoidInverseDescriptionStatsBox =
-    draft.descriptionStatsBoxColor === "void-inverse";
+  const isVoidInverseDescriptionStatsBox = draft.descriptionStatsBoxColor === "void-inverse";
   const showDescription = draft.showDescription ?? true;
   const monsterDescription = draft.description?.trim();
-  const [secondaryDescriptionHeight, setSecondaryDescriptionHeight] =
-    useState(0);
-  const handleSecondaryDescriptionHeightChange = useCallback(
-    (height: number) => {
-      setSecondaryDescriptionHeight((current) =>
-        current === height ? current : height,
-      );
-    },
-    [],
-  );
+  const [secondaryDescriptionHeight, setSecondaryDescriptionHeight] = useState(0);
+  const handleSecondaryDescriptionHeightChange = useCallback((height: number) => {
+    setSecondaryDescriptionHeight((current) => (current === height ? current : height));
+  }, []);
   const descriptionTextColor = draft.descriptionTextColor ?? "auto";
   const descriptionTextColorClass = isXyzOrLink
     ? "text-white!"
@@ -92,8 +70,7 @@ export function CardPreview(props: CardPreviewProps) {
   const mainImageRef = useRef<InteractiveImageHandle>(null);
   const overframeImageRef = useRef<InteractiveImageHandle>(null);
   const imageDraggingEnabled = draft.imageDraggingEnabled ?? false;
-  const resolvedOverframeImgUrl =
-    draft.fullArt && imgUrl ? imgUrl : overframeImgUrl;
+  const resolvedOverframeImgUrl = draft.fullArt && imgUrl ? imgUrl : overframeImgUrl;
   const showMainImage = Boolean(imgUrl) && !draft.fullArt;
   const showOverframeImage = Boolean(resolvedOverframeImgUrl);
 
@@ -116,19 +93,14 @@ export function CardPreview(props: CardPreviewProps) {
     if (draft.cardType === "Field") {
       return FIELD_SPELL_ICON;
     }
-    return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)
-      ?.img;
+    return YUGIOH_ATTRIBUTES.find((attr) => attr.title === draft.attribute)?.img;
   }, [draft]);
   const monsterTypeIcon = isMonster
-    ? getMonsterTypeIcon(
-        draft.attribute === "DIVINE" ? "dark" : draft.iconProfile,
-        draft.subType,
-      )
+    ? getMonsterTypeIcon(draft.attribute === "DIVINE" ? "dark" : draft.iconProfile, draft.subType)
     : "";
   const iconFallback = SPELL_ICONS.Normal;
 
-  const getSecondaryImgTop = () =>
-    size === "standard" ? 50 : 50;
+  const getSecondaryImgTop = () => (size === "standard" ? 50 : 50);
   useEffect(() => {
     if (!draft.img) {
       setImgUrl(null);
@@ -159,7 +131,6 @@ export function CardPreview(props: CardPreviewProps) {
     };
   }, [draft.img]);
 
-
   useEffect(() => {
     if (!draft.overframeImg) {
       setOverframeImgUrl(null);
@@ -173,9 +144,7 @@ export function CardPreview(props: CardPreviewProps) {
     const reader = new FileReader();
     reader.onload = () => {
       if (cancelled) return;
-      setOverframeImgUrl(
-        typeof reader.result === "string" ? reader.result : null,
-      );
+      setOverframeImgUrl(typeof reader.result === "string" ? reader.result : null);
     };
     reader.onerror = () => {
       if (cancelled) return;
@@ -193,16 +162,12 @@ export function CardPreview(props: CardPreviewProps) {
   }, [draft.overframeImg]);
 
   return (
-    <div
-      className={cn(
-        "min-h-65 overflow-x-auto bg-black space-y-3 card-maker-preview",
-      )}
-    >
+    <div className={cn("min-h-65 overflow-x-auto bg-black space-y-3 card-maker-preview")}>
       <div
         className={cn(
           "relative px-5 flex flex-col gap-0.5 pb-2.25 size-full overflow-hidden justify-end items-end w-105 h-154",
           size === "large" && "w-md h-156.5",
-          isSecondaryTemplate && "gap-0 pb-4"
+          isSecondaryTemplate && "gap-0 pb-4",
         )}
         id="card-preview"
       >
@@ -228,8 +193,7 @@ export function CardPreview(props: CardPreviewProps) {
             enabled={true}
             frameClassName={cn(
               "absolute w-[calc(100%-1.42rem)] bg-black left-1/2 -translate-x-1/2",
-              !isSecondaryTemplate &&
-                "h-[calc(100%-1.65rem)] top-1/2 -translate-y-1/2",
+              !isSecondaryTemplate && "h-[calc(100%-1.65rem)] top-1/2 -translate-y-1/2",
               isSecondaryTemplate && "translate-y-0",
             )}
             frameStyle={
@@ -258,7 +222,7 @@ export function CardPreview(props: CardPreviewProps) {
             className={cn(
               "absolute top-3.25 left-0 w-full flex h-12",
               isLink ? "justify-start pl-1" : "justify-between",
-              isSecondaryTemplate && "top-1"
+              isSecondaryTemplate && "top-1",
             )}
           >
             {!isSecondaryTemplate && draft.showStatsBox !== false && (
@@ -334,10 +298,7 @@ export function CardPreview(props: CardPreviewProps) {
           </div>
         )}
         {isNumber && !showDescription && (
-          <NumberCardLabel
-            className={cn("bottom-9 right-2.5")}
-            value={numberLabelValue}
-          />
+          <NumberCardLabel className={cn("bottom-9 right-2.5")} value={numberLabelValue} />
         )}
         {!isSecondaryTemplate ? (
           <PrimaryDescription
@@ -364,10 +325,7 @@ export function CardPreview(props: CardPreviewProps) {
             numberLabelValue={numberLabelValue}
             pendulumDescription={draft.pendulumDescription ?? ""}
             description={draft.description ?? ""}
-            descriptionImage={getSecondaryDescription(
-              draft.monsterType ?? null,
-              draft.cardType!,
-              )}
+            descriptionImage={getSecondaryDescription(draft.monsterType ?? null, draft.cardType!)}
             size={size}
             fontSize={draft.secondaryDescriptionTextSize ?? (isPendulum ? 10 : 12.5)}
             onHeightChange={handleSecondaryDescriptionHeightChange}
@@ -388,7 +346,10 @@ export function CardPreview(props: CardPreviewProps) {
           <img
             src={iconImg ? iconImg : iconFallback}
             alt={`Icono de ${draft.cardType}`}
-            className={cn("size-14 absolute right-4 z-2 top-4", isSecondaryTemplate && "top-0 right-2")}
+            className={cn(
+              "size-14 absolute right-4 z-2 top-4",
+              isSecondaryTemplate && "top-0 right-2",
+            )}
           />
         )}
       </div>

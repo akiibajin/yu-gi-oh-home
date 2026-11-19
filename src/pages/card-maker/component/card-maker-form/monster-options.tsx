@@ -97,10 +97,7 @@ export function CardMakerMonsterOptions(props: {
   isPendulum: boolean;
   isLink: boolean;
   setDraftField: SetDraftField;
-  setStatsField: <K extends keyof YugiohMonsterStats>(
-    key: K,
-    value: YugiohMonsterStats[K],
-  ) => void;
+  setStatsField: <K extends keyof YugiohMonsterStats>(key: K, value: YugiohMonsterStats[K]) => void;
 }) {
   const { draft, isPendulum, isLink, setDraftField, setStatsField } = props;
   const card = useCardStore().card;
@@ -112,9 +109,7 @@ export function CardMakerMonsterOptions(props: {
       ...card,
       stats: {
         ...card.stats!,
-        level: Number.isFinite(parsed)
-          ? clampInt(parsed, 1, YUGIOH_MAX_STARS)
-          : 1,
+        level: Number.isFinite(parsed) ? clampInt(parsed, 1, YUGIOH_MAX_STARS) : 1,
       },
     });
   };
@@ -130,9 +125,7 @@ export function CardMakerMonsterOptions(props: {
           <Checkbox
             id="cm-is-tuner"
             checked={draft.isTuner}
-            onCheckedChange={(checked: boolean) =>
-              setDraftField("isTuner", checked)
-            }
+            onCheckedChange={(checked: boolean) => setDraftField("isTuner", checked)}
           />
         </div>
         <div className="space-y-2 min-w-0 flex flex-col gap-1">
@@ -161,15 +154,16 @@ export function CardMakerMonsterOptions(props: {
           <Label className="text-sm font-medium truncate" htmlFor="cm-monster-type">
             Tipo de carta monstruo
           </Label>
-          <DropdownMenu
-          >
+          <DropdownMenu>
             <DropdownMenuTrigger asChild id="cm-monster-type" className="w-full">
-              <Button className="p-2 w-min" type="button">Tipo de Carta</Button>
+              <Button className="p-2 w-min" type="button">
+                Tipo de Carta
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="overflow-auto max-h-120">
               <DropdownMenuLabel>{card.monsterType}</DropdownMenuLabel>
               {YUGIOH_MONSTER_TYPES.map((t) => (
-                <DropdownMenuItem key={t} onClick={()=>setCard({...card, monsterType: t})}>
+                <DropdownMenuItem key={t} onClick={() => setCard({ ...card, monsterType: t })}>
                   {MONSTER_TYPE_LABELS[t] ?? t}
                 </DropdownMenuItem>
               ))}
@@ -180,15 +174,19 @@ export function CardMakerMonsterOptions(props: {
           <Label className="text-sm font-medium truncate" htmlFor="cm-sub-type">
             Tipo de Monstruo
           </Label>
-          <DropdownMenu
-          >
+          <DropdownMenu>
             <DropdownMenuTrigger asChild id="cm-sub-type" className="w-full">
-              <Button type="button" className="p-2 w-min truncate">tipo de monstruo</Button>
+              <Button type="button" className="p-2 w-min truncate">
+                tipo de monstruo
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-h-120 overflow-auto">
               <DropdownMenuLabel>{draft.subType}</DropdownMenuLabel>
               {getMonsterTypesForProfile(draft.iconProfile).map((a) => (
-                <DropdownMenuItem key={a.title} onClick={()=>setCard({...draft, subType: a.title})}>
+                <DropdownMenuItem
+                  key={a.title}
+                  onClick={() => setCard({ ...draft, subType: a.title })}
+                >
                   <img className="size-4" src={a.img} alt={a.title} />
                   {SUBTYPE_LABELS[a.title] ?? a.title}
                 </DropdownMenuItem>
@@ -212,9 +210,7 @@ export function CardMakerMonsterOptions(props: {
               value={String(draft.scale ?? 0)}
               onInput={(e) => {
                 const parsed = Number.parseInt(e.currentTarget.value, 10);
-                const next = Number.isFinite(parsed)
-                  ? clampInt(parsed, 0, 13)
-                  : 0;
+                const next = Number.isFinite(parsed) ? clampInt(parsed, 0, 13) : 0;
                 setDraftField("scale", next);
               }}
             />

@@ -94,6 +94,7 @@ npx tauri signer generate -w ~/.tauri/yu-gi-oh-home.key
 ```
 
 This creates:
+
 - `~/.tauri/yu-gi-oh-home.key` — private key (keep secret)
 - Public key is printed to stdout — add it to `tauri.conf.json` under `plugins.updater.pubkey`
 

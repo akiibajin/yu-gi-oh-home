@@ -6,28 +6,25 @@ import { useFactionStore } from "@/lib/faction-store";
 
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
-const skeletonVariants = cva(
-  "fantasy relative overflow-hidden",
-  {
-    variants: {
-      variant: {
-        default: "rounded-md",
-        circular: "rounded-full",
-      },
-      faction: {
-        default: "wc-skeleton",
-        orc: "wc-skeleton-orc",
-        elf: "wc-skeleton-elf",
-        human: "wc-skeleton-human",
-        undead: "wc-skeleton-undead",
-      },
+const skeletonVariants = cva("fantasy relative overflow-hidden", {
+  variants: {
+    variant: {
+      default: "rounded-md",
+      circular: "rounded-full",
     },
-    defaultVariants: {
-      variant: "default",
-      faction: "default",
+    faction: {
+      default: "wc-skeleton",
+      orc: "wc-skeleton-orc",
+      elf: "wc-skeleton-elf",
+      human: "wc-skeleton-human",
+      undead: "wc-skeleton-undead",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+    faction: "default",
+  },
+});
 
 function Skeleton({
   className,

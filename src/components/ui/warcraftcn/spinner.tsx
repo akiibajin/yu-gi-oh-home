@@ -25,16 +25,8 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
     >
       <g transform={SPINNER_STATIC_TRANSFORM}>
         <g className="wc-spinner-wrap">
-          <path
-            className="wc-spinner-glow"
-            d={SPINNER_PATH}
-            fill="currentColor"
-          />
-          <path
-            className="wc-spinner-core"
-            d={SPINNER_PATH}
-            fill="currentColor"
-          />
+          <path className="wc-spinner-glow" d={SPINNER_PATH} fill="currentColor" />
+          <path className="wc-spinner-core" d={SPINNER_PATH} fill="currentColor" />
         </g>
       </g>
     </svg>

@@ -8,21 +8,17 @@ import { cn } from "@/lib/utils";
 
 import "@/components/ui/warcraftcn/styles/warcraft.css";
 
-const labelVariants = cva(
-  "fantasy text-sm font-medium leading-none select-none",
-  {
-    variants: {
-      variant: {
-        default:
-          "text-amber-200 [text-shadow:0_0_6px_rgba(251,191,36,0.25)]",
-        muted: "text-amber-200/60",
-      },
+const labelVariants = cva("fantasy text-sm font-medium leading-none select-none", {
+  variants: {
+    variant: {
+      default: "text-amber-200 [text-shadow:0_0_6px_rgba(251,191,36,0.25)]",
+      muted: "text-amber-200/60",
     },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
 
 type LabelProps = React.ComponentProps<typeof LabelPrimitive.Root> &
   VariantProps<typeof labelVariants> & {
@@ -45,7 +41,7 @@ function Label({
       className={cn(
         labelVariants({ variant }),
         disabled && "cursor-not-allowed opacity-50",
-        className
+        className,
       )}
       {...props}
     >

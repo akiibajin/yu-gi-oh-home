@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   publish:
@@ -41,7 +41,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: ${{ github.ref_name }}
-          releaseBody: 'See the assets to download this version and install.'
+          releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
           uploadUpdaterJson: true

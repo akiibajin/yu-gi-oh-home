@@ -12,7 +12,7 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
         "border-solid wc-textarea-border [border-image-repeat:stretch]",
         "border-6 [border-image-slice:16_fill]",
         "min-h-24 w-full resize-none field-sizing-content",
-        className
+        className,
       )}
       data-slot="textarea"
       {...props}

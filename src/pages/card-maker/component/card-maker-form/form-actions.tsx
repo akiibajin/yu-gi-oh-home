@@ -1,37 +1,35 @@
 import { Button } from "@/components/ui/warcraftcn/button";
 
 export function CardMakerFormActions(props: {
-	onReset: () => void;
-	onExport: () => void | Promise<void>;
-	exporting: boolean;
-	saveStatus: string;
+  onReset: () => void;
+  onExport: () => void | Promise<void>;
+  exporting: boolean;
+  saveStatus: string;
 }) {
-	const { onReset, onExport, exporting, saveStatus } = props;
+  const { onReset, onExport, exporting, saveStatus } = props;
 
-	return (
-		<>
+  return (
+    <>
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:items-center">
-     			{saveStatus ? (
-				<div className="text-sm text-muted-foreground">{saveStatus}</div>
-			) : null}
-				<Button
+        {saveStatus ? <div className="text-sm text-muted-foreground">{saveStatus}</div> : null}
+        <Button
           type="button"
-					variant="default"
-					onClick={onReset}
-					className="w-full sm:h-15 sm:w-auto"
-				>
-					Restablecer
-				</Button>
-				<Button
+          variant="default"
+          onClick={onReset}
+          className="w-full sm:h-15 sm:w-auto"
+        >
+          Restablecer
+        </Button>
+        <Button
           type="button"
-					variant="frame"
-					onClick={onExport}
-					disabled={exporting}
-					className="w-full sm:w-auto sm:h-20 sm:min-w-30"
-				>
-					{exporting ? "Exportando..." : "Exportar"}
-				</Button>
-			</div>
-		</>
-	);
+          variant="frame"
+          onClick={onExport}
+          disabled={exporting}
+          className="w-full sm:w-auto sm:h-20 sm:min-w-30"
+        >
+          {exporting ? "Exportando..." : "Exportar"}
+        </Button>
+      </div>
+    </>
+  );
 }

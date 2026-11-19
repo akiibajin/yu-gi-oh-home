@@ -10,21 +10,16 @@ import { SetDraftField } from "./types";
 import { CardMakerDescriptionFields } from "./description-fields";
 import { splitPendulumDescription } from "@/lib/split-pendulum-description";
 
-
 interface ContentConfigProps {
   draft: Partial<YugiohCardDraft>;
   setDraftField: SetDraftField;
-  setStatsField: <K extends keyof YugiohMonsterStats>(
-    key: K,
-    value: YugiohMonsterStats[K],
-  ) => void;
+  setStatsField: <K extends keyof YugiohMonsterStats>(key: K, value: YugiohMonsterStats[K]) => void;
 }
 
 const ContentConfig: FC<ContentConfigProps> = (props) => {
   const { draft, setDraftField, setStatsField } = props;
   const isMonster = draft.cardType === "Monster";
-  const isPendulum =
-    isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
+  const isPendulum = isMonster && (draft.monsterType?.includes("Pendulum") ?? false);
   const isLink = isMonster && (draft.monsterType?.includes("Link") ?? false);
 
   const onMonsterEffectInput = (value: string) => {
@@ -50,25 +45,31 @@ const ContentConfig: FC<ContentConfigProps> = (props) => {
   return (
     <div>
       <div className="flex items-center">
-						<Label className="text-sm font-medium" htmlFor="cm-name">
-							Nombre
-						</Label>
-						<Checkbox
-							id="cm-show-name"
-							checked={draft.showName ?? true}
-							onCheckedChange={(checked: boolean) =>
-								setDraftField("showName", checked)
-							}
-						/>
-					</div>
-				<Input
-					id="cm-name"
-					className="w-full md:w-auto"
-					value={draft.name}
-					onInput={(e) => setDraftField("name", e.currentTarget.value)}
-					placeholder="Dark Magician"
+        <Label className="text-sm font-medium" htmlFor="cm-name">
+          Nombre
+        </Label>
+        <Checkbox
+          id="cm-show-name"
+          checked={draft.showName ?? true}
+          onCheckedChange={(checked: boolean) => setDraftField("showName", checked)}
+        />
+      </div>
+      <Input
+        id="cm-name"
+        className="w-full md:w-auto"
+        value={draft.name}
+        onInput={(e) => setDraftField("name", e.currentTarget.value)}
+        placeholder="Dark Magician"
       />
-      {isMonster && <CardMakerMonsterOptions isLink={isLink} isPendulum={isPendulum} draft={draft} setDraftField={setDraftField} setStatsField={setStatsField} />}
+      {isMonster && (
+        <CardMakerMonsterOptions
+          isLink={isLink}
+          isPendulum={isPendulum}
+          draft={draft}
+          setDraftField={setDraftField}
+          setStatsField={setStatsField}
+        />
+      )}
       {isLink && <CardMakerLinkMarkers draft={draft} setDraftField={setDraftField} />}
       {draft.template === "secondary" && (
         <div className="space-y-2">
@@ -93,35 +94,29 @@ const ContentConfig: FC<ContentConfigProps> = (props) => {
       )}
       <CardMakerDescriptionFields
         descriptionType={draft.descriptionStatsBoxColor!}
-        onDescriptionTypeChange={(value) =>
-          setDraftField("descriptionStatsBoxColor", value)}
+        onDescriptionTypeChange={(value) => setDraftField("descriptionStatsBoxColor", value)}
         showDescription={draft.showDescription ?? true}
         isSecondaryTemplate={draft.template === "secondary"}
-        onShowDescriptionChange={(checked) =>
-          setDraftField("showDescription", checked)
-        }
+        onShowDescriptionChange={(checked) => setDraftField("showDescription", checked)}
         descriptionImageOpacity={draft.descriptionImageOpacity}
-        onDescriptionImageOpacityChange={(value) =>
-          setDraftField("descriptionImageOpacity", value)
-        }
+        onDescriptionImageOpacityChange={(value) => setDraftField("descriptionImageOpacity", value)}
         descriptionTextColor={draft.descriptionTextColor ?? "auto"}
-        onDescriptionTextColorChange={(value) =>
-          setDraftField("descriptionTextColor", value)
-        }
+        onDescriptionTextColorChange={(value) => setDraftField("descriptionTextColor", value)}
         descriptionTextSize={draft.descriptionTextSize ?? "normal"}
-        onDescriptionTextSizeChange={(value) =>
-          setDraftField("descriptionTextSize", value)
-        }
+        onDescriptionTextSizeChange={(value) => setDraftField("descriptionTextSize", value)}
         label={isPendulum ? "Efecto de monstruo" : "Descripción"}
         value={draft.description ?? ""}
         onInput={onMonsterEffectInput}
         placeholder={
-          isPendulum
-            ? "Texto del efecto del monstruo..."
-            : "Texto del efecto de la carta..."
+          isPendulum ? "Texto del efecto del monstruo..." : "Texto del efecto de la carta..."
         }
       />
-      {isPendulum && <CardMakerPendulumEffect onInput={onPendulumEffectInput} value={draft.pendulumDescription ?? ""} />}
+      {isPendulum && (
+        <CardMakerPendulumEffect
+          onInput={onPendulumEffectInput}
+          value={draft.pendulumDescription ?? ""}
+        />
+      )}
     </div>
   );
 };

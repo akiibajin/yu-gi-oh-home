@@ -1,8 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
-import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 // process is a Node.js global in the Vite config context
@@ -10,49 +9,52 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [
-    react(),
-    babel({ presets: [reactCompilerPreset()] }),
-    tailwindcss(),
-  ],
-	assetsInclude: ["**/*.mpeg"],
+  plugins: lazyPlugins(() => [react(), babel({ presets: [reactCompilerPreset()] }), tailwindcss()]),
+  assetsInclude: ["**/*.mpeg"],
   build: {
-    target:
-          process.env.TAURI_ENV_PLATFORM == 'windows'
-            ? 'chrome105'
-            : 'safari13',
-        // don't minify for debug builds
+    target: process.env.TAURI_ENV_PLATFORM == "windows" ? "chrome105" : "safari13",
+    // don't minify for debug builds
     minify: !process.env.TAURI_ENV_DEBUG,
-        // produce sourcemaps for debug builds
+    // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
-		reportCompressedSize: true,
-
+    reportCompressedSize: true,
   },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-
-	// Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-	//
-	// 1. prevent Vite from obscuring rust errors
-	clearScreen: false,
-	// 2. tauri expects a fixed port, fail if that port is not available
-	server: {
-		port: 1420,
-		strictPort: true,
-		host: host || false,
-		hmr: host
-			? {
-					protocol: "ws",
-					host,
-					port: 1421,
-				}
-			: undefined,
-		watch: {
-			// 3. tell Vite to ignore watching `src-tauri`
-			ignored: ["**/src-tauri/**"],
-		},
-	},
+  staged: {
+    "*": "vp check --fix",
+  },
+  lint: {
+    options: {
+      typeAware: true,
+      typeCheck: true,
+    },
+  },
+  check: {
+    fmt: true,
+  },
+  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+  //
+  // 1. prevent Vite from obscuring rust errors
+  clearScreen: false,
+  // 2. tauri expects a fixed port, fail if that port is not available
+  server: {
+    port: 1420,
+    strictPort: true,
+    host: host || false,
+    hmr: host
+      ? {
+          protocol: "ws",
+          host,
+          port: 1421,
+        }
+      : undefined,
+    watch: {
+      // 3. tell Vite to ignore watching `src-tauri`
+      ignored: ["**/src-tauri/**"],
+    },
+  },
 }));

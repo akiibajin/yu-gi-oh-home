@@ -3,8 +3,7 @@ import type { YugiohCardType, YugiohMonsterType } from "./types";
 const NAME_IMAGES_BASE_URL =
   "https://ksaccwfvblnjylviusju.supabase.co/storage/v1/object/public/images/card-templates/";
 
-const nameImage = (fileName: string) =>
-  `${NAME_IMAGES_BASE_URL}${fileName}-name.webp`;
+const nameImage = (fileName: string) => `${NAME_IMAGES_BASE_URL}${fileName}-name.webp`;
 
 export const getNameBg = (
   monsterType: YugiohMonsterType | null | undefined,

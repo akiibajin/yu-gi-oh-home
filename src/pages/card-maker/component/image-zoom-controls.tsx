@@ -39,4 +39,4 @@ function ImageZoomControls({
   );
 }
 
-export default ImageZoomControls
+export default ImageZoomControls;

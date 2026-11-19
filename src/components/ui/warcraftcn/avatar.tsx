@@ -26,8 +26,7 @@ const avatarVariants = cva("fantasy relative", {
 });
 
 export interface AvatarProps
-  extends Omit<React.ComponentProps<"div">, "children">,
-    VariantProps<typeof avatarVariants> {
+  extends Omit<React.ComponentProps<"div">, "children">, VariantProps<typeof avatarVariants> {
   src?: string; // Avatar image URL
   alt?: string; // Alt text
   fallback?: React.ReactNode; // Fallback if no image
