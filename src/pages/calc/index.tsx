@@ -49,7 +49,7 @@ function Calc() {
   useEffect(() => {
     if (!isValidNum) return;
     if (isSetupComplete) return;
-    navigate(`/calc/${num}/setup`, { replace: true });
+    void navigate(`/calc/${num}/setup`, { replace: true });
   }, [isValidNum, isSetupComplete, num, navigate]);
 
   useEffect(() => {
