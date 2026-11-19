@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/warcraftcn/button";
 import { Skeleton } from "@/components/ui/warcraftcn/skeleton";
 import {
@@ -24,7 +24,6 @@ import {
 import { LobbyPlayerCard } from "@/components/lobby-player-card";
 import { Timer } from "@/components/timer";
 import { MatchTracker } from "@/components/match-tracker";
-import { DiceRoller } from "@/components/dice-roller";
 import { DuelHistoryViewer } from "@/components/duel-history-viewer";
 import QRCodeReact from "react-qr-code";
 import { initDuelSfx } from "@/lib/sfx";
@@ -35,9 +34,10 @@ const QRCode = QRCodeReact as any;
 
 export default function HostDisplay() {
   const params = useParams();
+  const [searchParams] = useSearchParams()
   const lobbyId = params["lobbyId"] ?? "";
   const navigate = useNavigate();
-  const code = params["code"];
+  const code = searchParams.get("code");
   const [players, setPlayers] = useState<LobbyPlayer[]>([]);
   const [lobby, setLobby] = useState<Lobby | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,7 +51,6 @@ export default function HostDisplay() {
   const activeGuests = playersWithoutHost.filter((p) => p.active !== false);
   const inactiveGuests = playersWithoutHost.filter((p) => p.active === false);
   const activePlayers = players.filter((p) => p.active !== false);
-  const hostPlayer = players.find((player) => player.is_host);
 
   const handleCloseLobby = () => {
     setCloseDialogOpen(true);
@@ -181,7 +180,117 @@ export default function HostDisplay() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="md:p-6 space-y-6 mx-auto">
+      <div className="flex w-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4">
+        {activeGuests.map((player) => (
+          <LobbyPlayerCard
+            key={player.id}
+            player={player}
+            maxLifePoints={8000}
+            onQuit={() => requestKickGuest(player)}
+            quitDisabled={quitting[player.id] || player.active === false}
+          />
+        ))}
+      </div>
+      <Card>
+        <CardContent className="p-6 md:p-8">
+          <CardHeader className="px-0 pt-0 pb-6">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <CrownIcon className="w-6 h-6 text-amber-400" />
+                <CardTitle>Anfitrión de la sala</CardTitle>
+                <Badge variant="default" size="sm">
+                  Activa
+                </Badge>
+              </div>
+              <Button variant="frame" onClick={handleCloseLobby}>
+                Cerrar sala
+              </Button>
+            </div>
+          </CardHeader>
+          <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="flex-1 space-y-4 w-full">
+              <div className="flex items-center gap-2">
+                <QrCodeIcon className="w-5 h-5 text-amber-400" />
+                <span className="text-sm text-amber-200/70">
+                  Comparte este código con los jugadores:
+                </span>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="text-4xl md:text-5xl font-bold tracking-widest text-amber-100">
+                  {code}
+                </div>
+                <Button variant="frame" onClick={copyLobbyCode}>
+                  <CopyIcon className="w-4 h-4 mr-2" />
+                  Copiar
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <UsersIcon className="w-5 h-5 text-amber-400" />
+                <Badge variant="secondary" size="sm">
+                  {activeGuests.length} {activeGuests.length !== 1 ? "Jugadores" : "Jugador"}
+                </Badge>
+              </div>
+            </div>
+            {code && (
+              <div className="bg-white p-5 rounded-lg shadow-lg">
+                <QRCode value={code} size={140} />
+                <div className="text-xs text-center text-gray-700 font-medium mt-3">
+                  Escanea para unirte
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
+        <MatchTracker lobby={lobby} players={activePlayers} isHost={true} onUpdate={refreshLobby} />
+      </div>
+
+      <DuelHistoryViewer lobbyId={lobbyId} />
+
+      {inactiveGuests.length > 0 && (
+        <Card>
+          <CardContent className="p-6 md:p-8">
+            <CardHeader className="px-0 pt-0 pb-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <CardTitle>Jugadores inactivos</CardTitle>
+                  <Badge variant="secondary" size="sm">
+                    {inactiveGuests.length}
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4 opacity-70">
+              {inactiveGuests.map((player) => (
+                <LobbyPlayerCard
+                  key={player.id}
+                  player={player}
+                  maxLifePoints={8000}
+                  onQuit={() => requestKickGuest(player)}
+                  quitDisabled={true}
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {activeGuests.length === 0 && (
+        <Card>
+          <CardContent className="p-12">
+            <div className="text-center space-y-3">
+              <UsersIcon className="w-16 h-16 mx-auto text-amber-700/50" />
+              <p className="text-muted-foreground">Esperando a que se unan los jugadores...</p>
+              <p className="text-sm text-muted-foreground/70">
+                Comparte el código de la sala de arriba
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <Dialog open={closeDialogOpen} onOpenChange={setCloseDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -242,123 +351,6 @@ export default function HostDisplay() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      <Card>
-        <CardContent className="p-6 md:p-8">
-          <CardHeader className="px-0 pt-0 pb-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <CrownIcon className="w-6 h-6 text-amber-400" />
-                <CardTitle>Anfitrión de la sala</CardTitle>
-                <Badge variant="default" size="sm">
-                  Activa
-                </Badge>
-              </div>
-              <Button variant="frame" onClick={handleCloseLobby}>
-                Cerrar sala
-              </Button>
-            </div>
-          </CardHeader>
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
-            <div className="flex-1 space-y-4 w-full">
-              <div className="flex items-center gap-2">
-                <QrCodeIcon className="w-5 h-5 text-amber-400" />
-                <span className="text-sm text-amber-200/70">
-                  Comparte este código con los jugadores:
-                </span>
-              </div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <div className="text-4xl md:text-5xl font-bold tracking-widest text-amber-100">
-                  {code}
-                </div>
-                <Button variant="frame" onClick={copyLobbyCode}>
-                  <CopyIcon className="w-4 h-4 mr-2" />
-                  Copiar
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <UsersIcon className="w-5 h-5 text-amber-400" />
-                <Badge variant="secondary" size="sm">
-                  {activeGuests.length} {activeGuests.length !== 1 ? "Jugadores" : "Jugador"}
-                </Badge>
-              </div>
-            </div>
-            {code && (
-              <div className="bg-white p-5 rounded-lg shadow-lg">
-                <QRCode value={code} size={140} />
-                <div className="text-xs text-center text-gray-700 font-medium mt-3">
-                  Escanea para unirte
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Timer lobbyId={lobbyId} lobby={lobby} onLobbyUpdate={setLobby} />
-        <MatchTracker lobby={lobby} players={activePlayers} isHost={true} onUpdate={refreshLobby} />
-      </div>
-
-      <DiceRoller
-        lobbyId={lobbyId}
-        playerId={hostPlayer?.id || null}
-        playerName={hostPlayer?.player_name || null}
-      />
-      <DuelHistoryViewer lobbyId={lobbyId} />
-      <div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4">
-        {activeGuests.map((player) => (
-          <LobbyPlayerCard
-            key={player.id}
-            player={player}
-            maxLifePoints={8000}
-            onQuit={() => requestKickGuest(player)}
-            quitDisabled={quitting[player.id] || player.active === false}
-          />
-        ))}
-      </div>
-
-      {inactiveGuests.length > 0 && (
-        <Card>
-          <CardContent className="p-6 md:p-8">
-            <CardHeader className="px-0 pt-0 pb-6">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-3">
-                  <CardTitle>Jugadores inactivos</CardTitle>
-                  <Badge variant="secondary" size="sm">
-                    {inactiveGuests.length}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            <div className="flex size-full relative z-10 bg-transparent flex-1 flex-wrap justify-center gap-4 opacity-70">
-              {inactiveGuests.map((player) => (
-                <LobbyPlayerCard
-                  key={player.id}
-                  player={player}
-                  maxLifePoints={8000}
-                  onQuit={() => requestKickGuest(player)}
-                  quitDisabled={true}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {activeGuests.length === 0 && (
-        <Card>
-          <CardContent className="p-12">
-            <div className="text-center space-y-3">
-              <UsersIcon className="w-16 h-16 mx-auto text-amber-700/50" />
-              <p className="text-muted-foreground">Esperando a que se unan los jugadores...</p>
-              <p className="text-sm text-muted-foreground/70">
-                Comparte el código de la sala de arriba
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

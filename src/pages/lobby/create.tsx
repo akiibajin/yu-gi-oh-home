@@ -44,7 +44,7 @@ export default function CreateLobby() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="flex items-center justify-center min-h-full p-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-6 md:p-8">
           <CardHeader className="px-0 pt-0">
@@ -70,7 +70,7 @@ export default function CreateLobby() {
               {loading ? "Creando..." : "Crear sala"}
             </Button>
             <Link to={"/lobby/json"}>
-              <Button variant="frame" className="w-full">
+              <Button className="w-full text-sm md:text-base truncate">
                 Unirse a una sala existente
               </Button>
             </Link>
