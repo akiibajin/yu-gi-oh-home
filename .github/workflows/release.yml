@@ -29,9 +29,9 @@ jobs:
       - name: Debug workspace
         run: |
           pwd
-          ls -la
-          echo "----- pnpm-workspace.yaml -----"
-          cat pnpm-workspace.yaml || echo "NOT FOUND"
+          Get-ChildItem -Force
+          Write-Host "----- pnpm-workspace.yaml -----"
+          Get-Content pnpm-workspace.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
