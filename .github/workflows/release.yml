@@ -16,15 +16,22 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.19
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 12
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Debug workspace
+        run: |
+          pwd
+          ls -la
+          echo "----- pnpm-workspace.yaml -----"
+          cat pnpm-workspace.yaml || echo "NOT FOUND"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
