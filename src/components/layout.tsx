@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { useMemo } from "react";
-import { Toaster } from 'sonner'
+import { Toaster } from "sonner";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import {
   Breadcrumb,
@@ -138,7 +138,6 @@ export default function Layout() {
         <footer className="md:hidden row-start-2 max-w-vw flex flex-nowrap overflow-hidden w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
           <FactionSelect />
           <Breadcrumb>
-
             <BreadcrumbList className="flex-nowrap max-w-full">
               {breadcrumbItems.map((item, index) => {
                 const isLast = index === breadcrumbItems.length - 1;
@@ -155,7 +154,7 @@ export default function Layout() {
                             event.preventDefault();
                             await navigate(item.href);
                           }}
-                            className="truncate"
+                          className="truncate"
                         >
                           {item.title}
                         </BreadcrumbLink>

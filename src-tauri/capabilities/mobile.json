@@ -4,8 +4,5 @@
   "description": "Mobile application permissions",
   "windows": ["main"],
   "platforms": ["android", "iOS"],
-  "permissions": [
-    "core:default",
-    "opener:default"
-  ]
+  "permissions": ["core:default", "opener:default"]
 }

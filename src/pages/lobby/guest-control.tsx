@@ -23,10 +23,6 @@ import { TrophyIcon, XCircleIcon } from "lucide-react";
 import { AvatarSelector } from "@/components/avatar-selector";
 import { Input } from "@/components/ui/input";
 import { LIFE_POINTS_KEYS, LIFE_POINTS_MODIFERS } from "./utils/constants";
-import { getSafeAvatarImages } from "@/lib/avatars";
-import { LifePointsCounter } from "@/components/life-points-counter";
-import { useIsMobile } from "@/hooks/use-mobile";
-import FlipNumberComponent from "@/components/ui/flip-number";
 import { LobbyPlayerCard } from "@/components/lobby-player-card";
 
 export default function GuestControl() {
@@ -41,15 +37,12 @@ export default function GuestControl() {
   const [loading, setLoading] = useState(true);
   const [quitting, setQuitting] = useState(false);
   const [calcValue, setCalcValue] = useState("0");
-  const isMobile = useIsMobile()
   const activeGuestPlayers = allPlayers.filter((p) => !p.is_host && p.active !== false);
   const canReportResult = activeGuestPlayers.length > 1;
   const prevLifePointsRef = useRef<number | null>(null);
   const presenceQueueRef = useRef<Promise<void>>(Promise.resolve());
   const queuedActiveRef = useRef<boolean | null>(null);
   const quittingRef = useRef(false);
-  const clamped = Math.max(0, player?.life_points ?? 8000)
-  const isEmergency = clamped > 0 && clamped <= 2000;
   const queuePresence = (nextActive: boolean, force = false) => {
     if (!playerId) return Promise.resolve();
     if (!force && quittingRef.current) return presenceQueueRef.current;
@@ -69,18 +62,18 @@ export default function GuestControl() {
   const setPresence = (nextActive: boolean) => {
     void queuePresence(nextActive);
   };
-  type TCase = "half" | "otk" | "x2" | "reset"
+  type TCase = "half" | "otk" | "x2" | "reset";
   const updateLifePoints = async (currentCase: TCase) => {
     if (!player) return;
-    const cases: Record<TCase, (lp?: number)=>number> = {
+    const cases: Record<TCase, (lp?: number) => number> = {
       half: (lp?: number) => Math.round((lp ?? 8000) / 2),
       otk: () => 0,
-      "x2": (lp?: number) => (lp ?? 8000) * 2,
+      x2: (lp?: number) => (lp ?? 8000) * 2,
       reset: () => 8000,
     };
     const currentMethod = cases[currentCase];
     const newLifePoints = currentMethod(player.life_points);
-    setPlayer(prev=> ({...prev!, life_points: newLifePoints}));
+    setPlayer((prev) => ({ ...prev!, life_points: newLifePoints }));
     setPlayer({ ...player, life_points: newLifePoints });
     setAllPlayers((prev) =>
       prev.map((p) => (p.id === player.id ? { ...p, life_points: newLifePoints } : p)),
@@ -91,26 +84,18 @@ export default function GuestControl() {
   const setLifePoints = async (setCase: "sum" | "rest") => {
     if (!player) return;
     const cases = {
-      "sum": (lp:number) => lp + Number(calcValue),
-      "rest": (lp:number) => lp - Number(calcValue)
-    }
-    const currentCase = cases[setCase]
+      sum: (lp: number) => lp + Number(calcValue),
+      rest: (lp: number) => lp - Number(calcValue),
+    };
+    const currentCase = cases[setCase];
     const newLifePoints = Math.max(0, currentCase(player.life_points ?? 8000));
     setPlayer({ ...player, life_points: newLifePoints });
     setAllPlayers((prev) =>
       prev.map((p) => (p.id === player.id ? { ...p, life_points: newLifePoints } : p)),
     );
     await updatePlayerLifePoints(player.id, newLifePoints);
-    setCalcValue("0")
+    setCalcValue("0");
   };
-  const avatar = getSafeAvatarImages(player?.player_name || player?.avatar_url);
-  const currentPlayerImage =
-    clamped > 2000
-      ? avatar.standing
-      : isEmergency
-        ? (avatar.risk ?? avatar.standing)
-        : (avatar.lost ?? avatar.risk ?? avatar.standing);
-
   const recordWin = async (iWon: boolean) => {
     if (!player || !lobby) return;
     if (!canReportResult) return;
@@ -162,12 +147,11 @@ export default function GuestControl() {
     }
   };
   const handleModifyCalcValue = (value: string) => {
-    setCalcValue(prev => {
+    setCalcValue((prev) => {
       if (prev === "0") return value;
-      return prev.concat(value)
-    })
-  }
-
+      return prev.concat(value);
+    });
+  };
 
   const onChangeAvatar = async (nextAvatarKey: string) => {
     if (!player) return;
@@ -324,27 +308,53 @@ export default function GuestControl() {
     <div className="md:p-6 space-y-6 max-w-2xl mx-auto pb-[env(safe-area-inset-bottom)]">
       <Card className="h-[90vh]">
         <CardContent className="px-0 h-full justify-center flex flex-col items-center py-4 md:p-8">
-          <LobbyPlayerCard
-            player={player}
-            withCard={false}
-            maxLifePoints={8000}
-            quitDisabled
-          />
+          <LobbyPlayerCard player={player} withCard={false} maxLifePoints={8000} quitDisabled />
           <div className="space-y-6 mt-5">
             <div className="flex flex-nowrap gap-1 items-center">
               <Input readOnly className="w-full font-bold" value={calcValue} />
-              <button onClick={()=>setLifePoints("sum")} className="rounded-md min-w-12 size-12 bg-blue-200 border border-cyan-50 font-extrabold text-2xl">+</button>
-              <button onClick={()=>setLifePoints("rest")} className="rounded-md min-w-12 size-12 bg-red-300 border border-cyan-50 font-extrabold text-2xl">-</button>
-              <button onClick={()=>setCalcValue("0")} className="rounded-md min-w-12 bg-red-500 size-12 border border-cyan-50 font-extrabold text-2xl">C</button>
+              <button
+                onClick={() => setLifePoints("sum")}
+                className="rounded-md min-w-12 size-12 bg-blue-200 border border-cyan-50 font-extrabold text-2xl"
+              >
+                +
+              </button>
+              <button
+                onClick={() => setLifePoints("rest")}
+                className="rounded-md min-w-12 size-12 bg-red-300 border border-cyan-50 font-extrabold text-2xl"
+              >
+                -
+              </button>
+              <button
+                onClick={() => setCalcValue("0")}
+                className="rounded-md min-w-12 bg-red-500 size-12 border border-cyan-50 font-extrabold text-2xl"
+              >
+                C
+              </button>
             </div>
           </div>
           <div className="grid grid-cols-3 size-full max-h-1/2 gap-2 min-w-0 min-h-0 grid-rows-1 mt-6">
             <div className="col-start-1 col-span-2 min-w-0 min-h-0 size-full gap-x-1 grid grid-cols-[repeat(3,1fr)] grid-rows-[repeat(4,1fr)]">
-              {LIFE_POINTS_KEYS.sort((a,b)=>a.order - b.order).map(lp => <button key={lp.order} type="button" className="bg-gray-400 min-w-10 max-h-15 size-full md:min-w-12 md:text-2xl text-xl font-extrabold rounded-sm border border-white" onClick={()=>handleModifyCalcValue(lp.value)}>{lp.value}</button>)}
+              {LIFE_POINTS_KEYS.sort((a, b) => a.order - b.order).map((lp) => (
+                <button
+                  key={lp.order}
+                  type="button"
+                  className="bg-gray-400 min-w-10 max-h-15 size-full md:min-w-12 md:text-2xl text-xl font-extrabold rounded-sm border border-white"
+                  onClick={() => handleModifyCalcValue(lp.value)}
+                >
+                  {lp.value}
+                </button>
+              ))}
             </div>
             <div className="col-start-3 grid gap-2 grid-cols-1 grid-rows-4">
-              {LIFE_POINTS_MODIFERS.map(md => <button className="bg-gray-400 h-10 border border-white text-xl rounded-sm" key={md.order}
-                onClick={()=> updateLifePoints(md.value)}>{md.value}</button>)}
+              {LIFE_POINTS_MODIFERS.map((md) => (
+                <button
+                  className="bg-gray-400 h-10 border border-white text-xl rounded-sm"
+                  key={md.order}
+                  onClick={() => updateLifePoints(md.value)}
+                >
+                  {md.value}
+                </button>
+              ))}
             </div>
           </div>
         </CardContent>
@@ -402,7 +412,12 @@ export default function GuestControl() {
           <AvatarSelector selectedAvatar={player.player_name} onSelectAvatar={onChangeAvatar} />
         </CardContent>
       </Card>
-      <Button variant="frame" onClick={quitServer} disabled={quitting} className="w-auto mx-auto py-2 px-3">
+      <Button
+        variant="frame"
+        onClick={quitServer}
+        disabled={quitting}
+        className="w-auto mx-auto py-2 px-3"
+      >
         <XCircleIcon className="w-5 h-5 mr-2" />
         {quitting ? "Saliendo..." : "Salir de la sala"}
       </Button>

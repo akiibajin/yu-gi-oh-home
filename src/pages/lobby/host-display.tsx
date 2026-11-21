@@ -34,7 +34,7 @@ const QRCode = QRCodeReact as any;
 
 export default function HostDisplay() {
   const params = useParams();
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams();
   const lobbyId = params["lobbyId"] ?? "";
   const navigate = useNavigate();
   const code = searchParams.get("code");

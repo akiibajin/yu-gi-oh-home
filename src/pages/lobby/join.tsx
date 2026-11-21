@@ -110,7 +110,7 @@ export default function JoinLobby() {
         const players = await getLobbyPlayers(lobby.id);
         const inactive = players.filter((p) => !p.is_host && p.active === false);
         if (!cancelled) setInactiveSlots(inactive);
-      } catch (e) {
+      } catch {
         if (!cancelled) setSlotsError("No se pudieron cargar los cupos.");
       } finally {
         if (!cancelled) setLoadingSlots(false);
@@ -123,8 +123,8 @@ export default function JoinLobby() {
     };
   }, [lobbyCode]);
   useEffect(() => {
-    if(!!error) toast(error)
-  }, [error])
+    if (error) toast(error);
+  }, [error]);
   return (
     <div className="flex flex-1 size-full items-center justify-center sm:p-4 pb-[env(safe-area-inset-bottom)]">
       <Card className="w-full max-h-[95%] lg:max-h-[98%] lg:gap-0 md:max-w-xl lg:max-w-2xl">
@@ -139,7 +139,9 @@ export default function JoinLobby() {
         </CardHeader>
         <CardContent className="px-2 md:p-8 overflow-auto">
           <div className="space-y-5 flex flex-col">
-            <p>Personaje seleccionado: <span className="text-amber-200">{selectedAvatar}</span></p>
+            <p>
+              Personaje seleccionado: <span className="text-amber-200">{selectedAvatar}</span>
+            </p>
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-amber-100" htmlFor="lobbyCode">

@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/warcraftcn/badge";
 import { Link } from "react-router";
 
 function Home() {
-
   return (
     <div className="flex min-h-full w-full justify-center p-1 sm:p-4 items-center">
       <div className="w-full max-w-4xl space-y-6">
@@ -33,21 +32,21 @@ function Home() {
           <CardContent className="space-y-4 px-10 py-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Link to={"/calc"}>
-              <Button
-                type="button"
-                className="flex items-center justify-center text-xs sm:text-sm"
-                variant="default"
-              >
-                ⚔️ Calculadora
+                <Button
+                  type="button"
+                  className="flex items-center justify-center text-xs sm:text-sm"
+                  variant="default"
+                >
+                  ⚔️ Calculadora
                 </Button>
               </Link>
               <Link to={"/card-maker"}>
-              <Button
-                type="button"
-                className="flex items-center justify-center"
-                variant="default"
-              >
-                ✨ Creador de cartas
+                <Button
+                  type="button"
+                  className="flex items-center justify-center"
+                  variant="default"
+                >
+                  ✨ Creador de cartas
                 </Button>
               </Link>
             </div>
@@ -72,30 +71,30 @@ function Home() {
           <CardContent className="space-y-4 px-10 py-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Link to={"/lobby/create"}>
-              <Button
-                type="button"
-                className="flex items-center justify-center"
-                variant="default"
-              >
-                🎪 Crear sala
+                <Button
+                  type="button"
+                  className="flex items-center justify-center"
+                  variant="default"
+                >
+                  🎪 Crear sala
                 </Button>
               </Link>
               <Link to={"/lobby/join"}>
-              <Button
-                type="button"
-                className="flex items-center justify-center"
-                variant="default"
-              >
-                🔗 Unirse a sala
+                <Button
+                  type="button"
+                  className="flex items-center justify-center"
+                  variant="default"
+                >
+                  🔗 Unirse a sala
                 </Button>
               </Link>
               <Link to="/lobby">
-              <Button
-                type="button"
-                className="flex items-center justify-center"
-                variant="default"
-              >
-                📜 Salas activas
+                <Button
+                  type="button"
+                  className="flex items-center justify-center"
+                  variant="default"
+                >
+                  📜 Salas activas
                 </Button>
               </Link>
             </div>

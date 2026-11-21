@@ -13,7 +13,7 @@ interface LobbyPlayerCardProps {
   player: LobbyPlayer;
   showControls?: boolean;
   maxLifePoints?: number;
-  withCard?: boolean
+  withCard?: boolean;
   onQuit?: () => void | Promise<void>;
   quitDisabled?: boolean;
 }
@@ -27,10 +27,9 @@ export function LobbyPlayerCard({
 }: LobbyPlayerCardProps) {
   const prevLifePointsRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
-  const clamped = useMemo(()=>Math.max(0, player.life_points), [player.life_points]);
+  const clamped = useMemo(() => Math.max(0, player.life_points), [player.life_points]);
   const isEliminated = clamped === 0;
   const isEmergency = clamped > 0 && clamped <= 2000;
-
 
   // The guest flow stores the avatar name as `player_name`. For backwards
   // compatibility (or old lobbies), we also try `avatar_url`.
@@ -90,16 +89,18 @@ export function LobbyPlayerCard({
         </div>
       </CardContent>
     </Card>
-  ) : <div className="flex justify-center items-center w-full flex-col">
+  ) : (
+    <div className="flex justify-center items-center w-full flex-col">
       <FlipNumber number={clamped} />
-    <LifePointsCounter
-      strokeWidth={isMobile ? 12 : 18}
-      size={isMobile ? 120 : 250}
-      value={clamped}
-      isEmergency={isEmergency}
-      max={maxLifePoints}
-      currentPlayerImage={currentPlayerImage}
-      playerName={player.player_name}
-    />
-  </div>;
+      <LifePointsCounter
+        strokeWidth={isMobile ? 12 : 18}
+        size={isMobile ? 120 : 250}
+        value={clamped}
+        isEmergency={isEmergency}
+        max={maxLifePoints}
+        currentPlayerImage={currentPlayerImage}
+        playerName={player.player_name}
+      />
+    </div>
+  );
 }
