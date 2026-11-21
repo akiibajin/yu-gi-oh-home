@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { useMemo } from "react";
+import { Toaster } from 'sonner'
 import { Outlet, useLocation, useNavigate } from "react-router";
 import {
   Breadcrumb,
@@ -133,10 +134,12 @@ export default function Layout() {
         <main className="md:row-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto px-2 md:px-4 md:flex place-self-stretch justify-self-stretch py-3 pb-[env(safe-area-inset-bottom)]">
           <Outlet />
         </main>
-        <footer className="md:hidden row-start-2 flex w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
+        <Toaster />
+        <footer className="md:hidden row-start-2 max-w-vw flex flex-nowrap overflow-hidden w-full min-w-0 items-center gap-2 border-t bg-card px-4 py-2">
           <FactionSelect />
           <Breadcrumb>
-            <BreadcrumbList>
+
+            <BreadcrumbList className="flex-nowrap max-w-full">
               {breadcrumbItems.map((item, index) => {
                 const isLast = index === breadcrumbItems.length - 1;
 
@@ -144,7 +147,7 @@ export default function Layout() {
                   <Fragment key={item.href}>
                     <BreadcrumbItem>
                       {isLast ? (
-                        <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                        <BreadcrumbPage className="truncate">{item.title}</BreadcrumbPage>
                       ) : (
                         <BreadcrumbLink
                           href={item.href}
@@ -152,6 +155,7 @@ export default function Layout() {
                             event.preventDefault();
                             await navigate(item.href);
                           }}
+                            className="truncate"
                         >
                           {item.title}
                         </BreadcrumbLink>
@@ -165,7 +169,7 @@ export default function Layout() {
           </Breadcrumb>
         </footer>
         <span className="pointer-events-none absolute bottom-1 right-2 select-none text-[10px] text-muted-foreground/70">
-          v 7.3.3
+          v 7.4.0
         </span>
         <UpdateNotification />
       </div>

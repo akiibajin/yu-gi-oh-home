@@ -4,14 +4,16 @@ import { LifePointsCounter } from "@/components/life-points-counter";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { playLifePointsChangeSfx } from "@/lib/sfx";
 import type { LobbyPlayer } from "@/lib/lobby";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { getSafeAvatarImages } from "@/lib/avatars";
 import { XCircleIcon } from "lucide-react";
+import FlipNumber from "./ui/flip-number";
 
 interface LobbyPlayerCardProps {
   player: LobbyPlayer;
   showControls?: boolean;
   maxLifePoints?: number;
+  withCard?: boolean
   onQuit?: () => void | Promise<void>;
   quitDisabled?: boolean;
 }
@@ -20,24 +22,15 @@ export function LobbyPlayerCard({
   player,
   maxLifePoints = 8000,
   onQuit,
+  withCard = true,
   quitDisabled = false,
 }: LobbyPlayerCardProps) {
   const prevLifePointsRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
-  const clamped = Math.max(0, player.life_points);
+  const clamped = useMemo(()=>Math.max(0, player.life_points), [player.life_points]);
   const isEliminated = clamped === 0;
   const isEmergency = clamped > 0 && clamped <= 2000;
 
-  useEffect(() => {
-    if (prevLifePointsRef.current === null) {
-      prevLifePointsRef.current = player.life_points;
-      return;
-    }
-    if (prevLifePointsRef.current !== player.life_points) {
-      playLifePointsChangeSfx(player.life_points);
-    }
-    prevLifePointsRef.current = player.life_points;
-  }, [player.life_points]);
 
   // The guest flow stores the avatar name as `player_name`. For backwards
   // compatibility (or old lobbies), we also try `avatar_url`.
@@ -48,7 +41,17 @@ export function LobbyPlayerCard({
       : isEmergency
         ? (avatar.risk ?? avatar.standing)
         : (avatar.lost ?? avatar.risk ?? avatar.standing);
-  return (
+  useEffect(() => {
+    if (prevLifePointsRef.current === null) {
+      prevLifePointsRef.current = player.life_points;
+      return;
+    }
+    if (prevLifePointsRef.current !== player.life_points) {
+      playLifePointsChangeSfx(player.life_points);
+    }
+    prevLifePointsRef.current = player.life_points;
+  }, [player.life_points]);
+  return withCard ? (
     <Card
       className={`relative bg-transparent h-fit max-w-95 gap-0 ${
         isEliminated ? "" : ""
@@ -69,7 +72,7 @@ export function LobbyPlayerCard({
             </Button>
           ) : null}
           <CardTitle className="text-center text-2xl md:text-3xl font-bold w-full mb-3">
-            {clamped.toLocaleString()}
+            <FlipNumber number={clamped} />
           </CardTitle>
         </div>
       </CardHeader>
@@ -87,5 +90,16 @@ export function LobbyPlayerCard({
         </div>
       </CardContent>
     </Card>
-  );
+  ) : <div className="flex justify-center items-center w-full flex-col">
+      <FlipNumber number={clamped} />
+    <LifePointsCounter
+      strokeWidth={isMobile ? 12 : 18}
+      size={isMobile ? 120 : 250}
+      value={clamped}
+      isEmergency={isEmergency}
+      max={maxLifePoints}
+      currentPlayerImage={currentPlayerImage}
+      playerName={player.player_name}
+    />
+  </div>;
 }

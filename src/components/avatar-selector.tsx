@@ -48,7 +48,7 @@ export function AvatarSelector({ selectedAvatar, onSelectAvatar }: AvatarSelecto
         </div>
       </div>
 
-      <div className="grid max-h-64 min-w-0 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:max-h-96 sm:grid-cols-3 sm:gap-3 sm:pr-2">
+      <div className="grid max-h-40 min-w-0 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3 sm:gap-3 sm:pr-2">
         {avatars.map((avatar) => (
           <button
             key={avatar.name}
@@ -64,7 +64,7 @@ export function AvatarSelector({ selectedAvatar, onSelectAvatar }: AvatarSelecto
             <img
               src={avatar.image}
               alt={avatar.name}
-              className="mx-auto h-14 w-full object-contain sm:h-16"
+              className="mx-auto h-25 w-full object-contain sm:h-16"
             />
             <div className="mt-1 hidden md:block truncate text-center text-[11px] font-medium sm:text-xs">
               {avatar.name}

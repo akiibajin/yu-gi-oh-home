@@ -18,10 +18,16 @@ import {
 import { initDuelSfx, playLifePointsChangeSfx } from "@/lib/sfx";
 import { Timer } from "@/components/timer";
 import { MatchTracker } from "@/components/match-tracker";
-import { DiceRoller } from "@/components/dice-roller";
-import { RefreshCwIcon, TrophyIcon, XCircleIcon } from "lucide-react";
-import halveIcon from "@/assets/images/Halve.webp";
+// import { DiceRoller } from "@/components/dice-roller";
+import { TrophyIcon, XCircleIcon } from "lucide-react";
 import { AvatarSelector } from "@/components/avatar-selector";
+import { Input } from "@/components/ui/input";
+import { LIFE_POINTS_KEYS, LIFE_POINTS_MODIFERS } from "./utils/constants";
+import { getSafeAvatarImages } from "@/lib/avatars";
+import { LifePointsCounter } from "@/components/life-points-counter";
+import { useIsMobile } from "@/hooks/use-mobile";
+import FlipNumberComponent from "@/components/ui/flip-number";
+import { LobbyPlayerCard } from "@/components/lobby-player-card";
 
 export default function GuestControl() {
   const params = useParams();
@@ -34,12 +40,16 @@ export default function GuestControl() {
   const [lobby, setLobby] = useState<Lobby | null>(null);
   const [loading, setLoading] = useState(true);
   const [quitting, setQuitting] = useState(false);
+  const [calcValue, setCalcValue] = useState("0");
+  const isMobile = useIsMobile()
   const activeGuestPlayers = allPlayers.filter((p) => !p.is_host && p.active !== false);
   const canReportResult = activeGuestPlayers.length > 1;
   const prevLifePointsRef = useRef<number | null>(null);
   const presenceQueueRef = useRef<Promise<void>>(Promise.resolve());
   const queuedActiveRef = useRef<boolean | null>(null);
   const quittingRef = useRef(false);
+  const clamped = Math.max(0, player?.life_points ?? 8000)
+  const isEmergency = clamped > 0 && clamped <= 2000;
   const queuePresence = (nextActive: boolean, force = false) => {
     if (!playerId) return Promise.resolve();
     if (!force && quittingRef.current) return presenceQueueRef.current;
@@ -59,11 +69,18 @@ export default function GuestControl() {
   const setPresence = (nextActive: boolean) => {
     void queuePresence(nextActive);
   };
-
-  const updateLifePoints = async (change: number) => {
+  type TCase = "half" | "otk" | "x2" | "reset"
+  const updateLifePoints = async (currentCase: TCase) => {
     if (!player) return;
-
-    const newLifePoints = Math.max(0, player.life_points + change);
+    const cases: Record<TCase, (lp?: number)=>number> = {
+      half: (lp?: number) => Math.round((lp ?? 8000) / 2),
+      otk: () => 0,
+      "x2": (lp?: number) => (lp ?? 8000) * 2,
+      reset: () => 8000,
+    };
+    const currentMethod = cases[currentCase];
+    const newLifePoints = currentMethod(player.life_points);
+    setPlayer(prev=> ({...prev!, life_points: newLifePoints}));
     setPlayer({ ...player, life_points: newLifePoints });
     setAllPlayers((prev) =>
       prev.map((p) => (p.id === player.id ? { ...p, life_points: newLifePoints } : p)),
@@ -71,15 +88,28 @@ export default function GuestControl() {
     await updatePlayerLifePoints(player.id, newLifePoints);
   };
 
-  const setLifePoints = async (value: number) => {
+  const setLifePoints = async (setCase: "sum" | "rest") => {
     if (!player) return;
-    const newLifePoints = Math.max(0, value);
+    const cases = {
+      "sum": (lp:number) => lp + Number(calcValue),
+      "rest": (lp:number) => lp - Number(calcValue)
+    }
+    const currentCase = cases[setCase]
+    const newLifePoints = Math.max(0, currentCase(player.life_points ?? 8000));
     setPlayer({ ...player, life_points: newLifePoints });
     setAllPlayers((prev) =>
       prev.map((p) => (p.id === player.id ? { ...p, life_points: newLifePoints } : p)),
     );
     await updatePlayerLifePoints(player.id, newLifePoints);
+    setCalcValue("0")
   };
+  const avatar = getSafeAvatarImages(player?.player_name || player?.avatar_url);
+  const currentPlayerImage =
+    clamped > 2000
+      ? avatar.standing
+      : isEmergency
+        ? (avatar.risk ?? avatar.standing)
+        : (avatar.lost ?? avatar.risk ?? avatar.standing);
 
   const recordWin = async (iWon: boolean) => {
     if (!player || !lobby) return;
@@ -129,6 +159,36 @@ export default function GuestControl() {
       await queuePresence(false, true);
     } finally {
       await navigate("/lobby/join");
+    }
+  };
+  const handleModifyCalcValue = (value: string) => {
+    setCalcValue(prev => {
+      if (prev === "0") return value;
+      return prev.concat(value)
+    })
+  }
+
+
+  const onChangeAvatar = async (nextAvatarKey: string) => {
+    if (!player) return;
+    const prev = player;
+    // Optimistic update
+    setPlayer({
+      ...player,
+      player_name: nextAvatarKey,
+      avatar_url: nextAvatarKey,
+    });
+    setAllPlayers((prevPlayers) =>
+      prevPlayers.map((p) =>
+        p.id === player.id ? { ...p, player_name: nextAvatarKey, avatar_url: nextAvatarKey } : p,
+      ),
+    );
+
+    const ok = await updatePlayerAvatar(player.id, nextAvatarKey);
+    if (!ok) {
+      // Revert on failure
+      setPlayer(prev);
+      setAllPlayers((prevPlayers) => prevPlayers.map((p) => (p.id === prev.id ? prev : p)));
     }
   };
   useEffect(() => {
@@ -249,29 +309,6 @@ export default function GuestControl() {
       }
     };
   }, [lobbyId, playerId]);
-
-  const onChangeAvatar = async (nextAvatarKey: string) => {
-    if (!player) return;
-    const prev = player;
-    // Optimistic update
-    setPlayer({
-      ...player,
-      player_name: nextAvatarKey,
-      avatar_url: nextAvatarKey,
-    });
-    setAllPlayers((prevPlayers) =>
-      prevPlayers.map((p) =>
-        p.id === player.id ? { ...p, player_name: nextAvatarKey, avatar_url: nextAvatarKey } : p,
-      ),
-    );
-
-    const ok = await updatePlayerAvatar(player.id, nextAvatarKey);
-    if (!ok) {
-      // Revert on failure
-      setPlayer(prev);
-      setAllPlayers((prevPlayers) => prevPlayers.map((p) => (p.id === prev.id ? prev : p)));
-    }
-  };
   if (loading || !player || !lobby) {
     return (
       <div className="flex items-center justify-center min-h-screen p-4">
@@ -285,119 +322,29 @@ export default function GuestControl() {
 
   return (
     <div className="md:p-6 space-y-6 max-w-2xl mx-auto pb-[env(safe-area-inset-bottom)]">
-      <Card>
-        <CardContent className="p-4 md:p-6">
-          <CardHeader className="px-0 pt-0 pb-4">
-            <CardTitle className="text-lg">Cambiar avatar</CardTitle>
-          </CardHeader>
-          <AvatarSelector selectedAvatar={player.player_name} onSelectAvatar={onChangeAvatar} />
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="px-0 py-4 md:p-8">
-          <CardHeader className="px-0 pt-0 pb-6">
-            <div className="flex items-center gap-3">
-              <CardTitle>Tus Puntos de Vida</CardTitle>
+      <Card className="h-[90vh]">
+        <CardContent className="px-0 h-full justify-center flex flex-col items-center py-4 md:p-8">
+          <LobbyPlayerCard
+            player={player}
+            withCard={false}
+            maxLifePoints={8000}
+            quitDisabled
+          />
+          <div className="space-y-6 mt-5">
+            <div className="flex flex-nowrap gap-1 items-center">
+              <Input readOnly className="w-full font-bold" value={calcValue} />
+              <button onClick={()=>setLifePoints("sum")} className="rounded-md min-w-12 size-12 bg-blue-200 border border-cyan-50 font-extrabold text-2xl">+</button>
+              <button onClick={()=>setLifePoints("rest")} className="rounded-md min-w-12 size-12 bg-red-300 border border-cyan-50 font-extrabold text-2xl">-</button>
+              <button onClick={()=>setCalcValue("0")} className="rounded-md min-w-12 bg-red-500 size-12 border border-cyan-50 font-extrabold text-2xl">C</button>
             </div>
-          </CardHeader>
-          <div className="space-y-6">
-            <div className="text-center p-8 bg-black/20 rounded-lg border-2 border-amber-900/30">
-              <div className="text-5xl md:text-8xl font-bold text-amber-100 [text-shadow:0_0_20px_rgba(251,191,36,0.5)]">
-                {player.life_points}
-              </div>
+          </div>
+          <div className="grid grid-cols-3 size-full max-h-1/2 gap-2 min-w-0 min-h-0 grid-rows-1 mt-6">
+            <div className="col-start-1 col-span-2 min-w-0 min-h-0 size-full gap-x-1 grid grid-cols-[repeat(3,1fr)] grid-rows-[repeat(4,1fr)]">
+              {LIFE_POINTS_KEYS.sort((a,b)=>a.order - b.order).map(lp => <button key={lp.order} type="button" className="bg-gray-400 min-w-10 max-h-15 size-full md:min-w-12 md:text-2xl text-xl font-extrabold rounded-sm border border-white" onClick={()=>handleModifyCalcValue(lp.value)}>{lp.value}</button>)}
             </div>
-            <div className="space-y-3">
-              <div className="grid grid-cols-3 gap-3">
-                <Button
-                  variant="frame"
-                  onClick={() => updateLifePoints(-2000)}
-                  className="md:text-lg h-16"
-                >
-                  -2k
-                </Button>
-                <Button
-                  variant="frame"
-                  onClick={() => updateLifePoints(-1000)}
-                  className="md:text-lg h-16"
-                >
-                  -1k
-                </Button>
-                <Button
-                  variant="frame"
-                  onClick={() => updateLifePoints(-500)}
-                  className="md:text-lg h-16"
-                >
-                  -500
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <Button
-                  variant="frame"
-                  onClick={() => updateLifePoints(-100)}
-                  className="md:text-lg h-16"
-                >
-                  -100
-                </Button>
-                <Button
-                  variant="frame"
-                  onClick={() => updateLifePoints(-50)}
-                  className="md:text-lg h-16"
-                >
-                  -50
-                </Button>
-                <Button
-                  variant="frame"
-                  onClick={() => setLifePoints(Math.floor(player.life_points / 2))}
-                  className="md:text-lg h-16"
-                >
-                  <img src={halveIcon} alt="Mitad" className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <Button
-                  variant="default"
-                  onClick={() => updateLifePoints(50)}
-                  className="md:text-lg h-16"
-                >
-                  +50
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={() => updateLifePoints(100)}
-                  className="md:text-lg h-16"
-                >
-                  +100
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={() => updateLifePoints(500)}
-                  className="md:text-lg h-16"
-                >
-                  +500
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant="default"
-                  onClick={() => updateLifePoints(1000)}
-                  className="md:text-lg h-16"
-                >
-                  +1k
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={() => updateLifePoints(2000)}
-                  className="md:text-lg h-16"
-                >
-                  +2k
-                </Button>
-              </div>
-              <Button variant="frame" onClick={() => setLifePoints(8000)} className="w-full h-14">
-                <RefreshCwIcon className="w-5 h-5 mr-2" />
-              </Button>
+            <div className="col-start-3 grid gap-2 grid-cols-1 grid-rows-4">
+              {LIFE_POINTS_MODIFERS.map(md => <button className="bg-gray-400 h-10 border border-white text-xl rounded-sm" key={md.order}
+                onClick={()=> updateLifePoints(md.value)}>{md.value}</button>)}
             </div>
           </div>
         </CardContent>
@@ -446,16 +393,19 @@ export default function GuestControl() {
         </Card>
       )}
 
-      <DiceRoller lobbyId={lobbyId} playerId={player.id} playerName={player.player_name} />
-
+      {/*<DiceRoller lobbyId={lobbyId} playerId={player.id} playerName={player.player_name} />*/}
       <Card>
         <CardContent className="p-4 md:p-6">
-          <Button variant="frame" onClick={quitServer} disabled={quitting} className="w-full">
-            <XCircleIcon className="w-5 h-5 mr-2" />
-            {quitting ? "Saliendo..." : "Salir de la sala"}
-          </Button>
+          <CardHeader className="px-0 pt-0 pb-4">
+            <CardTitle className="text-lg">Cambiar avatar</CardTitle>
+          </CardHeader>
+          <AvatarSelector selectedAvatar={player.player_name} onSelectAvatar={onChangeAvatar} />
         </CardContent>
       </Card>
+      <Button variant="frame" onClick={quitServer} disabled={quitting} className="w-auto mx-auto py-2 px-3">
+        <XCircleIcon className="w-5 h-5 mr-2" />
+        {quitting ? "Saliendo..." : "Salir de la sala"}
+      </Button>
     </div>
   );
 }

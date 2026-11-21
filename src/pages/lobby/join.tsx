@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/warcraftcn/input";
 import {
   Card,
   CardContent,
-  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/warcraftcn/card";
@@ -15,8 +15,8 @@ import { AvatarSelector } from "@/components/avatar-selector";
 import { QrCodeIcon, UsersIcon } from "lucide-react";
 import { getSafeAvatarImages, PLAYERS_IMAGES } from "@/lib/avatars";
 import type { LobbyPlayer } from "@/lib/lobby";
-import { Label } from "@/components/ui/warcraftcn/label";
 import { QRScanner } from "@/components/qr-scanner";
+import { toast } from "sonner";
 
 export default function JoinLobby() {
   const isDev = import.meta.env.DEV;
@@ -29,40 +29,6 @@ export default function JoinLobby() {
   const [inactiveSlots, setInactiveSlots] = useState<LobbyPlayer[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [slotsError, setSlotsError] = useState<string>("");
-
-  useEffect(() => {
-    let cancelled = false;
-    const code = lobbyCode.trim().toUpperCase();
-    setSlotsError("");
-    if (code.length !== 6) {
-      setInactiveSlots([]);
-      return;
-    }
-
-    const load = async () => {
-      setLoadingSlots(true);
-      try {
-        const lobby = await getLobbyByCode(code);
-        if (!lobby) {
-          if (!cancelled) setInactiveSlots([]);
-          return;
-        }
-        const players = await getLobbyPlayers(lobby.id);
-        const inactive = players.filter((p) => !p.is_host && p.active === false);
-        if (!cancelled) setInactiveSlots(inactive);
-      } catch (e) {
-        console.error(e);
-        if (!cancelled) setSlotsError("No se pudieron cargar los cupos.");
-      } finally {
-        if (!cancelled) setLoadingSlots(false);
-      }
-    };
-    void load();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [lobbyCode]);
 
   const handleJoinLobby = async () => {
     if (!selectedAvatar.trim()) {
@@ -124,38 +90,56 @@ export default function JoinLobby() {
     setLobbyCode(scannedCode.toUpperCase());
     setShowScanner(false);
   };
-  if (isDev) console.log("Selected avatar:", selectedAvatar);
+  useEffect(() => {
+    let cancelled = false;
+    const code = lobbyCode.trim().toUpperCase();
+    setSlotsError("");
+    if (code.length !== 6) {
+      setInactiveSlots([]);
+      return;
+    }
+
+    const load = async () => {
+      setLoadingSlots(true);
+      try {
+        const lobby = await getLobbyByCode(code);
+        if (!lobby) {
+          if (!cancelled) setInactiveSlots([]);
+          return;
+        }
+        const players = await getLobbyPlayers(lobby.id);
+        const inactive = players.filter((p) => !p.is_host && p.active === false);
+        if (!cancelled) setInactiveSlots(inactive);
+      } catch (e) {
+        if (!cancelled) setSlotsError("No se pudieron cargar los cupos.");
+      } finally {
+        if (!cancelled) setLoadingSlots(false);
+      }
+    };
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [lobbyCode]);
+  useEffect(() => {
+    if(!!error) toast(error)
+  }, [error])
   return (
-    <div className="flex flex-1 w-full h-full items-center justify-center sm:p-4 pb-[env(safe-area-inset-bottom)]">
-      <Card className="w-full md:max-w-xl lg:max-w-2xl">
-        <CardContent className="p-6 md:p-8">
-          <CardHeader className="px-0 pt-0">
-            <div className="flex items-center gap-3 mb-2">
-              <UsersIcon className="w-6 h-6 text-amber-400" />
-              <CardTitle>Unirse a una sala</CardTitle>
-              <Badge variant="secondary" size="sm">
-                Invitado
-              </Badge>
-            </div>
-            <CardDescription className="px-0 text-xs md:text-base">
-              Ingresa el código de la sala para unirte a una sesión existente
-            </CardDescription>
-          </CardHeader>
-          <div className="space-y-5 mt-6">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-amber-100" htmlFor="playerName">
-                Tu nombre
-              </Label>
-              <Input
-                id="playerName"
-                type="text"
-                className="w-full"
-                placeholder="Ingresa tu nombre"
-                value={selectedAvatar}
-                readOnly
-                disabled={loading}
-              />
-            </div>
+    <div className="flex flex-1 size-full items-center justify-center sm:p-4 pb-[env(safe-area-inset-bottom)]">
+      <Card className="w-full max-h-[95%] lg:max-h-[98%] lg:gap-0 md:max-w-xl lg:max-w-2xl">
+        <CardHeader className="px-0 pt-0">
+          <div className="flex items-center gap-3 mb-2">
+            <UsersIcon className="w-6 h-6 text-amber-400" />
+            <CardTitle>Unirse a una sala</CardTitle>
+            <Badge variant="secondary" size="sm">
+              Invitado
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="px-2 md:p-8 overflow-auto">
+          <div className="space-y-5 flex flex-col">
+            <p>Personaje seleccionado: <span className="text-amber-200">{selectedAvatar}</span></p>
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-amber-100" htmlFor="lobbyCode">
@@ -212,7 +196,7 @@ export default function JoinLobby() {
                         variant="frame"
                         onClick={() => handleReclaimSlot(p.id)}
                         disabled={loading}
-                        className="w-full justify-start gap-3"
+                        className="w-auto py-2 gap-3"
                       >
                         <img
                           src={avatar.standing}
@@ -226,25 +210,20 @@ export default function JoinLobby() {
                 </div>
               </div>
             ) : null}
-
-            {error && (
-              <div className="p-3 bg-red-950/30 border border-red-900/50 rounded-lg">
-                <p className="text-sm text-red-200">{error}</p>
-              </div>
-            )}
-
-            <Button
-              onClick={handleJoinLobby}
-              disabled={loading || !selectedAvatar.trim() || !lobbyCode.trim()}
-              className="w-full"
-            >
-              {loading ? "Uniéndose..." : "Unirse a la sala"}
-            </Button>
-            <Link to={"/lobby/create"}>
-              <Button className="w-full text-[10px]">Crear una sala nueva</Button>
-            </Link>
           </div>
         </CardContent>
+        <CardFooter className="flex flex-col xl:flex-row pt-0 gap-2">
+          <Button
+            onClick={handleJoinLobby}
+            disabled={loading || !selectedAvatar.trim() || !lobbyCode.trim()}
+            className="w-full lg:w-auto"
+          >
+            {loading ? "Uniéndose..." : "Unirse a la sala"}
+          </Button>
+          <Link to={"/lobby/create"}>
+            <Button className="w-full lg:w-auto text-[10px]">Crear una sala nueva</Button>
+          </Link>
+        </CardFooter>
       </Card>
 
       {showScanner && <QRScanner onScan={handleQRScan} onClose={() => setShowScanner(false)} />}
